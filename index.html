@@ -1,103 +1,314 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Zetato Games</title>
-<meta name="description" content="Small, ad-free games made by Zetato BI.">
-<meta name="theme-color" content="#0f2d4a">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⛵</text></svg>">
+<title>Zetato Studios | Apps, training and interactive products</title>
+<meta name="description" content="Zetato Studios builds apps and tools, training on the Microsoft data platform, and interactive products including games. Try early releases and share feedback.">
+<meta property="og:title" content="Zetato Studios">
+<meta property="og:description" content="Apps, training and interactive products from Zetato.">
+<meta property="og:url" content="https://studios.zetatobi.com/">
+<meta name="theme-color" content="#031C3A">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 86 76'%3E%3Crect width='86' height='76' rx='16' fill='%23031C3A'/%3E%3Cg transform='translate(0 2)'%3E%3Cpolygon points='78,36 22,18 22,32 78,50' fill='%230F74EE'/%3E%3Cpolygon points='12,57 78,36 78,50 12,71' fill='%23C2DBFA'/%3E%3Cpolygon points='22,18 58,6.5 58,1 74,8.5 58,25 58,20.5 22,32' fill='%23C2DBFA'/%3E%3C/g%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" rel="stylesheet">
 <style>
-:root{
-  --ink:#0f2d4a; --lagoon:#dff7f1; --sea:#17b3c2; --coral:#ff6f7d; --sun:#ffc93c; --white:#ffffff;
-  --font:'Bricolage Grotesque', ui-rounded, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  box-sizing:border-box;
-}
-*,*::before,*::after{box-sizing:inherit}
-html,body{margin:0}
-body{background:var(--lagoon);color:var(--ink);font-family:var(--font);font-size:18px;line-height:1.5;
-  padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
-.wrap{max-width:760px;margin:0 auto;padding:40px 22px 56px}
-header h1{margin:0;font-weight:800;font-size:clamp(44px,11vw,76px);line-height:.95;letter-spacing:-.02em}
-header p{margin:12px 0 0;max-width:34ch;font-size:19px}
+  :root {
+    --navy: #031C3A; --navy-2: #0A1F3D; --navy-3: #10294D; --navy-4: #183A66;
+    --blue: #1F7AE0; --sky: #8EC1FF; --ice: #EFF4FB; --ice-2: #C2DBFA;
+    --amber: #F5B544; --mint: #6FE3B5; --rose: #FF8FA3;
+    --dim: rgba(239,244,251,0.72); --faint: rgba(239,244,251,0.5); --line: rgba(239,244,251,0.12);
+    --serif: "Newsreader", Georgia, "Times New Roman", serif;
+    --sans: "Hanken Grotesk", "Segoe UI", Arial, Helvetica, sans-serif;
+    --wrap: 1200px; --gutter: clamp(20px, 5vw, 48px);
+  }
+  :root { color-scheme: dark; }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 84px; }
+  body { margin: 0; background: var(--navy); color: #fff; font-family: var(--sans); font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  a { color: inherit; }
+  a:focus-visible, button:focus-visible { outline: 3px solid var(--amber); outline-offset: 3px; border-radius: 6px; }
+  svg { display: block; max-width: 100%; }
+  .wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 var(--gutter); }
+  .skip { position: absolute; left: -9999px; top: 12px; background: #fff; color: var(--navy); padding: 10px 16px; border-radius: 6px; z-index: 100; }
+  .skip:focus { left: 12px; }
 
-.game{margin-top:40px;background:var(--ink);color:var(--white);border-radius:28px;overflow:hidden}
-.scene{display:block;width:100%;height:auto}
-.game-body{padding:22px 24px 26px;display:grid;gap:14px}
-.game-top{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.game h2{margin:0;font-size:38px;font-weight:800;letter-spacing:-.01em}
-.status{font-size:15px;font-weight:600;color:var(--ink);background:var(--sun);padding:4px 12px;border-radius:999px}
-.game p{margin:0;max-width:44ch;color:#d7ecf3}
-.play{justify-self:start;display:inline-block;margin-top:4px;background:var(--coral);color:var(--white);text-decoration:none;
-  font-weight:800;font-size:20px;padding:14px 34px;border-radius:999px;box-shadow:0 5px 0 #c94a5a}
-.play:active{transform:translateY(3px);box-shadow:0 2px 0 #c94a5a}
-.play:focus-visible{outline:3px solid var(--sun);outline-offset:4px}
+  header { position: sticky; top: 0; z-index: 50; background: rgba(3,28,58,0.88); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); padding-top: env(safe-area-inset-top, 0px); }
+  .nav { height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .brand { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; }
+  .brand .mark { width: 40px; height: 36px; }
+  .brand .w { font-weight: 600; font-size: 15px; letter-spacing: 0.3em; }
+  .brand .w span { color: var(--amber); }
+  .nav a.back { font-size: 14px; font-weight: 500; color: var(--dim); text-decoration: none; }
+  .nav a.back:hover { color: #fff; }
 
-.install{margin-top:34px}
-.install h3{margin:0 0 10px;font-size:22px}
-.install ul{margin:0;padding-left:22px}
-.install li{margin:6px 0}
-.install li strong{font-weight:600}
+  .hero { position: relative; padding: clamp(56px, 8vw, 104px) 0 clamp(48px, 6vw, 80px); overflow: hidden; }
+  .pixels { position: absolute; inset: 0; pointer-events: none; }
+  .pixels i { position: absolute; width: 14px; height: 14px; border-radius: 3px; background: var(--ice-2); opacity: 0; animation: blip 6s ease-in-out infinite; }
+  @keyframes blip { 0%, 100% { opacity: 0; } 40%, 60% { opacity: .22; } }
+  .hero-grid { position: relative; display: grid; grid-template-columns: 1.1fr 1fr; gap: clamp(32px, 5vw, 64px); align-items: center; }
+  h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(44px, 6.4vw, 84px); line-height: 0.98; letter-spacing: -0.025em; margin: 0 0 24px; max-width: 15ch; }
+  .lede { color: var(--dim); font-size: clamp(17px, 1.5vw, 20px); max-width: 46ch; margin: 0 0 30px; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; font: 600 15px var(--sans); padding: 13px 22px; border-radius: 10px; text-decoration: none; border: 1px solid transparent; cursor: pointer; }
+  .btn-amber { background: var(--amber); color: var(--navy); }
+  .btn-amber:hover { background: #FFC862; }
+  .btn-ghost { border-color: rgba(239,244,251,0.3); color: #fff; background: none; }
+  .btn-ghost:hover { border-color: #fff; }
+  .actions { display: flex; gap: 12px; flex-wrap: wrap; }
 
-footer{margin-top:44px;font-size:15px;opacity:.75}
-@media (prefers-reduced-motion:no-preference){
-  .sail{animation:bob 3.2s ease-in-out infinite;transform-origin:50% 100%}
-  @keyframes bob{50%{transform:translateY(-6px) rotate(-1.5deg)}}
-}
+  .featured { border-radius: 20px; overflow: hidden; background: var(--navy-2); border: 1px solid var(--line); box-shadow: 0 40px 80px -40px rgba(0,0,0,.7); text-decoration: none; display: block; transition: transform .25s ease, border-color .25s ease; }
+  .featured:hover { transform: translateY(-3px); border-color: rgba(245,181,68,0.5); }
+  .featured .thumb { aspect-ratio: 16 / 10; }
+  .featured .body { padding: 20px 22px 22px; }
+  .featured .kicker { font-size: 13px; font-weight: 600; color: var(--amber); }
+  .featured h2 { font-family: var(--serif); font-weight: 400; font-size: 30px; margin: 4px 0 6px; letter-spacing: -0.01em; }
+  .featured p { margin: 0; color: var(--dim); font-size: 16px; }
+
+  .bar { position: sticky; top: 72px; z-index: 40; background: rgba(3,28,58,0.94); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+  .bar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-top: 14px; padding-bottom: 14px; flex-wrap: wrap; }
+  .filters { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip { background: transparent; color: var(--dim); border: 1px solid var(--line); border-radius: 999px; padding: 8px 16px; font: 600 14px var(--sans); cursor: pointer; }
+  .chip:hover { color: #fff; border-color: rgba(239,244,251,0.35); }
+  .chip[aria-pressed="true"] { background: var(--ice); color: var(--navy); border-color: var(--ice); }
+  .chip b { font-weight: 600; opacity: .55; margin-left: 4px; }
+  .count { font-size: 14px; color: var(--faint); }
+
+  .works { padding: 36px 0 clamp(72px, 9vw, 112px); }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .card { background: var(--navy-2); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; text-decoration: none; transition: transform .2s ease, border-color .2s ease; }
+  a.card:hover { transform: translateY(-3px); border-color: rgba(142,193,255,0.45); }
+  .card.wide { grid-column: span 2; }
+  .thumb { position: relative; aspect-ratio: 4 / 3; background: var(--navy-3); overflow: hidden; }
+  .card.wide .thumb { aspect-ratio: 16 / 7.4; }
+  .thumb img, .thumb svg { width: 100%; height: 100%; object-fit: cover; }
+  .status { position: absolute; left: 12px; top: 12px; font-size: 12px; font-weight: 700; padding: 5px 10px; border-radius: 999px; background: rgba(3,28,58,0.8); backdrop-filter: blur(6px); }
+  .status.playable { color: var(--mint); }
+  .status.beta { color: var(--amber); }
+  .status.soon { color: var(--dim); }
+  .status.live { color: var(--sky); }
+  .card .body { padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+  .type { font-size: 13px; font-weight: 600; }
+  .type.games { color: var(--amber); } .type.art { color: var(--rose); } .type.training { color: var(--sky); } .type.apps { color: var(--mint); }
+  .card h3 { margin: 0; font-size: 20px; font-weight: 600; letter-spacing: -0.005em; }
+  .card p { margin: 0; color: var(--dim); font-size: 15px; }
+  .card .meta { margin-top: auto; padding-top: 12px; font-size: 13px; color: var(--faint); display: flex; justify-content: space-between; gap: 10px; }
+  .card .go { color: #fff; font-weight: 600; }
+  .empty { grid-column: 1 / -1; text-align: center; padding: 64px 20px; color: var(--dim); border: 1px dashed var(--line); border-radius: 16px; }
+
+  .test { background: var(--ice); color: var(--navy); padding: clamp(72px, 9vw, 112px) 0; }
+  .test-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 6vw, 80px); align-items: center; }
+  .test h2 { font-family: var(--serif); font-weight: 400; font-size: clamp(34px, 4.4vw, 54px); line-height: 1.05; letter-spacing: -0.02em; margin: 0 0 16px; }
+  .test p { color: #4A5B72; margin: 0 0 26px; max-width: 48ch; font-size: 18px; }
+  .test ol { list-style: none; counter-reset: s; margin: 0; padding: 0; }
+  .test li { counter-increment: s; display: grid; grid-template-columns: 44px 1fr; gap: 16px; padding: 18px 0; border-top: 1px solid #D7E2F0; }
+  .test li::before { content: counter(s); width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: var(--navy); color: var(--amber); font-weight: 700; }
+  .test li b { display: block; font-size: 17px; }
+  .test li span { color: #4A5B72; font-size: 15px; }
+  .test .btn-amber { background: var(--navy); color: #fff; }
+  .test .btn-amber:hover { background: var(--navy-4); }
+
+  footer { padding: 40px 0 calc(40px + env(safe-area-inset-bottom, 0px)); font-size: 14px; color: var(--faint); border-top: 1px solid var(--line); }
+  footer .wrap { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+  footer a { color: var(--dim); text-decoration: none; margin-left: 20px; }
+  footer a:first-child { margin-left: 0; }
+  footer a:hover { color: #fff; }
+
+  @media (max-width: 980px) {
+    .hero-grid, .test-grid { grid-template-columns: 1fr; }
+    .grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 640px) {
+    .grid { grid-template-columns: 1fr; }
+    .card.wide { grid-column: auto; }
+    .card.wide .thumb { aspect-ratio: 4 / 3; }
+    .bar { top: 72px; }
+    .count { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .pixels i { animation: none; opacity: .12; }
+    .card, .featured { transition: none; }
+  }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <h1>Zetato Games</h1>
-    <p>Small, colourful games you can play on your phone. No ads, ever.</p>
-  </header>
+<a class="skip" href="#works">Skip to releases</a>
 
-  <article class="game" aria-labelledby="surfnana-title">
-    <svg class="scene" viewBox="0 0 760 340" role="img" aria-label="A small sailboat racing across a turquoise sea at sunrise">
-      <defs>
-        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff8fa3"/><stop offset=".6" stop-color="#ffb88a"/><stop offset="1" stop-color="#ffe3a3"/></linearGradient>
-        <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9ff0e6"/><stop offset=".35" stop-color="#2fd0cf"/><stop offset="1" stop-color="#0e9fb8"/></linearGradient>
-      </defs>
-      <rect width="760" height="160" fill="url(#sky)"/>
-      <circle cx="560" cy="130" r="46" fill="#fff6c8"/>
-      <path d="M0 160 Q120 120 230 150 Q300 132 360 160Z" fill="#3d8f8a"/>
-      <path d="M470 160 Q560 128 660 146 Q720 138 760 160Z" fill="#3d8f8a"/>
-      <rect y="158" width="760" height="182" fill="url(#sea)"/>
-      <g stroke="#ffffff" stroke-opacity=".5" stroke-width="3" stroke-linecap="round">
-        <path d="M380 160 L120 340"/><path d="M380 160 L640 340"/>
-        <path d="M60 200 h60"/><path d="M620 215 h70"/><path d="M200 270 h80"/><path d="M500 300 h90"/>
-      </g>
-      <g class="sail">
-        <path d="M312 300 Q380 318 448 300 L430 324 Q380 334 330 324Z" fill="#b86a32"/>
-        <path d="M380 180 L380 300" stroke="#6b4226" stroke-width="5"/>
-        <path d="M378 184 L378 292 L300 292 Q322 236 378 184Z" fill="#fff4e0"/>
-        <path d="M335 250 h43 M322 270 h56" stroke="#ff8f7a" stroke-width="10"/>
-        <path d="M382 186 L420 196 L382 204Z" fill="#ff6f7d"/>
-      </g>
-    </svg>
-    <div class="game-body">
-      <div class="game-top">
-        <h2 id="surfnana-title">SurfNana</h2>
-        <span class="status">In testing</span>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="zmark" viewBox="0 0 86 76">
+      <polygon points="78,38 22,20 22,34 78,52" fill="#0F74EE"/>
+      <polygon points="12,59 78,38 78,52 12,73" fill="#C2DBFA"/>
+      <polygon points="22,20 58,8.5 58,3 74,10.5 58,27 58,22.5 22,34" fill="#C2DBFA"/>
+    </symbol>
+  </defs>
+</svg>
+
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="#top" aria-label="Zetato Studios home"><svg class="mark" aria-hidden="true"><use href="#zmark"/></svg><span class="w">ZETATO <span>STUDIOS</span></span></a>
+    <a class="back" href="https://zetatobi.com">Zetato consulting</a>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="pixels" id="pixels" aria-hidden="true"></div>
+    <div class="wrap hero-grid">
+      <div>
+        <h1>Apps, training and interactive products.</h1>
+        <p class="lede">Zetato Studios is the product arm of Zetato. We build practical apps and tools, training on the Microsoft data platform, and interactive work including games. Early releases are open for testing.</p>
+        <div class="actions">
+          <a class="btn btn-amber" href="#works">Browse releases</a>
+          <a class="btn btn-ghost" href="#test">Join early access</a>
+        </div>
       </div>
-      <p>Sail an endless island sea. Steer, hop and duck past sharks, rocks and nets, grab pearls, and stay ahead of the megalodon.</p>
-      <a class="play" href="surfnana/">Play SurfNana</a>
+      <div id="featured"></div>
     </div>
-  </article>
-
-  <section class="install" aria-labelledby="install-title">
-    <h3 id="install-title">Put it on your home screen</h3>
-    <ul>
-      <li><strong>iPhone:</strong> open the game in Safari, tap Share, then Add to Home Screen.</li>
-      <li><strong>Android:</strong> open the game in Chrome, then tap Install app.</li>
-    </ul>
   </section>
 
-  <footer>Made by Zetato BI in British Columbia. More games on the way.</footer>
-</div>
+  <div class="bar">
+    <div class="wrap">
+      <div class="filters" role="group" aria-label="Filter by type" id="filters"></div>
+      <span class="count" id="count" aria-live="polite"></span>
+    </div>
+  </div>
+
+  <section class="works" id="works" aria-label="All releases">
+    <div class="wrap"><div class="grid" id="grid"></div></div>
+  </section>
+
+  <section class="test" id="test" aria-labelledby="test-title">
+    <div class="wrap test-grid">
+      <div>
+        <h2 id="test-title">Early access.</h2>
+        <p>Early releases improve fastest with direct user feedback. Testers get first access and help determine what we publish to the app stores.</p>
+        <a class="btn btn-amber" href="mailto:Hello@ZetatoBI.com?subject=Zetato%20Studios%20early%20access">Request early access</a>
+      </div>
+      <ol>
+        <li><div><b>Choose a release marked Available or Beta</b><span>Runs in the browser on phone or desktop.</span></div></li>
+        <li><div><b>Use it as you normally would</b><span>No account, no ads and nothing to install.</span></div></li>
+        <li><div><b>Send your feedback</b><span>Short notes are welcome. Every submission is reviewed.</span></div></li>
+      </ol>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><svg class="mark" style="width:30px;height:27px" aria-hidden="true"><use href="#zmark"/></svg>&copy; <span id="yr">2026</span> Zetato Business Intelligence Inc. Zetato Studios is a trade name of Zetato Business Intelligence Inc.</span>
+    <nav aria-label="Footer"><a href="https://zetatobi.com">zetatobi.com</a><a href="mailto:Hello@ZetatoBI.com">Hello@ZetatoBI.com</a></nav>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   EDIT YOUR WORK HERE. One entry per item, newest first.
+   type:   "apps" | "training" | "games" | "art"
+   status: "playable" (Available) | "beta" | "soon" | "live" (Published)
+   link:   folder in this repo (e.g. "games/my-game/") or a full URL. Leave "" if not ready.
+   image:  optional thumbnail path (e.g. "assets/my-game.png"). Leave "" for auto artwork.
+   featured: true on ONE item to show it in the hero. wide: true to make a card double width.
+   ============================================================ */
+var WORKS = [
+  { type: "apps", title: "First app", blurb: "A practical tool for everyday work. Replace with your first app.", status: "soon", link: "", image: "", date: "2026", featured: true, wide: true },
+  { type: "training", title: "Microsoft Fabric fundamentals", blurb: "A structured introduction to Fabric: lakehouses, pipelines and semantic models.", status: "soon", link: "", image: "", date: "2026" },
+  { type: "games", title: "SailorNana", blurb: "Sail an endless island sea. Dodge sharks, rocks and nets, grab pearls, and stay ahead of the megalodon. Plays on iPhone and Android.", status: "beta", link: "games/sailornana/", image: "games/sailornana/cover.png", date: "2026" },
+  { type: "training", title: "Power BI modelling video series", blurb: "Short videos on building models that scale.", status: "soon", link: "", image: "", date: "2026" },
+  { type: "art", title: "Design work", blurb: "Illustration and visual design from the studio.", status: "soon", link: "", image: "", date: "2026" }
+];
+/* ============================================================ */
+
+(function () {
+  var LABEL = { apps: "App", training: "Training", games: "Game", art: "Design" };
+  var TABS = [["all", "All"], ["apps", "Apps"], ["training", "Training"], ["games", "Games"], ["art", "Design"]];
+  var STATUS = { playable: "Available", beta: "Beta", soon: "Coming soon", live: "Published" };
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  function hash(s) { var h = 2166136261; for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+  function rng(seed) { return function () { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; }; }
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+
+  /* Auto artwork per type, seeded by title so it never changes */
+  function art(w) {
+    var r = rng(hash(w.title)), out = '<svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="400" height="300" fill="#10294D"/>';
+    if (w.type === 'games') {
+      var cols = ['#F5B544', '#1F7AE0', '#8EC1FF', '#C2DBFA'];
+      for (var x = 0; x < 20; x++) for (var y = 0; y < 15; y++) { var v = r(); if (v < 0.22) out += '<rect x="' + (x * 20 + 2) + '" y="' + (y * 20 + 2) + '" width="16" height="16" rx="3" fill="' + cols[Math.floor(r() * 4)] + '" opacity="' + (0.25 + r() * 0.75).toFixed(2) + '"/>'; }
+      out += '<rect x="170" y="110" width="60" height="60" rx="10" fill="#F5B544"/><rect x="186" y="126" width="10" height="10" rx="2" fill="#031C3A"/><rect x="206" y="126" width="10" height="10" rx="2" fill="#031C3A"/>';
+    } else if (w.type === 'art') {
+      var pal = ['#FF8FA3', '#F5B544', '#8EC1FF', '#1F7AE0', '#C2DBFA'];
+      for (var i = 0; i < 7; i++) out += '<circle cx="' + (r() * 400).toFixed(0) + '" cy="' + (r() * 300).toFixed(0) + '" r="' + (40 + r() * 110).toFixed(0) + '" fill="' + pal[i % 5] + '" opacity="' + (0.25 + r() * 0.5).toFixed(2) + '"/>';
+      out += '<rect width="400" height="300" fill="#031C3A" opacity=".18"/>';
+    } else if (w.type === 'training') {
+      for (var k = 0; k < 9; k++) { var y2 = 30 + k * 30, amp = 10 + r() * 30; out += '<path d="M0 ' + y2 + ' C100 ' + (y2 - amp) + ' 300 ' + (y2 + amp) + ' 400 ' + y2 + '" fill="none" stroke="#8EC1FF" stroke-opacity="' + (0.12 + k * 0.05).toFixed(2) + '" stroke-width="2"/>'; }
+      out += '<circle cx="200" cy="150" r="40" fill="#fff"/><path d="M190 132 L218 150 L190 168 Z" fill="#031C3A"/>';
+    } else if (w.type === 'apps') {
+      out += '<rect x="130" y="40" width="140" height="240" rx="22" fill="#031C3A" stroke="#8EC1FF" stroke-opacity=".5" stroke-width="2"/>';
+      out += '<rect x="146" y="64" width="108" height="46" rx="10" fill="#1F7AE0"/>';
+      for (var a2 = 0; a2 < 4; a2++) out += '<rect x="146" y="' + (122 + a2 * 34) + '" width="' + (60 + r() * 48).toFixed(0) + '" height="22" rx="6" fill="#C2DBFA" opacity="' + (0.2 + a2 * 0.12).toFixed(2) + '"/>';
+      out += '<circle cx="80" cy="80" r="30" fill="#6FE3B5" opacity=".25"/><circle cx="330" cy="230" r="44" fill="#1F7AE0" opacity=".3"/>';
+    } else {
+      for (var j = 0; j < 8; j++) out += '<rect x="60" y="' + (58 + j * 24) + '" width="' + (120 + r() * 200).toFixed(0) + '" height="8" rx="4" fill="#C2DBFA" opacity="' + (j === 0 ? 0.9 : 0.25).toFixed(2) + '"/>';
+      out += '<circle cx="320" cy="80" r="26" fill="none" stroke="#6FE3B5" stroke-width="4"/><path d="M309 80 L317 88 L332 72" fill="none" stroke="#6FE3B5" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>';
+    }
+    return out + '</svg>';
+  }
+  function thumb(w) { return w.image ? '<img src="' + esc(w.image) + '" alt="" loading="lazy">' : art(w); }
+  function isExternal(l) { return /^https?:/.test(l); }
+  function tagOpen(w, cls) {
+    if (!w.link) return '<div class="' + cls + '">';
+    return '<a class="' + cls + '" href="' + esc(w.link) + '"' + (isExternal(w.link) ? ' target="_blank" rel="noopener"' : '') + '>';
+  }
+  function tagClose(w) { return w.link ? '</a>' : '</div>'; }
+  function action(w) { if (!w.link) return 'Not yet available'; return w.type === 'games' ? 'Play' : w.type === 'training' ? 'Start' : w.type === 'apps' ? 'Open' : 'View'; }
+
+  var feat = WORKS.filter(function (w) { return w.featured; })[0];
+  if (feat) {
+    document.getElementById('featured').innerHTML = tagOpen(feat, 'featured') +
+      '<div class="thumb">' + thumb(feat) + '<span class="status ' + feat.status + '">' + STATUS[feat.status] + '</span></div>' +
+      '<div class="body"><span class="kicker">Featured ' + LABEL[feat.type].toLowerCase() + '</span><h2>' + esc(feat.title) + '</h2><p>' + esc(feat.blurb) + '</p></div>' + tagClose(feat);
+  }
+
+  var current = 'all';
+  var fbox = document.getElementById('filters');
+  fbox.innerHTML = TABS.map(function (t) {
+    var n = t[0] === 'all' ? WORKS.length : WORKS.filter(function (w) { return w.type === t[0]; }).length;
+    return '<button class="chip" data-f="' + t[0] + '" aria-pressed="' + (t[0] === 'all') + '">' + t[1] + '<b>' + n + '</b></button>';
+  }).join('');
+  fbox.addEventListener('click', function (e) {
+    var b = e.target.closest('.chip'); if (!b) return;
+    current = b.dataset.f;
+    fbox.querySelectorAll('.chip').forEach(function (c) { c.setAttribute('aria-pressed', c === b); });
+    render();
+  });
+
+  function render() {
+    var list = WORKS.filter(function (w) { return current === 'all' || w.type === current; });
+    var g = document.getElementById('grid');
+    if (!list.length) { g.innerHTML = '<div class="empty">No releases in this category yet. Request early access to be notified first.</div>'; }
+    else g.innerHTML = list.map(function (w) {
+      return tagOpen(w, 'card' + (w.wide && current === 'all' ? ' wide' : '')) +
+        '<div class="thumb">' + thumb(w) + '<span class="status ' + w.status + '">' + STATUS[w.status] + '</span></div>' +
+        '<div class="body"><span class="type ' + w.type + '">' + LABEL[w.type] + '</span><h3>' + esc(w.title) + '</h3><p>' + esc(w.blurb) + '</p>' +
+        '<div class="meta"><span>' + esc(w.date || '') + '</span><span class="go">' + action(w) + '</span></div></div>' + tagClose(w);
+    }).join('');
+    document.getElementById('count').textContent = list.length + (list.length === 1 ? ' item' : ' items');
+  }
+  render();
+
+  /* Ambient pixels in the hero */
+  var px = document.getElementById('pixels'), r = rng(7);
+  for (var i = 0; i < 26; i++) {
+    var d = document.createElement('i');
+    d.style.left = (r() * 100).toFixed(1) + '%'; d.style.top = (r() * 100).toFixed(1) + '%';
+    d.style.animationDelay = (r() * 6).toFixed(2) + 's';
+    if (r() < 0.25) d.style.background = '#F5B544';
+    px.appendChild(d);
+  }
+})();
+</script>
 </body>
 </html>
