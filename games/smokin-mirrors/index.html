@@ -1,0 +1,1587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Smokin' Mirrors</title>
+<meta name="description" content="A puzzle about bending light. 165 levels, no ads, no timers unless you want them. By Zetato Studios.">
+<meta name="theme-color" content="#16121E">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Smokin' Mirrors">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gabarito:wght@500;700&family=Karla:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F1EDF7; --surface:#FFFFFF; --sunk:#F3F0F9;
+  --ink:#2D2740; --muted:#5E5675; --line:#E1DAEE;
+  --amber:#F3B44E; --mint:#4FC7AB; --lilac:#A67CD8;
+  --slate:#4A4360; --ghost:#B9B2CC; --danger:#E8695F;
+  --onAccent:#2A1B3D;
+  --lg1:#57BE8A; --lg2:#F3B44E; --lg3:#E8695F; --lg4:#9B6BE0; --lg5:#453C63;
+  --on1:#0E3A2A; --on2:#3A2606; --on3:#3D100C; --on4:#241046; --on5:#FFFFFF;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#16121E; --surface:#211B2D; --sunk:#2A2338;
+    --ink:#EFE9F7; --muted:#A79BBF; --line:#362E47;
+    --slate:#D6CCE8; --ghost:#5C5175; --lg5:#8E7FC4; --on5:#1A1428;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#16121E; --surface:#211B2D; --sunk:#2A2338;
+  --ink:#EFE9F7; --muted:#A79BBF; --line:#362E47;
+  --slate:#D6CCE8; --ghost:#5C5175; --lg5:#8E7FC4; --on5:#1A1428;
+}
+*,*::before,*::after{box-sizing:inherit}
+html,body{height:100%}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:Karla,system-ui,-apple-system,sans-serif;
+  -webkit-font-smoothing:antialiased;overflow:hidden;
+  touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+}
+#app{height:100%;max-width:460px;margin:0 auto;position:relative}
+.screen{position:absolute;inset:0;display:none;flex-direction:column;padding:18px;gap:12px;overflow:hidden}
+.screen.on{display:flex;animation:fadeUp .22s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.scroll{overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1 1 auto;display:flex;flex-direction:column;gap:10px;padding-bottom:10px}
+h1,h2,h3,.g{font-family:Gabarito,system-ui,sans-serif;font-weight:700;letter-spacing:-0.02em;margin:0}
+.muted{color:var(--muted)}
+.gem{vertical-align:-2px;margin:0 1px}
+.btn{
+  font-family:Gabarito,system-ui,sans-serif;font-weight:700;font-size:17px;
+  border:none;border-radius:18px;min-height:54px;padding:0 20px;
+  background:var(--lilac);color:var(--onAccent);cursor:pointer;width:100%;
+  position:relative;overflow:hidden;
+}
+.btn.quiet{background:var(--surface);color:var(--ink);font-weight:500}
+.btn.sunk{background:var(--sunk);color:var(--ink);font-weight:500}
+.btn:active{transform:scale(.985)}
+.btn .fill{position:absolute;left:0;top:0;bottom:0;width:0;background:rgba(255,255,255,.28);pointer-events:none}
+.btn .fill.run{animation:fillUp 2.6s linear forwards}
+@keyframes fillUp{to{width:100%}}
+.btn:focus-visible,.icon:focus-visible,.tile:focus-visible,.sw:focus-visible,.lg:focus-visible,.seg button:focus-visible,.act:focus-visible{outline:2px solid var(--lilac);outline-offset:3px}
+.icon{
+  width:42px;height:42px;flex:0 0 42px;border:none;border-radius:14px;
+  background:var(--surface);color:var(--muted);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;
+}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.row{display:flex;gap:10px}
+
+#start{justify-content:center;gap:16px}
+.title{font-size:clamp(34px,10vw,44px);line-height:1}
+.beamline{stroke-dasharray:300;stroke-dashoffset:300;animation:trace 2.6s ease-in-out infinite}
+@keyframes trace{0%{stroke-dashoffset:300}45%{stroke-dashoffset:0}80%{stroke-dashoffset:0;opacity:1}100%{stroke-dashoffset:0;opacity:.25}}
+.ringPulse{animation:ringP 2.6s ease-in-out infinite}
+@keyframes ringP{0%,40%{opacity:.3}55%{opacity:1;transform:scale(1.12)}100%{opacity:.6;transform:scale(1)}}
+
+.card{background:var(--surface);border-radius:20px;padding:14px 16px;display:flex;align-items:center;gap:14px;border:none;width:100%;text-align:left;color:var(--ink);cursor:pointer}
+.card .dot{width:42px;height:42px;flex:0 0 42px;border-radius:14px;display:flex;align-items:center;justify-content:center}
+.card h3{font-size:17px}
+.card p{margin:2px 0 0;font-size:13px;color:var(--muted)}
+
+.seg{display:flex;background:var(--sunk);border-radius:15px;padding:4px;gap:4px}
+.seg button{
+  flex:1 1 0;min-height:42px;border:none;border-radius:11px;background:none;
+  font-family:Gabarito,sans-serif;font-weight:500;font-size:14px;color:var(--muted);cursor:pointer;
+}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);font-weight:700}
+
+.lg{border:none;border-radius:20px;padding:14px 16px;cursor:pointer;text-align:left;display:flex;align-items:center;gap:13px;background:var(--surface);color:var(--ink);width:100%}
+.lg .dot{width:42px;height:42px;flex:0 0 42px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-family:Gabarito,sans-serif;font-weight:700;font-size:16px}
+.lg h3{font-size:18px}
+.lg p{margin:2px 0 0;font-size:13px;color:var(--muted)}
+.track{height:6px;border-radius:3px;background:var(--line);margin-top:7px;overflow:hidden}
+.track>i{display:block;height:100%;border-radius:3px}
+
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+.tile{border:none;background:var(--surface);border-radius:17px;aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;color:var(--ink);font-family:Gabarito,sans-serif;padding:0}
+.tile b{font-size:20px;font-weight:700;line-height:1}
+.tile .st{display:flex;gap:3px}
+.tile .st i{width:6px;height:6px;border-radius:3px;background:currentColor;opacity:.22}
+.tile .st i.on{opacity:1}
+.tile[disabled]{cursor:default;opacity:.5}
+
+.hud{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.lab{font-size:11px;color:var(--muted)}
+.val{font-family:Gabarito,sans-serif;font-weight:700;font-size:20px;line-height:1.1}
+.val.warn{color:var(--danger)}
+.chip{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:5px 11px;font-family:Gabarito,sans-serif;font-weight:700;font-size:13px}
+.gems{display:inline-flex;align-items:center;gap:4px;font-family:Gabarito,sans-serif;font-weight:700;font-size:14px;color:var(--muted)}
+.gems.full{color:var(--mint)}
+.flame{display:inline-flex;align-items:center;gap:4px;font-family:Gabarito,sans-serif;font-weight:700;font-size:13px;color:var(--amber)}
+.play{flex:1 1 auto;background:var(--surface);border-radius:24px;position:relative;overflow:hidden;min-height:170px}
+#cvs{display:block;width:100%;height:100%}
+.hint{text-align:center;font-size:13px;color:var(--muted);min-height:16px}
+.acts{display:flex;gap:8px}
+.act{flex:1 1 0;min-height:46px;border:none;border-radius:15px;background:var(--surface);color:var(--muted);font-family:Gabarito,sans-serif;font-weight:500;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+.act:active{transform:scale(.98)}
+
+.pop{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:0}
+.pop b{font-family:Gabarito,sans-serif;font-weight:700;font-size:clamp(34px,11vw,52px);letter-spacing:-0.03em}
+.pop.go{animation:popIn 1.15s cubic-bezier(.2,.9,.3,1) forwards}
+@keyframes popIn{0%{opacity:0;transform:scale(.6) translateY(10px)}16%{opacity:1;transform:scale(1.08) translateY(0)}28%{transform:scale(1)}72%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.04) translateY(-14px)}}
+
+.sheet{position:absolute;left:12px;right:12px;bottom:12px;background:var(--surface);border-radius:24px;padding:20px;display:none;flex-direction:column;gap:14px;box-shadow:0 12px 40px rgba(45,39,64,.22)}
+.sheet.on{display:flex;animation:sheetUp .26s cubic-bezier(.2,.9,.3,1) both}
+@keyframes sheetUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+.stars{display:flex;gap:8px;margin-top:9px}
+.stars i{width:32px;height:8px;border-radius:4px;background:var(--line)}
+.stars i.on{background:var(--mint);animation:starIn .3s ease both}
+.stars i.on:nth-child(2){animation-delay:.1s}
+.stars i.on:nth-child(3){animation-delay:.2s}
+@keyframes starIn{from{opacity:0;transform:scaleX(.3)}to{opacity:1;transform:none}}
+.stats{display:flex;gap:9px}
+.stat{flex:1 1 0;background:var(--sunk);border-radius:15px;padding:10px 12px}
+.stat b{display:block;font-family:Gabarito,sans-serif;font-weight:700;font-size:21px;line-height:1.2}
+
+#party{align-items:center;text-align:center;justify-content:center;gap:16px}
+.confetti{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.confetti i{position:absolute;top:-24px;width:9px;height:14px;border-radius:2px;opacity:0;animation:fall linear forwards}
+@keyframes fall{0%{opacity:0;transform:translateY(0) rotate(0)}8%{opacity:1}85%{opacity:1}100%{opacity:0;transform:translateY(105vh) rotate(760deg)}}
+.medal{width:124px;height:124px;border-radius:42px;display:flex;align-items:center;justify-content:center;animation:rise .7s cubic-bezier(.2,.9,.3,1) both}
+@keyframes rise{0%{opacity:0;transform:scale(.6) translateY(18px)}100%{opacity:1;transform:none}}
+.ptitle{font-size:clamp(26px,8vw,36px);line-height:1.1}
+.pstats{display:flex;gap:9px;width:100%;max-width:330px}
+.pstats>div{flex:1 1 0;background:var(--surface);border-radius:16px;padding:11px 12px}
+.pstats b{display:block;font-family:Gabarito,sans-serif;font-weight:700;font-size:22px;line-height:1.2}
+
+.opt{display:flex;align-items:center;justify-content:space-between;gap:14px;background:var(--surface);border-radius:17px;padding:13px 16px;min-height:58px}
+.opt p{margin:0;font-size:15px}
+.opt small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+.optCol{background:var(--surface);border-radius:17px;padding:13px 16px;display:flex;flex-direction:column;gap:10px}
+.sw{width:54px;height:31px;flex:0 0 54px;border-radius:16px;border:none;background:var(--line);position:relative;cursor:pointer;padding:0}
+.sw::after{content:"";position:absolute;top:4px;left:4px;width:23px;height:23px;border-radius:12px;background:var(--surface);transition:transform .16s ease}
+.sw[aria-checked="true"]{background:var(--mint)}
+.sw[aria-checked="true"]::after{transform:translateX(23px)}
+.bigstat{background:var(--surface);border-radius:18px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.bigstat b{font-family:Gabarito,sans-serif;font-weight:700;font-size:23px}
+.spacer{flex:1 1 auto}
+@media (prefers-reduced-motion: reduce){
+  .sw::after{transition:none}
+  .screen.on,.sheet.on,.stars i.on,.medal{animation:none}
+  .beamline,.ringPulse{animation:none;stroke-dashoffset:0}
+  .btn .fill.run{animation:none}
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <section class="screen on" id="start">
+    <svg width="150" height="100" viewBox="0 0 150 104" aria-hidden="true" style="align-self:center">
+      <rect x="0" y="62" width="30" height="30" rx="9" fill="var(--amber)"></rect>
+      <polyline class="beamline" points="30,77 62,77 62,26 118,26 118,62" fill="none" stroke="var(--amber)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></polyline>
+      <line x1="52" y1="87" x2="72" y2="67" stroke="var(--slate)" stroke-width="7" stroke-linecap="round"></line>
+      <line x1="52" y1="36" x2="72" y2="16" stroke="var(--slate)" stroke-width="7" stroke-linecap="round"></line>
+      <line x1="108" y1="16" x2="128" y2="36" stroke="var(--slate)" stroke-width="7" stroke-linecap="round"></line>
+      <circle class="ringPulse" cx="118" cy="77" r="13" fill="none" stroke="var(--mint)" stroke-width="6" style="transform-origin:118px 77px"></circle>
+    </svg>
+    <div style="text-align:center">
+      <h1 class="title">Smokin' Mirrors</h1>
+      <p class="muted" id="startSub" style="margin:8px 0 0;font-size:15px">Bend the light. Light the ring.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:9px">
+      <button class="btn" id="bPlay">Continue</button>
+      <button class="card" id="bDaily">
+        <div class="dot" id="dailyDot" style="background:var(--amber);color:#3A2606">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>
+        </div>
+        <div style="flex:1 1 auto"><h3>Daily puzzle</h3><p id="dailyNote">A fresh board every day</p></div>
+      </button>
+      <button class="btn quiet" id="bLeagues">Leagues</button>
+      <div class="row">
+        <button class="btn quiet" id="bStats" style="flex:1 1 0">Stats</button>
+        <button class="btn quiet" id="bSettings" style="flex:1 1 0">Settings</button>
+      </div>
+    </div>
+    <p class="muted" style="margin:2px 0 0;text-align:center;font-size:12px;letter-spacing:.06em">ZETATO STUDIOS</p>
+  </section>
+
+  <section class="screen" id="leagues">
+    <div class="topbar">
+      <h2 style="font-size:25px">Leagues</h2>
+      <button class="icon" id="bLgBack" aria-label="Back to menu">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="seg" id="segA" role="group" aria-label="Play mode">
+      <button type="button" data-m="relaxed" aria-pressed="true">Relaxed</button>
+      <button type="button" data-m="challenge" aria-pressed="false">Challenge</button>
+    </div>
+    <p class="muted" id="modeNote" style="margin:0;font-size:13px"></p>
+    <div class="scroll" id="lgList"></div>
+  </section>
+
+  <section class="screen" id="levels">
+    <div class="topbar">
+      <div>
+        <h2 style="font-size:25px" id="lvTitle">Green</h2>
+        <p class="muted" id="lvSub" style="margin:2px 0 0;font-size:13px"></p>
+      </div>
+      <button class="icon" id="bLvBack" aria-label="Back to leagues">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+      </button>
+    </div>
+    <div class="seg" id="segB" role="group" aria-label="Play mode">
+      <button type="button" data-m="relaxed" aria-pressed="true">Relaxed</button>
+      <button type="button" data-m="challenge" aria-pressed="false">Challenge</button>
+    </div>
+    <div class="scroll">
+      <div class="grid" id="tiles"></div>
+      <p class="muted" id="lvLegend" style="margin:2px 0 0;font-size:12px"></p>
+    </div>
+  </section>
+
+  <section class="screen" id="game">
+    <div class="hud">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="chip" id="hChip">Green 1</span>
+        <span class="gems" id="hGems" style="display:none"></span>
+        <span class="flame" id="hStreak" style="display:none"></span>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div id="hTimeWrap" style="display:none;text-align:right">
+          <div class="lab">Time</div>
+          <div class="val" id="hTime">0:00</div>
+        </div>
+        <div style="text-align:right">
+          <div class="lab" id="hTurnLab">Turns · par 4</div>
+          <div class="val" id="hTurns">0</div>
+        </div>
+      </div>
+    </div>
+    <div class="play" id="play">
+      <canvas id="cvs"></canvas>
+      <div class="pop" id="pop"><b></b></div>
+      <div class="sheet" id="sheet">
+        <div>
+          <h3 id="sTitle" style="font-size:23px">Ring lit</h3>
+          <p class="muted" id="sBody" style="margin:5px 0 0;font-size:14px"></p>
+          <div class="stars" id="sStars"><i></i><i></i><i></i></div>
+        </div>
+        <div class="stats">
+          <div class="stat"><div class="lab">Turns</div><b id="sT">0</b></div>
+          <div class="stat"><div class="lab">Par</div><b id="sP">0</b></div>
+          <div class="stat"><div class="lab">Best</div><b id="sB">—</b></div>
+        </div>
+        <div class="row">
+          <button class="btn sunk" id="bAgain" style="flex:1 1 0">Replay</button>
+          <button class="btn" id="bNext" style="flex:1.4 1 0"><span id="nextFill" class="fill"></span><span style="position:relative" id="nextLbl">Next level</span></button>
+        </div>
+      </div>
+    </div>
+    <div class="hint" id="hint">Tap a mirror to turn it</div>
+    <div class="acts">
+      <button class="act" id="bHint">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/></svg>
+        <span id="hintLbl">Hint</span>
+      </button>
+      <button class="act" id="bReplay">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
+        Restart
+      </button>
+      <button class="act" id="bQuit">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        Leave
+      </button>
+    </div>
+  </section>
+
+  <section class="screen" id="party">
+    <div class="confetti" id="conf" aria-hidden="true"></div>
+    <div class="spacer"></div>
+    <div class="medal" id="pMedal"></div>
+    <div>
+      <h2 class="ptitle" id="pTitle">Green league mastered</h2>
+      <p class="muted" id="pSub" style="margin:9px 0 0;font-size:15px"></p>
+    </div>
+    <div class="pstats">
+      <div><div class="lab">Levels</div><b id="pLv">21</b></div>
+      <div><div class="lab">Marks</div><b id="pMk">0/63</b></div>
+      <div><div class="lab">In par</div><b id="pPar">0</b></div>
+    </div>
+    <div class="spacer"></div>
+    <div style="width:100%;display:flex;flex-direction:column;gap:9px">
+      <button class="btn" id="bPartyNext">Next league</button>
+      <button class="btn quiet" id="bPartyDone">Back to leagues</button>
+    </div>
+  </section>
+
+  <section class="screen" id="stats">
+    <div class="topbar">
+      <h2 style="font-size:25px">Stats</h2>
+      <button class="icon" id="bStatsBack" aria-label="Back to menu">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="scroll" id="statList"></div>
+  </section>
+
+  <section class="screen" id="settings">
+    <div class="topbar">
+      <h2 style="font-size:25px">Settings</h2>
+      <button class="icon" id="bSetBack" aria-label="Back to menu">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="scroll">
+      <div class="optCol">
+        <div><p style="font-family:Gabarito,sans-serif;font-weight:700">Music</p><small>Written into the app, no downloads</small></div>
+        <div class="seg" id="segMusic" role="group" aria-label="Music">
+          <button type="button" data-t="off" aria-pressed="true">Off</button>
+          <button type="button" data-t="calm" aria-pressed="false">Calm</button>
+          <button type="button" data-t="focus" aria-pressed="false">Focus</button>
+          <button type="button" data-t="chip" aria-pressed="false">Chip</button>
+        </div>
+      </div>
+      <div class="optCol">
+        <div><p style="font-family:Gabarito,sans-serif;font-weight:700">Theme</p></div>
+        <div class="seg" id="segTheme" role="group" aria-label="Theme">
+          <button type="button" data-h="auto" aria-pressed="true">Auto</button>
+          <button type="button" data-h="light" aria-pressed="false">Light</button>
+          <button type="button" data-h="dark" aria-pressed="false">Dark</button>
+        </div>
+      </div>
+      <div class="opt">
+        <div><p>Sound effects</p><small>Mirror turns, crystals, fanfare</small></div>
+        <button class="sw" id="swSound" role="switch" aria-checked="true" aria-label="Sound effects"></button>
+      </div>
+      <div class="opt">
+        <div><p>Vibration</p><small>A short buzz when the ring lights</small></div>
+        <button class="sw" id="swBuzz" role="switch" aria-checked="true" aria-label="Vibration"></button>
+      </div>
+      <div class="opt">
+        <div><p>Straight into the next level</p><small>Auto-advances after a win unless you tap</small></div>
+        <button class="sw" id="swAuto" role="switch" aria-checked="true" aria-label="Auto advance"></button>
+      </div>
+      <div class="opt">
+        <div><p>Show the beam path</p><small>Draws where the light goes when it misses</small></div>
+        <button class="sw" id="swTrail" role="switch" aria-checked="true" aria-label="Show the beam path"></button>
+      </div>
+      <div class="opt">
+        <div><p>Unlock every level</p><small>Skip straight to any level in any league</small></div>
+        <button class="sw" id="swAll" role="switch" aria-checked="false" aria-label="Unlock every level"></button>
+      </div>
+      <div class="spacer"></div>
+      <button class="btn quiet" id="bReset">Reset progress</button>
+      <p class="muted" style="margin:0;text-align:center;font-size:12px">Progress is stored on this device only.</p>
+      <div class="optCol" style="align-items:center;text-align:center;gap:4px">
+        <p style="font-family:Gabarito,sans-serif;font-weight:700;margin:0">Smokin' Mirrors</p>
+        <small class="muted" style="font-size:12px">Version 1.0 · Zetato Studios</small>
+        <small class="muted" style="font-size:12px">No ads, no tracking, no network calls.</small>
+      </div>
+    </div>
+  </section>
+
+</div>
+<script>(function(){
+  "use strict";
+
+  var PER = 33;
+  var LG = [
+    { name:"Green",  v:"--lg1", on:"--on1",
+      n:[5,6], turns:[2,6],   dec:[0,5],  cry:[0,2], lock:[0,0], f:[0.75,0.85],
+      slack:[8,6], tBase:[20,22], tPar:[10,9] },
+    { name:"Yellow", v:"--lg2", on:"--on2",
+      n:[6,7], turns:[5,9],   dec:[3,8],  cry:[1,3], lock:[0,1], f:[0.85,0.90],
+      slack:[7,5], tBase:[20,22], tPar:[9,8] },
+    { name:"Red",    v:"--lg3", on:"--on3",
+      n:[7,8], turns:[8,12],  dec:[5,10], cry:[2,4], lock:[1,3], f:[0.90,1.00],
+      slack:[6,5], tBase:[22,24], tPar:[9,8] },
+    { name:"Violet", v:"--lg4", on:"--on4",
+      n:[8,8], turns:[11,17], dec:[8,13], cry:[3,5], lock:[2,5], f:[1.00,1.00],
+      slack:[5,4], tBase:[24,28], tPar:[8,8] },
+    { name:"Black",  v:"--lg5", on:"--on5",
+      n:[8,9], turns:[16,23], dec:[12,17],cry:[4,6], lock:[4,8], f:[1.00,1.00],
+      slack:[4,3], tBase:[28,32], tPar:[9,9] }
+  ];
+  var BLURB = [
+    "Small boards. Learn how a mirror bends the light.",
+    "Crystals appear — the beam must pass through every one.",
+    "Bigger boards, and some mirrors are bolted down.",
+    "Dense boards, several fixed mirrors, nothing to spare.",
+    "Nine-wide boards, forty mirrors, no mercy."
+  ];
+  var DAILY = { n:7, turns:9, dec:6, cry:2, lock:1, par:8, slack:5, tBase:24, tPar:9 };
+
+  var MEDAL = ["", "Bronze", "Silver", "Gold"];
+  var MEDCOL = ["", "#C4855A", "#AFB4C2", "#E2B23A"];
+  var MEDINK = ["", "#2A1408", "#1D2029", "#3A2606"];
+  var RANKS = [
+    [0,   "Newcomer"], [40,  "Apprentice"], [120, "Mirrorwright"],
+    [250, "Beamsmith"], [420, "Lightbender"], [650, "Master of Smoke"]
+  ];
+
+  var DIRS = [{dx:1,dy:0},{dx:-1,dy:0},{dx:0,dy:-1},{dx:0,dy:1}];
+  var SLASH = [2,3,0,1], BACK = [3,2,1,0];
+  var GEM = '<svg class="gem" width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="2" transform="rotate(45 12 12)" fill="currentColor"></rect></svg>';
+  var HINT_COST = 2;
+
+  var save = { best:{}, party:{}, streak:0, bestStreak:0, daily:{ done:{}, streak:0, last:"" } };
+  var opts = { sound:true, buzz:true, trail:true, all:false, auto:true, mode:"relaxed", music:"calm", theme:"dark" };
+
+  function load(){
+    try{
+      var a = localStorage.getItem("sm.save2");
+      if(a){ var p = JSON.parse(a); if(p){
+        save.best = p.best || {}; save.party = p.party || {};
+        save.streak = p.streak || 0; save.bestStreak = p.bestStreak || 0;
+        save.daily = p.daily || { done:{}, streak:0, last:"" };
+        if(!save.daily.done) save.daily.done = {};
+      } }
+      var b = localStorage.getItem("sm.opts");
+      if(b){ var o = JSON.parse(b); if(o){
+        opts.sound = o.sound !== false; opts.buzz = o.buzz !== false;
+        opts.trail = o.trail !== false; opts.all = o.all === true;
+        opts.auto = o.auto !== false;
+        opts.mode = o.mode === "challenge" ? "challenge" : "relaxed";
+        opts.music = ["calm","focus","chip","off"].indexOf(o.music) > -1 ? o.music : "calm";
+        opts.theme = ["light","dark","auto"].indexOf(o.theme) > -1 ? o.theme : "dark";
+      } }
+    }catch(e){}
+  }
+  function store(){ try{ localStorage.setItem("sm.save2", JSON.stringify(save)); }catch(e){} }
+  function storeOpts(){ try{ localStorage.setItem("sm.opts", JSON.stringify(opts)); }catch(e){} }
+
+  function rec(L,i){ return save.best[L + "-" + i] || null; }
+  function cleared(L,i){ var r = rec(L,i); return !!(r && (r.r || r.c)); }
+  function clearedCount(L){ var c = 0; for(var i=0;i<PER;i++) if(cleared(L,i)) c++; return c; }
+  function openCount(L){
+    if(opts.all) return PER;
+    var c = 0; while(c < PER && cleared(L,c)) c++;
+    return Math.min(PER, c + 1);
+  }
+  function starsOf(L,i,s){ var r = rec(L,i); return (r && r[s]) ? r[s].s : 0; }
+  function medalOf(L,i){ var r = rec(L,i); return (r && r.c && r.c.m) ? r.c.m : 0; }
+  function challengeCount(L){ var c = 0; for(var i=0;i<PER;i++) if(medalOf(L,i)) c++; return c; }
+  function points(){
+    var p = 0;
+    for(var L = 0; L < LG.length; L++) for(var i = 0; i < PER; i++){
+      p += starsOf(L,i,"r") + medalOf(L,i);
+    }
+    return p;
+  }
+  function rankFor(p){
+    var name = RANKS[0][1], next = null;
+    for(var i = 0; i < RANKS.length; i++){
+      if(p >= RANKS[i][0]) name = RANKS[i][1];
+      else { next = RANKS[i]; break; }
+    }
+    return { name:name, next:next };
+  }
+  function medalFor(t, par, left, cap){
+    if(t <= par && left >= cap * 0.30) return 3;
+    if(t <= par + 2 && left >= cap * 0.12) return 2;
+    return 1;
+  }
+
+  function li(a,b,t){ return Math.round(a + (b-a)*t); }
+  function lf(a,b,t){ return a + (b-a)*t; }
+  function cfgFor(L,i){
+    if(L < 0) return { n:DAILY.n, turns:DAILY.turns, decoys:DAILY.dec, crystals:DAILY.cry,
+                       locked:DAILY.lock, par:DAILY.par, slack:DAILY.slack, tBase:DAILY.tBase, tPar:DAILY.tPar };
+    var g = LG[L], t = i/(PER-1);
+    var turns = li(g.turns[0], g.turns[1], t);
+    var locked = li(g.lock[0], g.lock[1], t);
+    return {
+      n: li(g.n[0], g.n[1], t), turns: turns,
+      decoys: li(g.dec[0], g.dec[1], t), crystals: li(g.cry[0], g.cry[1], t),
+      locked: locked,
+      par: Math.max(2, Math.round((turns - locked) * lf(g.f[0], g.f[1], t))),
+      slack: li(g.slack[0], g.slack[1], t),
+      tBase: li(g.tBase[0], g.tBase[1], t), tPar: li(g.tPar[0], g.tPar[1], t)
+    };
+  }
+  function pad2(n){ return n < 10 ? "0" + n : String(n); }
+  function todayKey(){ var d = new Date(); return d.getFullYear() + "-" + pad2(d.getMonth()+1) + "-" + pad2(d.getDate()); }
+  function yesterdayKey(){ var d = new Date(Date.now() - 86400000); return d.getFullYear() + "-" + pad2(d.getMonth()+1) + "-" + pad2(d.getDate()); }
+  function seedFor(L,i){
+    if(L < 0){ var t = todayKey().split("-"); return (+t[0])*10000 + (+t[1])*100 + (+t[2]); }
+    return (L+1) * 100003 + i * 7919;
+  }
+
+  // ---- audio ----------------------------------------------------------
+  var AC = null;
+  function actx(){
+    try{
+      if(!AC){ var K = window.AudioContext || window.webkitAudioContext; if(!K) return null; AC = new K(); }
+      if(AC.state === "suspended") AC.resume();
+      return AC;
+    }catch(e){ return null; }
+  }
+  function audio(){ return opts.sound ? actx() : null; }
+  function tone(f, dur, type, vol, to){
+    var c = audio(); if(!c) return;
+    var o = c.createOscillator(), g = c.createGain();
+    o.type = type || "sine";
+    o.frequency.setValueAtTime(f, c.currentTime);
+    if(to) o.frequency.exponentialRampToValueAtTime(to, c.currentTime + dur);
+    g.gain.setValueAtTime(0.0001, c.currentTime);
+    g.gain.exponentialRampToValueAtTime(vol || 0.14, c.currentTime + 0.012);
+    g.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + dur);
+    o.connect(g); g.connect(c.destination);
+    o.start(); o.stop(c.currentTime + dur + 0.02);
+  }
+  var sfx = {
+    tap:  function(){ tone(430, 0.055, "sine", 0.08); },
+    turn: function(){ tone(300, 0.07, "triangle", 0.10, 380); },
+    stuck:function(){ tone(150, 0.09, "square", 0.05); },
+    hint: function(){ tone(700, 0.16, "sine", 0.10, 460); },
+    gem:  function(i){ tone(620 + i*110, 0.10, "sine", 0.12); },
+    tick: function(){ tone(880, 0.05, "sine", 0.07); },
+    sweep:function(){ tone(300, 0.42, "sine", 0.09, 900); },
+    win:  function(){ [523,659,784,1047].forEach(function(f,i){ setTimeout(function(){ tone(f, 0.20, "sine", 0.14); }, i*90); }); },
+    fail: function(){ tone(260, 0.40, "sawtooth", 0.10, 90); }
+  };
+  function buzz(ms){ if(!opts.buzz) return; try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){} }
+
+  // ---- music ----------------------------------------------------------
+  var Music = (function(){
+    var playing = "off", timer = null, step = 0, nextT = 0, bus = null, drone = [];
+    var DUR = { calm:0.62, focus:0.50, chip:0.1136 };
+    var CH = [[57,60,64,69],[53,57,60,65],[48,52,55,60],[55,59,62,67]];
+    var ARP = [0,1,2,3,2,1,0,2];
+    var MEL = [72,-1,76,-1,79,-1,76,-1, 74,-1,77,-1,81,-1,77,-1,
+               72,-1,76,79,81,-1,79,76, 74,77,74,72,71,-1,-1,-1];
+    var BAS = [48,-1,55,-1,48,-1,55,-1, 53,-1,60,-1,53,-1,60,-1,
+               48,-1,55,-1,48,-1,55,-1, 43,-1,50,-1,43,-1,-1,-1];
+    function hz(m){ return 440 * Math.pow(2, (m-69)/12); }
+    function note(freq, t, type, vol, att, rel){
+      if(!AC || !bus) return;
+      var o = AC.createOscillator(), g = AC.createGain();
+      o.type = type;
+      o.frequency.setValueAtTime(freq, t);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(vol, t + att);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + att + rel);
+      o.connect(g); g.connect(bus);
+      o.start(t); o.stop(t + att + rel + 0.06);
+    }
+    function startDrone(){
+      if(!AC || !bus) return;
+      var o1 = AC.createOscillator(), o2 = AC.createOscillator();
+      var lp = AC.createBiquadFilter(), g = AC.createGain();
+      o1.type = "sawtooth"; o2.type = "sawtooth";
+      o1.frequency.value = hz(33); o2.frequency.value = hz(33) * 1.006;
+      lp.type = "lowpass"; lp.frequency.value = 300;
+      g.gain.value = 0.030;
+      o1.connect(lp); o2.connect(lp); lp.connect(g); g.connect(bus);
+      o1.start(); o2.start();
+      drone = [o1, o2];
+    }
+    function killDrone(){
+      drone.forEach(function(o){ try{ o.stop(); }catch(e){} });
+      drone = [];
+    }
+    function tick(){
+      if(!AC || playing === "off") return;
+      var d = DUR[playing];
+      var guard = 0;
+      while(nextT < AC.currentTime + 0.3 && guard++ < 64){
+        if(nextT < AC.currentTime) nextT = AC.currentTime + 0.02;
+        if(playing === "calm"){
+          var ch = CH[Math.floor(step/8) % 4];
+          note(hz(ch[ARP[step % 8]] + 12), nextT, "sine", 0.070, 0.35, 1.9);
+          if(step % 8 === 0) note(hz(ch[0] - 12), nextT, "triangle", 0.048, 0.9, 3.2);
+        }else if(playing === "focus"){
+          if(step % 8 === 0) note(hz(45), nextT, "sine", 0.048, 0.05, 1.2);
+          if(step % 6 === 3) note(hz(76 + ((Math.floor(step/6)) % 3) * 3), nextT, "sine", 0.020, 0.02, 0.9);
+        }else{
+          var m = MEL[step % 32], b = BAS[step % 32];
+          if(m > 0) note(hz(m), nextT, "square", 0.042, 0.006, 0.10);
+          if(b > 0) note(hz(b), nextT, "triangle", 0.046, 0.006, 0.14);
+        }
+        nextT += d; step++;
+      }
+    }
+    function stop(){
+      if(timer){ clearInterval(timer); timer = null; }
+      killDrone();
+      playing = "off";
+    }
+    function start(name){
+      stop();
+      if(name === "off") return;
+      if(!actx()) return;
+      if(!bus){ bus = AC.createGain(); bus.gain.value = 1; bus.connect(AC.destination); }
+      playing = name; step = 0; nextT = AC.currentTime + 0.12;
+      if(name === "focus") startDrone();
+      tick();
+      timer = setInterval(tick, 60);
+    }
+    return { start:start, stop:stop, isOn:function(){ return playing !== "off"; } };
+  })();
+
+  document.addEventListener("visibilitychange", function(){
+    if(document.visibilityState === "hidden") Music.stop();
+    else if(opts.music !== "off") Music.start(opts.music);
+  });
+
+  // ---- colours & theme -------------------------------------------------
+  var C = {};
+  function readColors(){
+    var cs = getComputedStyle(document.documentElement);
+    ["sunk","amber","mint","slate","ghost","line","muted","lilac","danger","lg1","lg2","lg3","lg4","on1","on2","on3","on4"]
+      .forEach(function(k){ C[k] = cs.getPropertyValue("--" + k).trim(); });
+  }
+  function applyTheme(){
+    var r = document.documentElement;
+    if(opts.theme === "auto") r.removeAttribute("data-theme");
+    else r.setAttribute("data-theme", opts.theme);
+    readColors();
+  }
+  readColors();
+  if(window.matchMedia){
+    var mq = window.matchMedia("(prefers-color-scheme: dark)");
+    if(mq.addEventListener) mq.addEventListener("change", function(){ readColors(); paintChrome(); });
+  }
+  function lgColor(L){ return L < 0 ? C.amber : C["lg" + (L+1)]; }
+  function lgOn(L){ return L < 0 ? "#3A2606" : C["on" + (L+1)]; }
+
+  function mulberry32(a){
+    return function(){
+      a |= 0; a = a + 0x6D2B79F5 | 0;
+      var t = Math.imul(a ^ a >>> 15, 1 | a);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+  function key(x,y){ return x + "," + y; }
+  function typeFor(i,o){ return SLASH[i] === o ? "/" : "\\"; }
+  function dir0(s){ return s === 0 ? 0 : s === 1 ? 1 : s === 2 ? 3 : 2; }
+
+  function trace(L){
+    var n = L.n, mm = {}, cm = {};
+    L.mirrors.forEach(function(m){ mm[key(m.x,m.y)] = m; });
+    L.crystals.forEach(function(c){ cm[key(c.x,c.y)] = 1; });
+    var x = L.emitter.x, y = L.emitter.y, d = L.emitter.dir;
+    var pts = [[x,y]], seen = {}, got = {}, hit = false, st = 0;
+    while(st++ < 900){
+      var sk = x + "," + y + "," + d;
+      if(seen[sk]) break;
+      seen[sk] = 1;
+      var nx = x + DIRS[d].dx, ny = y + DIRS[d].dy;
+      if(nx < 0 || ny < 0 || nx >= n || ny >= n){ pts.push([x + DIRS[d].dx*0.62, y + DIRS[d].dy*0.62]); break; }
+      x = nx; y = ny;
+      if(cm[key(x,y)]) got[key(x,y)] = 1;
+      if(x === L.target.x && y === L.target.y){ pts.push([x,y]); hit = true; break; }
+      var m = mm[key(x,y)];
+      if(m){ pts.push([x,y]); d = (m.type === "/" ? SLASH : BACK)[d]; }
+    }
+    var have = 0; for(var k in got) if(got.hasOwnProperty(k)) have++;
+    return { pts:pts, hit:hit, got:got, have:have, lit: hit && have === L.crystals.length };
+  }
+
+  // shortest solve within two flips of turnable mirrors, or -1
+  function shortcut2(L){
+    var ms = L.mirrors, idx = [];
+    ms.forEach(function(m,i){ if(!m.lock) idx.push(i); });
+    function flip(i){ ms[i].type = ms[i].type === "/" ? "\\" : "/"; }
+    if(trace(L).lit) return 0;
+    for(var a = 0; a < idx.length; a++){
+      flip(idx[a]); var ok = trace(L).lit; flip(idx[a]); if(ok) return 1;
+    }
+    for(a = 0; a < idx.length; a++) for(var b = a+1; b < idx.length; b++){
+      flip(idx[a]); flip(idx[b]); var ok2 = trace(L).lit; flip(idx[a]); flip(idx[b]); if(ok2) return 2;
+    }
+    return -1;
+  }
+
+  function build(cfg, seed){
+    var rnd = mulberry32(seed >>> 0);
+    var pick = function(a){ return a[Math.floor(rnd() * a.length)]; };
+    for(var at = 0; at < 1500; at++){
+      var n = cfg.n, used = {};
+      var side = Math.floor(rnd()*4), idx = 1 + Math.floor(rnd()*(n-2));
+      var ex, ey, dir;
+      if(side === 0){ ex=0; ey=idx; dir=0; }
+      else if(side === 1){ ex=n-1; ey=idx; dir=1; }
+      else if(side === 2){ ex=idx; ey=0; dir=3; }
+      else { ex=idx; ey=n-1; dir=2; }
+
+      var x = ex, y = ey;
+      used[key(x,y)] = 1;
+      var pathM = [], path = [[x,y]], ok = true;
+
+      function freeRun(cx0, cy0, d){
+        var len = 0, px = cx0, py = cy0;
+        while(true){
+          px += DIRS[d].dx; py += DIRS[d].dy;
+          if(px < 0 || py < 0 || px >= n || py >= n) break;
+          if(used[key(px,py)]) break;
+          len++;
+        }
+        return len;
+      }
+
+      for(var t = 0; t < cfg.turns && ok; t++){
+        var run = freeRun(x,y,dir);
+        if(run < 1){ ok = false; break; }
+        var max = Math.min(run, n - 2);
+        if(max < 1){ ok = false; break; }
+        var Ln = 1 + Math.floor(rnd()*max);
+        for(var s = 0; s < Ln; s++){ x += DIRS[dir].dx; y += DIRS[dir].dy; used[key(x,y)] = 1; path.push([x,y]); }
+        var perps = (dir < 2) ? [2,3] : [0,1];
+        var viable = perps.filter(function(d){ return freeRun(x,y,d) >= 1; });
+        if(!viable.length){ ok = false; break; }
+        var nd = pick(viable);
+        pathM.push({ x:x, y:y, type: typeFor(dir, nd), path:true, lock:false });
+        dir = nd;
+      }
+      if(!ok) continue;
+
+      var tail = freeRun(x,y,dir);
+      if(tail < 1) continue;
+      var TL = 1 + Math.floor(rnd()*tail);
+      for(var u = 0; u < TL; u++){ x += DIRS[dir].dx; y += DIRS[dir].dy; used[key(x,y)] = 1; path.push([x,y]); }
+      var target = { x:x, y:y };
+
+      var mset = {};
+      pathM.forEach(function(m){ mset[key(m.x,m.y)] = 1; });
+      var openPath = path.filter(function(p){
+        var k = key(p[0],p[1]);
+        return !mset[k] && !(p[0] === ex && p[1] === ey) && !(p[0] === target.x && p[1] === target.y);
+      });
+      if(openPath.length < cfg.crystals) continue;
+      var crystals = [], pool = openPath.slice();
+      for(var ci = 0; ci < cfg.crystals; ci++) crystals.push(pool.splice(Math.floor(rnd()*pool.length), 1)[0]);
+
+      var free = [];
+      for(var fy = 0; fy < n; fy++) for(var fx = 0; fx < n; fx++) if(!used[key(fx,fy)]) free.push([fx,fy]);
+      var decoys = [];
+      for(var di = 0; di < cfg.decoys && free.length; di++){
+        var c2 = free.splice(Math.floor(rnd()*free.length), 1)[0];
+        decoys.push({ x:c2[0], y:c2[1], type: rnd() < 0.5 ? "/" : "\\", path:false, lock:false });
+      }
+
+      var all = pathM.concat(decoys);
+      var lvl = {
+        n:n, emitter:{x:ex,y:ey,dir:dir0(side)}, target:target,
+        mirrors: all, solution: all.map(function(m){ return m.type; }),
+        crystals: crystals.map(function(p){ return {x:p[0], y:p[1]}; }), par:0, locked:0
+      };
+      all.forEach(function(m,i){ m.type = lvl.solution[i]; });
+      if(!trace(lvl).lit) continue;
+
+      var pIdx = [];
+      all.forEach(function(m,i){ if(m.path) pIdx.push(i); });
+      var nLock = Math.min(cfg.locked, Math.max(0, pIdx.length - 2));
+      var K = Math.max(2, Math.min(cfg.par, pIdx.length - nLock));
+      if(pIdx.length - nLock < K) continue;
+
+      for(var tryN = 0; tryN < 50; tryN++){
+        all.forEach(function(m,i){
+          m.type = lvl.solution[i]; m.lock = false;
+          if(!m.path && rnd() < 0.5) m.type = m.type === "/" ? "\\" : "/";
+        });
+        var bag = pIdx.slice();
+        for(var c = 0; c < nLock; c++){
+          var gl = bag.splice(Math.floor(rnd()*bag.length), 1)[0];
+          all[gl].lock = true;
+        }
+        for(c = 0; c < K; c++){
+          var gf = bag.splice(Math.floor(rnd()*bag.length), 1)[0];
+          all[gf].type = all[gf].type === "/" ? "\\" : "/";
+        }
+        if(trace(lvl).lit) continue;
+        var sc = shortcut2(lvl);
+        if(sc !== -1 && sc < Math.min(K, 3)) continue;
+        lvl.par = K; lvl.locked = nLock;
+        return lvl;
+      }
+    }
+    return null;
+  }
+
+
+
+  // ---- state ----------------------------------------------------------
+  var $ = function(id){ return document.getElementById(id); };
+  var screens = { start:$("start"), leagues:$("leagues"), levels:$("levels"), game:$("game"),
+                  party:$("party"), stats:$("stats"), settings:$("settings") };
+  function show(name){
+    Object.keys(screens).forEach(function(k){ screens[k].classList.toggle("on", k === name); });
+    if(name === "game") resize();
+  }
+
+  var cvs = $("cvs"), ctx = cvs.getContext("2d");
+  var playEl = $("play"), sheet = $("sheet");
+  var W = 0, H = 0, dpr = Math.min(window.devicePixelRatio || 1, 3);
+  var curL = 0, curI = 0, lvl = null, res = null, conf = null;
+  var turns = 0, budget = 0, tLeft = 0, tCap = 0, over = false, won = false, hintsUsed = 0;
+  var cell = 40, ox = 0, oy = 0, dash = 0, glow = 0, raf = null, last = 0, warned = false;
+  var reveal = -1, revealDone = false, shakeCell = null, shakeT = 0, hintCell = null, hintT = 0;
+  var autoTimer = null, partyFrom = 0;
+
+  function daily(){ return curL < 0; }
+  function challenge(){ return !daily() && opts.mode === "challenge"; }
+  function slot(){ return opts.mode === "challenge" ? "c" : "r"; }
+
+  function resize(){
+    var r = playEl.getBoundingClientRect();
+    W = Math.max(80, Math.round(r.width));
+    H = Math.max(80, Math.round(r.height));
+    cvs.width = Math.round(W * dpr);
+    cvs.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    if(lvl){
+      cell = Math.floor(Math.min(W - 18, H - 18) / lvl.n);
+      ox = Math.round((W - cell * lvl.n) / 2);
+      oy = Math.round((H - cell * lvl.n) / 2);
+    }
+  }
+  window.addEventListener("resize", function(){ if(screens.game.classList.contains("on")) resize(); });
+
+  function cx(g){ return ox + g * cell + cell/2; }
+  function cy(g){ return oy + g * cell + cell/2; }
+
+  function startLevel(L,i){
+    cancelAuto();
+    curL = L; curI = i;
+    conf = cfgFor(L,i);
+    lvl = build(conf, seedFor(L,i));
+    if(!lvl) lvl = build(conf, seedFor(L,i) + 17);
+    turns = 0; over = false; won = false; warned = false; glow = 0; hintsUsed = 0;
+    reveal = -1; revealDone = false; shakeCell = null; hintCell = null; hintT = 0;
+    budget = lvl.par + conf.slack;
+    tCap = conf.tBase + lvl.par * conf.tPar;
+    tLeft = tCap;
+    sheet.classList.remove("on");
+    show("game");
+    resize();
+    paintChrome();
+    $("hTimeWrap").style.display = challenge() ? "" : "none";
+    $("hintLbl").textContent = "Hint +" + HINT_COST;
+
+    var bits = [];
+    if(lvl.crystals.length) bits.push("Pass through all " + lvl.crystals.length + " " + GEM);
+    if(lvl.locked) bits.push(lvl.locked + (lvl.locked === 1 ? " mirror is bolted down" : " mirrors are bolted down"));
+    $("hint").innerHTML = bits.length ? bits.join(" · ")
+      : (challenge() ? "Beat the clock and the turn limit" : "Tap a mirror to turn it");
+
+    res = trace(lvl);
+    updateHud();
+    if(!raf) raf = requestAnimationFrame(loop);
+  }
+  function startDaily(){ startLevel(-1, 0); }
+
+  function paintChrome(){
+    var chip = $("hChip");
+    chip.textContent = daily() ? "Daily" : (LG[curL].name + " " + (curI + 1));
+    chip.style.background = lgColor(curL);
+    chip.style.color = lgOn(curL);
+  }
+
+  function fmt(s){
+    s = Math.max(0, Math.ceil(s));
+    var m = Math.floor(s/60), r = s % 60;
+    return m + ":" + (r < 10 ? "0" : "") + r;
+  }
+
+  function updateHud(){
+    $("hTurns").textContent = challenge() ? (turns + "/" + budget) : String(turns);
+    $("hTurns").className = "val" + (challenge() && budget - turns <= 2 ? " warn" : "");
+    $("hTurnLab").textContent = "Turns · par " + lvl.par;
+    if(challenge()){
+      $("hTime").textContent = fmt(tLeft);
+      $("hTime").className = "val" + (tLeft <= 10 ? " warn" : "");
+    }
+    var g = $("hGems");
+    if(lvl.crystals.length){
+      g.style.display = "";
+      g.className = "gems" + (res && res.have === lvl.crystals.length ? " full" : "");
+      g.innerHTML = GEM + " " + (res ? res.have : 0) + "/" + lvl.crystals.length;
+    }else g.style.display = "none";
+    var f = $("hStreak");
+    if(save.streak > 1){
+      f.style.display = "";
+      f.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2s5 5 5 9a5 5 0 0 1-10 0c0-1.5.8-3 .8-3S7 10 7 12a5 5 0 0 0 10 0c0-4-5-10-5-10z"/></svg> ' + save.streak;
+      f.setAttribute("title", "Par streak");
+    }else f.style.display = "none";
+  }
+
+  function starsFor(t, par){
+    if(t <= par) return 3;
+    if(t <= par + Math.max(2, Math.ceil(par/2))) return 2;
+    return 1;
+  }
+
+  var PRAISE = {
+    ace:  ["Ace!", "Flawless!", "Insane!", "Untouchable!"],
+    par:  ["Perfect!", "Immaculate!", "Spot on!", "Dead on par!"],
+    good: ["Excellent!", "Sharp!", "Very nice!", "Clean!"],
+    ok:   ["Nice!", "Good job!", "Well played!", "Got there!"],
+    done: ["Solved!", "Done!", "Ring lit!"]
+  };
+  function praise(t, par, firstClear){
+    var r = function(a){ return a[Math.floor(Math.random()*a.length)]; };
+    if(t <= par && firstClear) return { w:r(PRAISE.ace),  c:C.amber };
+    if(t <= par)               return { w:r(PRAISE.par),  c:C.lilac };
+    if(t <= par + 2)           return { w:r(PRAISE.good), c:C.mint };
+    if(t <= par + Math.max(2, Math.ceil(par/2))) return { w:r(PRAISE.ok), c:C.mint };
+    return { w:r(PRAISE.done), c:C.muted };
+  }
+  function popWord(word, colour){
+    var el = $("pop");
+    el.classList.remove("go");
+    el.firstElementChild.textContent = word;
+    el.firstElementChild.style.color = colour;
+    void el.offsetWidth;
+    el.classList.add("go");
+  }
+
+  function finish(didWin, why){
+    over = true; won = didWin;
+    if(didWin){ reveal = 0; sfx.sweep(); return; }
+    save.streak = 0; store();
+    $("sTitle").textContent = why === "time" ? "Out of time" : "Out of turns";
+    $("sBody").textContent = why === "time"
+      ? "The clock ran down. Relaxed mode has no timer."
+      : "All " + budget + " turns used. Relaxed mode has no limit.";
+    $("sStars").style.display = "none";
+    $("sT").textContent = turns;
+    $("sP").textContent = lvl.par;
+    var pr = daily() ? null : rec(curL,curI);
+    $("sB").textContent = (pr && pr[slot()]) ? pr[slot()].t : "—";
+    $("nextLbl").textContent = "Back to levels";
+    $("bAgain").textContent = "Try again";
+    $("hint").textContent = "";
+    sfx.fail(); buzz(90);
+    setTimeout(function(){ sheet.classList.add("on"); }, 260);
+  }
+
+  function completeWin(){
+    revealDone = true;
+    glow = 1;
+    var st = starsFor(turns, lvl.par);
+    var firstClear, best = "—", gotMedal = 0, newMedal = false;
+
+    if(daily()){
+      var tk = todayKey();
+      firstClear = !save.daily.done[tk];
+      if(firstClear){
+        save.daily.streak = (save.daily.last === yesterdayKey()) ? (save.daily.streak + 1) : 1;
+        save.daily.last = tk;
+      }
+      var prevD = save.daily.done[tk];
+      if(!prevD || turns < prevD.t) save.daily.done[tk] = { t:turns, s:st };
+      best = save.daily.done[tk].t;
+    }else{
+      var k = curL + "-" + curI, r = save.best[k] || {}, s = slot(), prev = r[s];
+      firstClear = !prev;
+      if(!prev || turns < prev.t) r[s] = { t:turns, s:st };
+      else if(st > prev.s) r[s] = { t:prev.t, s:st };
+      if(s === "c"){
+        var med = medalFor(turns, lvl.par, tLeft, tCap);
+        r.c.m = Math.max(med, (prev && prev.m) || 0);
+        gotMedal = med;
+        newMedal = med > ((prev && prev.m) || 0);
+      }
+      save.best[k] = r;
+      best = r[s].t;
+    }
+
+    if(st === 3){ save.streak++; if(save.streak > save.bestStreak) save.bestStreak = save.streak; }
+    else save.streak = 0;
+    store();
+
+    if(gotMedal){
+      $("sTitle").textContent = MEDAL[gotMedal] + (newMedal ? " — new best" : "");
+      $("sTitle").style.color = MEDCOL[gotMedal];
+      $("sBody").textContent = "Lit with " + Math.ceil(tLeft) + "s and " + (budget - turns) + " turns to spare."
+        + (gotMedal < 3 ? (gotMedal === 2 ? " Gold needs par with 30% of the clock left." : " Silver needs par+2 with 12% left.") : "");
+    }else{
+      $("sTitle").style.color = "";
+      $("sTitle").textContent = st === 3 ? "Perfect route" : "Ring lit";
+      $("sBody").textContent = st === 3
+        ? (save.streak > 1 ? "Solved in par — that's " + save.streak + " in a row." : "Solved in par — no wasted turns.")
+        : ("Par is " + lvl.par + ". Replay to chase it.");
+    }
+    $("sStars").style.display = "";
+    Array.prototype.forEach.call($("sStars").children, function(el,i){ el.className = i < st ? "on" : ""; });
+    $("sT").textContent = turns;
+    $("sP").textContent = lvl.par;
+    $("sB").textContent = best;
+    $("bAgain").textContent = "Replay";
+    $("hint").textContent = "";
+
+    var pz = praise(turns, lvl.par, firstClear);
+    popWord(pz.w, pz.c);
+    sfx.win(); buzz([14,60,14]);
+
+    if(daily()){
+      $("nextLbl").textContent = "Back to menu";
+      setTimeout(function(){ sheet.classList.add("on"); paintDaily(); paintRank(); }, 1150);
+      return;
+    }
+
+    if(clearedCount(curL) === PER && !save.party[curL]){
+      save.party[curL] = 1; store();
+      buildTiles(); buildLeagues();
+      setTimeout(function(){ showParty(curL); }, 1250);
+      return;
+    }
+
+    var hasNext = curI + 1 < PER || curL + 1 < LG.length;
+    $("nextLbl").textContent = hasNext ? "Next level" : "Back to levels";
+    setTimeout(function(){
+      sheet.classList.add("on");
+      buildTiles(); buildLeagues(); paintRank();
+      if(hasNext) armAuto();
+    }, 1150);
+  }
+
+  // ---- auto advance ----------------------------------------------------
+  function armAuto(){
+    if(!opts.auto) return;
+    var f = $("nextFill");
+    f.classList.remove("run"); void f.offsetWidth; f.classList.add("run");
+    autoTimer = setTimeout(function(){ autoTimer = null; goNext(); }, 2600);
+  }
+  function cancelAuto(){
+    if(autoTimer){ clearTimeout(autoTimer); autoTimer = null; }
+    var f = $("nextFill");
+    if(f) f.classList.remove("run");
+  }
+  sheet.addEventListener("pointerdown", function(){ cancelAuto(); });
+
+  function goNext(){
+    cancelAuto();
+    if(daily()){ paintDaily(); show("start"); return; }
+    if(won && curI + 1 < PER) return startLevel(curL, curI + 1);
+    if(won && curL + 1 < LG.length) return openLevels(curL + 1);
+    shownL = curL; buildTiles(); show("levels");
+  }
+
+  // ---- input -----------------------------------------------------------
+  playEl.addEventListener("pointerdown", function(ev){
+    if(sheet.contains(ev.target) || over || !lvl) return;
+    var r = cvs.getBoundingClientRect();
+    var gx = Math.floor((ev.clientX - r.left - ox) / cell);
+    var gy = Math.floor((ev.clientY - r.top - oy) / cell);
+    if(gx < 0 || gy < 0 || gx >= lvl.n || gy >= lvl.n) return;
+    for(var i = 0; i < lvl.mirrors.length; i++){
+      var m = lvl.mirrors[i];
+      if(m.x === gx && m.y === gy){
+        if(m.lock){ shakeCell = i; shakeT = 1; sfx.stuck(); buzz(12); return; }
+        m.type = m.type === "/" ? "\\" : "/";
+        turns++;
+        sfx.turn();
+        var before = res ? res.have : 0;
+        res = trace(lvl);
+        updateHud();
+        if(res.lit) return finish(true);
+        if(res.have > before) sfx.gem(res.have);
+        if(challenge() && turns >= budget) return finish(false, "turns");
+        return;
+      }
+    }
+  });
+
+  $("bHint").addEventListener("click", function(){
+    if(over || !lvl) return;
+    var wrong = [];
+    lvl.mirrors.forEach(function(m,i){
+      if(m.path && !m.lock && m.type !== lvl.solution[i]) wrong.push(i);
+    });
+    if(!wrong.length){ sfx.stuck(); return; }
+    hintCell = wrong[Math.floor(Math.random()*wrong.length)];
+    hintT = 1.8;
+    hintsUsed++;
+    turns += HINT_COST;
+    sfx.hint();
+    updateHud();
+    if(challenge() && turns >= budget) finish(false, "turns");
+  });
+
+  function loop(t){
+    raf = requestAnimationFrame(loop);
+    var dt = Math.min(0.05, (t - last)/1000 || 0);
+    last = t;
+    if(!screens.game.classList.contains("on") || !lvl) return;
+    dash = (dash - dt * 46) % 1000;
+    if(glow > 0) glow = Math.max(0, glow - dt * 0.7);
+    if(shakeT > 0){ shakeT = Math.max(0, shakeT - dt * 4); if(!shakeT) shakeCell = null; }
+    if(hintT > 0){ hintT = Math.max(0, hintT - dt); if(!hintT) hintCell = null; }
+    if(reveal >= 0 && reveal < 1){
+      reveal = Math.min(1, reveal + dt / 0.45);
+      if(reveal >= 1 && !revealDone) completeWin();
+    }
+    if(challenge() && !over && document.visibilityState === "visible"){
+      tLeft -= dt;
+      if(tLeft <= 10 && !warned){ warned = true; sfx.tick(); }
+      updateHud();
+      if(tLeft <= 0){ tLeft = 0; finish(false, "time"); }
+    }
+    draw();
+  }
+
+  function rr(x,y,w,h,r,fill){
+    r = Math.min(r, w/2, h/2);
+    ctx.beginPath();
+    ctx.moveTo(x+r,y);
+    ctx.arcTo(x+w,y,x+w,y+h,r);
+    ctx.arcTo(x+w,y+h,x,y+h,r);
+    ctx.arcTo(x,y+h,x,y,r);
+    ctx.arcTo(x,y,x+w,y,r);
+    ctx.closePath();
+    ctx.fillStyle = fill; ctx.fill();
+  }
+  function rs(x,y,w,h,r,stroke,lw){
+    r = Math.min(r, w/2, h/2);
+    ctx.beginPath();
+    ctx.moveTo(x+r,y);
+    ctx.arcTo(x+w,y,x+w,y+h,r);
+    ctx.arcTo(x+w,y+h,x,y+h,r);
+    ctx.arcTo(x,y+h,x,y,r);
+    ctx.arcTo(x,y,x+w,y,r);
+    ctx.closePath();
+    ctx.strokeStyle = stroke; ctx.lineWidth = lw; ctx.stroke();
+  }
+  function strokePath(pts, frac){
+    var px = pts.map(function(p){ return [cx(p[0]), cy(p[1])]; });
+    if(frac >= 1 || frac < 0){
+      ctx.beginPath();
+      ctx.moveTo(px[0][0], px[0][1]);
+      for(var i = 1; i < px.length; i++) ctx.lineTo(px[i][0], px[i][1]);
+      ctx.stroke();
+      return;
+    }
+    var total = 0, segs = [];
+    for(var j = 1; j < px.length; j++){
+      var d = Math.sqrt(Math.pow(px[j][0]-px[j-1][0],2) + Math.pow(px[j][1]-px[j-1][1],2));
+      segs.push(d); total += d;
+    }
+    var want = total * frac, run = 0;
+    ctx.beginPath();
+    ctx.moveTo(px[0][0], px[0][1]);
+    for(var k = 0; k < segs.length; k++){
+      if(run + segs[k] <= want){ ctx.lineTo(px[k+1][0], px[k+1][1]); run += segs[k]; }
+      else{
+        var f = (want - run) / segs[k];
+        ctx.lineTo(px[k][0] + (px[k+1][0]-px[k][0])*f, px[k][1] + (px[k+1][1]-px[k][1])*f);
+        break;
+      }
+    }
+    ctx.stroke();
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    var pad = Math.max(2, Math.round(cell * 0.085));
+    var n = lvl.n;
+
+    for(var gy = 0; gy < n; gy++) for(var gx = 0; gx < n; gx++){
+      rr(ox + gx*cell + pad, oy + gy*cell + pad, cell - pad*2, cell - pad*2, cell*0.24, C.sunk);
+    }
+
+    var lit = res.lit;
+    if((opts.trail || lit) && res.pts.length > 1){
+      ctx.save();
+      ctx.strokeStyle = C.amber;
+      ctx.lineWidth = Math.max(3, cell * 0.13);
+      ctx.lineCap = "round"; ctx.lineJoin = "round";
+      if(!lit){
+        ctx.globalAlpha = 0.5;
+        ctx.setLineDash([cell*0.26, cell*0.22]);
+        ctx.lineDashOffset = dash;
+      }
+      strokePath(res.pts, lit ? reveal : -1);
+      ctx.restore();
+    }
+
+    for(var ci = 0; ci < lvl.crystals.length; ci++){
+      var cr = lvl.crystals[ci];
+      var on = !!res.got[key(cr.x, cr.y)];
+      var s = cell * 0.18;
+      ctx.save();
+      ctx.translate(cx(cr.x), cy(cr.y));
+      ctx.rotate(Math.PI/4);
+      ctx.fillStyle = on ? C.mint : C.ghost;
+      ctx.strokeStyle = on ? C.mint : C.ghost;
+      ctx.lineWidth = Math.max(2, cell*0.05);
+      ctx.lineJoin = "round";
+      ctx.beginPath();
+      ctx.rect(-s, -s, s*2, s*2);
+      if(on) ctx.fill(); else ctx.stroke();
+      ctx.restore();
+    }
+
+    var tx = cx(lvl.target.x), ty = cy(lvl.target.y);
+    var ringLit = lit && (reveal < 0 || reveal >= 1);
+    if(ringLit){
+      ctx.globalAlpha = 0.3 + glow * 0.4;
+      ctx.strokeStyle = C.mint;
+      ctx.lineWidth = Math.max(2, cell*0.06);
+      ctx.beginPath();
+      ctx.arc(tx, ty, cell * (0.36 + glow * 0.14), 0, Math.PI*2);
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+    }
+    ctx.strokeStyle = ringLit ? C.mint : C.ghost;
+    ctx.lineWidth = Math.max(4, cell * 0.12);
+    ctx.beginPath();
+    ctx.arc(tx, ty, cell * 0.24, 0, Math.PI*2);
+    ctx.stroke();
+    if(ringLit){
+      ctx.fillStyle = C.mint;
+      ctx.beginPath();
+      ctx.arc(tx, ty, cell * 0.10, 0, Math.PI*2);
+      ctx.fill();
+    }
+
+    var ex = cx(lvl.emitter.x), ey = cy(lvl.emitter.y), es = cell * 0.30;
+    rr(ex - es, ey - es, es*2, es*2, cell*0.2, C.amber);
+    ctx.save();
+    ctx.translate(ex, ey);
+    ctx.rotate([0, Math.PI, -Math.PI/2, Math.PI/2][lvl.emitter.dir]);
+    ctx.fillStyle = "#FFFFFF";
+    ctx.beginPath();
+    ctx.moveTo(-es*0.32, -es*0.44);
+    ctx.lineTo(es*0.44, 0);
+    ctx.lineTo(-es*0.32, es*0.44);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+
+    for(var mi = 0; mi < lvl.mirrors.length; mi++){
+      var m = lvl.mirrors[mi];
+      var half = cell * 0.27;
+      var jitter = (shakeCell === mi && shakeT > 0) ? Math.sin(shakeT * 34) * cell * 0.05 : 0;
+      var hinted = (hintCell === mi && hintT > 0);
+      if(m.lock){
+        var in2 = cell * 0.34;
+        rs(cx(m.x) - in2, cy(m.y) - in2, in2*2, in2*2, cell*0.2, C.ghost, Math.max(1.5, cell*0.045));
+      }
+      if(hinted){
+        ctx.globalAlpha = 0.35 + 0.35 * Math.abs(Math.sin(hintT * 7));
+        ctx.fillStyle = C.mint;
+        ctx.beginPath();
+        ctx.arc(cx(m.x), cy(m.y), cell * 0.40, 0, Math.PI*2);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+      }
+      ctx.save();
+      ctx.translate(cx(m.x) + jitter, cy(m.y));
+      ctx.rotate((m.type === "/" ? -45 : 45) * Math.PI / 180);
+      ctx.strokeStyle = hinted ? C.mint : C.slate;
+      ctx.lineWidth = Math.max(4, cell * (m.lock ? 0.115 : 0.15));
+      ctx.lineCap = "round";
+      ctx.beginPath();
+      ctx.moveTo(-half, 0);
+      ctx.lineTo(half, 0);
+      ctx.stroke();
+      ctx.restore();
+    }
+  }
+
+  // ---- celebration -----------------------------------------------------
+  function confetti(L){
+    var wrap = $("conf");
+    wrap.innerHTML = "";
+    if(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    var cols = [lgColor(L), C.amber, C.mint, C.lilac, C.danger];
+    for(var i = 0; i < 34; i++){
+      var b = document.createElement("i");
+      b.style.left = (Math.random()*100) + "%";
+      b.style.background = cols[i % cols.length];
+      b.style.animationDuration = (2.4 + Math.random()*1.9) + "s";
+      b.style.animationDelay = (Math.random()*1.5) + "s";
+      b.style.width = (6 + Math.random()*6) + "px";
+      b.style.height = (10 + Math.random()*9) + "px";
+      wrap.appendChild(b);
+    }
+  }
+  function showParty(L){
+    var s = slot(), marks = 0, inPar = 0;
+    for(var i = 0; i < PER; i++){
+      var st = starsOf(L,i,s);
+      marks += st;
+      if(st === 3) inPar++;
+    }
+    var med = $("pMedal");
+    med.style.background = lgColor(L);
+    med.style.color = lgOn(L);
+    med.innerHTML = '<svg width="58" height="58" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+    $("pTitle").textContent = LG[L].name + " league mastered";
+    $("pTitle").style.color = lgColor(L);
+    $("pSub").textContent = inPar === PER
+      ? "Every level in par. Nothing left to improve."
+      : "All " + PER + " levels lit, in " + (opts.mode === "challenge" ? "challenge" : "relaxed") + " mode.";
+    $("pLv").textContent = PER;
+    $("pMk").textContent = marks + "/" + (PER*3);
+    $("pPar").textContent = inPar;
+    $("bPartyNext").style.display = (L + 1 < LG.length) ? "" : "none";
+    if(L + 1 < LG.length) $("bPartyNext").textContent = "Start " + LG[L+1].name + " league";
+    partyFrom = L;
+    confetti(L);
+    show("party");
+    [0,140,280,430].forEach(function(d,i){
+      setTimeout(function(){ tone([523,659,784,1047][i], 0.30, "sine", 0.15); }, d);
+    });
+    buzz([16,70,16,70,26]);
+  }
+
+  // ---- lists -----------------------------------------------------------
+  function buildLeagues(){
+    var wrap = $("lgList");
+    if(!wrap) return;
+    wrap.innerHTML = "";
+    for(var L = 0; L < LG.length; L++){
+      (function(L){
+        var got = clearedCount(L);
+        var b = document.createElement("button");
+        b.type = "button"; b.className = "lg";
+        var body = document.createElement("div");
+        body.style.flex = "1 1 auto";
+        var medN = challengeCount(L);
+        body.innerHTML = "<h3>" + LG[L].name + "</h3><p>" + got + " of " + PER + " cleared"
+          + (medN ? (" · " + medN + " medals") : "") + " · " + BLURB[L] + "</p>" +
+          '<div class="track"><i style="width:' + Math.round(got/PER*100) + '%;background:var(' + LG[L].v + ')"></i></div>';
+        var dot = document.createElement("div");
+        dot.className = "dot";
+        dot.style.background = "var(" + LG[L].v + ")";
+        dot.style.color = "var(" + LG[L].on + ")";
+        dot.textContent = String(got);
+        b.appendChild(dot); b.appendChild(body);
+        b.addEventListener("click", function(){ sfx.tap(); openLevels(L); });
+        wrap.appendChild(b);
+      })(L);
+    }
+  }
+
+  var shownL = 0;
+  function openLevels(L){
+    shownL = L;
+    $("lvTitle").textContent = LG[L].name;
+    $("lvTitle").style.color = lgColor(L);
+    $("lvSub").textContent = BLURB[L];
+    buildTiles();
+    show("levels");
+  }
+
+  function buildTiles(){
+    var wrap = $("tiles");
+    if(!wrap) return;
+    var L = shownL, open = openCount(L), s = slot();
+    wrap.innerHTML = "";
+    for(var i = 0; i < PER; i++){
+      (function(i){
+        var can = i < open, st = starsOf(L,i,s);
+        var b = document.createElement("button");
+        b.type = "button"; b.className = "tile";
+        if(!can) b.disabled = true;
+        b.setAttribute("aria-label", can ? ("Level " + (i+1) + ", " + (st ? st + " of 3 marks" : "not cleared")) : ("Level " + (i+1) + ", locked"));
+        if(can){
+          var med = medalOf(L,i);
+          if(s === "c" && med){ b.style.background = MEDCOL[med]; b.style.color = MEDINK[med]; }
+          else if(st){ b.style.background = lgColor(L); b.style.color = lgOn(L); }
+          var dots = "";
+          for(var k = 0; k < 3; k++) dots += '<i class="' + (k < st ? "on" : "") + '"></i>';
+          b.innerHTML = "<b>" + (i+1) + "</b><span class=\"st\">" + dots + "</span>";
+          b.addEventListener("click", function(){ sfx.tap(); startLevel(L,i); });
+        }else{
+          b.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
+        }
+        wrap.appendChild(b);
+      })(i);
+    }
+    var lastCfg = cfgFor(L, PER-1);
+    var parts = ["Three marks means you solved it in par."];
+    if(lastCfg.crystals) parts.push("Up to " + lastCfg.crystals + " " + GEM + " to collect.");
+    if(lastCfg.locked) parts.push("Up to " + lastCfg.locked + " mirrors bolted down.");
+    parts.push("Par runs " + cfgFor(L,0).par + " to " + lastCfg.par + " turns.");
+    $("lvLegend").innerHTML = parts.join(" ");
+  }
+
+  function buildStats(){
+    var wrap = $("statList");
+    var s = slot(), lit = 0, inPar = 0, marks = 0;
+    for(var L = 0; L < LG.length; L++) for(var i = 0; i < PER; i++){
+      if(cleared(L,i)) lit++;
+      var st = starsOf(L,i,s);
+      marks += st;
+      if(st === 3) inPar++;
+    }
+    var dailies = 0;
+    for(var k in save.daily.done) if(save.daily.done.hasOwnProperty(k)) dailies++;
+    var golds = 0, silvers = 0, bronzes = 0;
+    for(var L2 = 0; L2 < LG.length; L2++) for(var i2 = 0; i2 < PER; i2++){
+      var m2 = medalOf(L2,i2);
+      if(m2 === 3) golds++; else if(m2 === 2) silvers++; else if(m2 === 1) bronzes++;
+    }
+    var pts = points(), rk = rankFor(pts);
+    var rows = [
+      ["Rank", rk.name],
+      ["Points", pts + (rk.next ? (" · " + (rk.next[0] - pts) + " to " + rk.next[1]) : " · maxed")],
+      ["Levels lit", lit + " of " + (PER*LG.length)],
+      ["Challenge medals", golds + " gold · " + silvers + " silver · " + bronzes + " bronze"],
+      ["Solved in par", inPar + " (" + (opts.mode === "challenge" ? "challenge" : "relaxed") + ")"],
+      ["Marks earned", marks + " of " + (PER*LG.length*3)],
+      ["Par streak now", String(save.streak)],
+      ["Best par streak", String(save.bestStreak)],
+      ["Daily puzzles solved", String(dailies)],
+      ["Daily streak", String(save.daily.streak)]
+    ];
+    wrap.innerHTML = rows.map(function(r){
+      return '<div class="bigstat"><span>' + r[0] + '</span><b>' + r[1] + '</b></div>';
+    }).join("");
+  }
+
+  function paintRank(){
+    var totalLit = 0;
+    for(var L0 = 0; L0 < LG.length; L0++) totalLit += clearedCount(L0);
+    if(!totalLit){ $("startSub").textContent = "Bend the light. Light the ring."; return; }
+    var rk = rankFor(points());
+    $("startSub").textContent = rk.name + " · " + totalLit + " of " + (PER*LG.length) + " rings lit";
+  }
+
+  function paintDaily(){
+    var tk = todayKey(), d = save.daily.done[tk];
+    var note = d
+      ? ("Solved today in " + d.t + " turns" + (save.daily.streak > 1 ? " · " + save.daily.streak + " day streak" : ""))
+      : (save.daily.streak > 1 ? "A fresh board · " + save.daily.streak + " day streak" : "A fresh board every day");
+    $("dailyNote").textContent = note;
+    var dot = $("dailyDot");
+    dot.style.background = d ? "var(--mint)" : "var(--amber)";
+    dot.style.color = d ? "#123B33" : "#3A2606";
+  }
+
+  // ---- segmented controls ---------------------------------------------
+  function paintMode(){
+    ["segA","segB"].forEach(function(id){
+      var seg = $(id);
+      Array.prototype.forEach.call(seg.querySelectorAll("button"), function(b){
+        b.setAttribute("aria-pressed", b.dataset.m === opts.mode ? "true" : "false");
+      });
+    });
+    $("modeNote").textContent = opts.mode === "challenge"
+      ? "Challenge adds a turn limit and a clock. Spare turns above par shrink from 9 in Green to 4 in Black."
+      : "Relaxed has no clock and no turn limit. Take as long as you like.";
+    buildTiles();
+  }
+  ["segA","segB"].forEach(function(id){
+    $(id).addEventListener("click", function(ev){
+      var b = ev.target.closest("button");
+      if(!b || !b.dataset.m) return;
+      opts.mode = b.dataset.m; storeOpts(); sfx.tap(); paintMode();
+    });
+  });
+
+  function paintMusic(){
+    Array.prototype.forEach.call($("segMusic").querySelectorAll("button"), function(b){
+      b.setAttribute("aria-pressed", b.dataset.t === opts.music ? "true" : "false");
+    });
+  }
+  $("segMusic").addEventListener("click", function(ev){
+    var b = ev.target.closest("button");
+    if(!b || !b.dataset.t) return;
+    opts.music = b.dataset.t; storeOpts(); paintMusic();
+    if(opts.music === "off") Music.stop(); else Music.start(opts.music);
+  });
+
+  function paintTheme(){
+    Array.prototype.forEach.call($("segTheme").querySelectorAll("button"), function(b){
+      b.setAttribute("aria-pressed", b.dataset.h === opts.theme ? "true" : "false");
+    });
+  }
+  $("segTheme").addEventListener("click", function(ev){
+    var b = ev.target.closest("button");
+    if(!b || !b.dataset.h) return;
+    opts.theme = b.dataset.h; storeOpts(); paintTheme(); applyTheme(); sfx.tap();
+    if(screens.game.classList.contains("on")) paintChrome();
+    buildLeagues(); buildTiles();
+  });
+
+  // ---- wiring ----------------------------------------------------------
+  function continuePoint(){
+    var L = 0;
+    for(var i = LG.length - 1; i >= 0; i--){ if(clearedCount(i) > 0){ L = i; break; } }
+    return { L:L, i: Math.min(PER-1, openCount(L) - 1) };
+  }
+
+  $("bPlay").addEventListener("click", function(){ sfx.tap(); var p = continuePoint(); startLevel(p.L, p.i); });
+  $("bDaily").addEventListener("click", function(){ sfx.tap(); startDaily(); });
+  $("bLeagues").addEventListener("click", function(){ sfx.tap(); buildLeagues(); paintMode(); show("leagues"); });
+  $("bStats").addEventListener("click", function(){ sfx.tap(); buildStats(); show("stats"); });
+  $("bSettings").addEventListener("click", function(){ sfx.tap(); show("settings"); });
+  $("bStatsBack").addEventListener("click", function(){ sfx.tap(); show("start"); });
+  $("bLgBack").addEventListener("click", function(){ sfx.tap(); show("start"); });
+  $("bLvBack").addEventListener("click", function(){ sfx.tap(); buildLeagues(); show("leagues"); });
+  $("bSetBack").addEventListener("click", function(){ sfx.tap(); show("start"); });
+  $("bQuit").addEventListener("click", function(){
+    cancelAuto(); sfx.tap();
+    if(daily()){ paintDaily(); return show("start"); }
+    shownL = curL; buildTiles(); show("levels");
+  });
+  $("bReplay").addEventListener("click", function(){ sfx.tap(); startLevel(curL, curI); });
+  $("bAgain").addEventListener("click", function(){ cancelAuto(); sfx.tap(); startLevel(curL, curI); });
+  $("bNext").addEventListener("click", function(){ sfx.tap(); goNext(); });
+  $("bPartyNext").addEventListener("click", function(){
+    sfx.tap();
+    if(partyFrom + 1 < LG.length) startLevel(partyFrom + 1, Math.min(PER-1, openCount(partyFrom+1) - 1));
+    else { buildLeagues(); show("leagues"); }
+  });
+  $("bPartyDone").addEventListener("click", function(){ sfx.tap(); buildLeagues(); show("leagues"); });
+
+  function bindSwitch(el,k){
+    function paint(){ el.setAttribute("aria-checked", opts[k] ? "true" : "false"); }
+    paint();
+    el.addEventListener("click", function(){
+      opts[k] = !opts[k]; paint(); storeOpts();
+      if(k === "sound" && opts.sound) sfx.tap();
+      if(k === "buzz" && opts.buzz) buzz(20);
+      if(k === "all") buildTiles();
+    });
+  }
+
+  $("bReset").addEventListener("click", function(){
+    var b = $("bReset");
+    if(b.dataset.armed === "1"){
+      save = { best:{}, party:{}, streak:0, bestStreak:0, daily:{ done:{}, streak:0, last:"" } };
+      store(); buildLeagues(); buildTiles(); paintDaily(); paintRank();
+      b.textContent = "Progress cleared"; b.dataset.armed = "";
+      setTimeout(function(){ b.textContent = "Reset progress"; }, 1600);
+    }else{
+      b.dataset.armed = "1";
+      b.textContent = "Tap again to confirm";
+      setTimeout(function(){ if(b.dataset.armed === "1"){ b.dataset.armed = ""; b.textContent = "Reset progress"; } }, 3500);
+    }
+  });
+
+  // music needs a gesture before it can start
+  function firstGesture(){
+    document.removeEventListener("pointerdown", firstGesture);
+    if(opts.music !== "off") Music.start(opts.music);
+  }
+  document.addEventListener("pointerdown", firstGesture);
+
+  load();
+  applyTheme();
+  bindSwitch($("swSound"), "sound");
+  bindSwitch($("swBuzz"), "buzz");
+  bindSwitch($("swTrail"), "trail");
+  bindSwitch($("swAll"), "all");
+  bindSwitch($("swAuto"), "auto");
+  paintMusic();
+  paintTheme();
+  buildLeagues();
+  paintMode();
+  paintDaily();
+  paintRank();
+  show("start");
+})();
+</script>
+</body>
+</html>
