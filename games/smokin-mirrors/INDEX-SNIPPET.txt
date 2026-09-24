@@ -1,0 +1,17 @@
+=== Update for studios/index.html ===
+
+In the WORKS array, make TWO changes:
+
+1) Add this as the FIRST entry:
+
+    { type: "games", title: "Smokin' Mirrors", blurb: "Turn the mirrors, bend the beam, light the ring. 165 hand-checked puzzles across five leagues, a daily board, relaxed and challenge modes. No ads, ever.", status: "beta", link: "games/smokin-mirrors/", image: "games/smokin-mirrors/cover.png", date: "2026", featured: true, wide: true },
+
+2) On the existing Meow Mob entry, remove  featured: true,  and  wide: true,
+   (only one item can be featured — leaving both set makes the hero pick whichever
+   comes first, and two wide cards unbalance the grid).
+
+   Meow Mob becomes:
+
+    { type: "games", title: "Meow Mob", blurb: "Rally a mob of cats, power up the gates and chase the rat pack out of the house. Six leagues, room bosses and an endless mode. Ad-free.", status: "beta", link: "games/meow-mob/", image: "games/meow-mob/icons/cover.jpg", date: "2026" },
+
+Nothing else in the file changes.
