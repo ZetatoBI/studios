@@ -1,6 +1,6 @@
 // SailorNana service worker: offline play + update prompts.
 // Bump VERSION on every release so phones pick up the new build.
-const VERSION = '0.4.0';
+const VERSION = '0.6.0';
 const CACHE = 'sailornana-' + VERSION;
 const ASSETS = ['./', './index.html', './manifest.json', './fonts/fredoka.woff2',
   './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png', './icons/apple-touch-icon.png'];
