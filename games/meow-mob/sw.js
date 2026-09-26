@@ -1,5 +1,5 @@
 // Meow Mob offline cache. Bump VERSION on every deploy so players get the update.
-const VERSION = 'meowmob-v4';
+const VERSION = 'meowmob-v6';
 const FILES = ['./','index.html','manifest.webmanifest',
   'fonts/fredoka-latin-400-normal.woff2','fonts/fredoka-latin-500-normal.woff2','fonts/fredoka-latin-600-normal.woff2','fonts/fredoka-latin-700-normal.woff2',
   'icons/icon-192.png','icons/icon-512.png','icons/icon-maskable-512.png','icons/apple-touch-icon.png','icons/favicon-32.png','icons/cover.jpg'];
