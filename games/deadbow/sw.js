@@ -1,6 +1,6 @@
 // DeadBow service worker: cache-first app shell, version-keyed so phones detect updates.
 // Bump VERSION on every release.
-const VERSION = '1.3.0';
+const VERSION = '1.3.1';
 const CACHE = 'deadbow-' + VERSION;
 const SHELL = [
   './', './index.html', './manifest.json',
@@ -20,6 +20,14 @@ self.addEventListener('message', (e) => { if (e.data === 'skip') self.skipWaitin
 self.addEventListener('fetch', (e) => {
   const req = e.request;
   if (req.method !== 'GET' || new URL(req.url).origin !== self.location.origin) return;
+  // manifest.json is network-first, so install metadata (like its id) is always current
+  if (new URL(req.url).pathname.endsWith('/manifest.json')) {
+    e.respondWith(fetch(req).then((res) => {
+      if (res && res.ok) { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(req, copy)); }
+      return res;
+    }).catch(() => caches.match(req, { ignoreSearch: true })));
+    return;
+  }
   e.respondWith(caches.match(req, { ignoreSearch: true }).then((hit) => hit || fetch(req).then((res) => {
     if (res && res.ok) { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(req, copy)); }
     return res;
