@@ -1,6 +1,6 @@
 // SailorNana service worker: offline play + update prompts.
 // Bump VERSION on every release so phones pick up the new build.
-const VERSION = '0.6.0';
+const VERSION = '0.6.1';
 const CACHE = 'sailornana-' + VERSION;
 const ASSETS = ['./', './index.html', './manifest.json', './fonts/fredoka.woff2',
   './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png', './icons/apple-touch-icon.png'];
@@ -18,6 +18,14 @@ self.addEventListener('fetch', e => {
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
+  // manifest: network-first so install metadata changes reach phones right away
+  if (url.pathname.endsWith('/manifest.json')){
+    e.respondWith(fetch(req).then(res => {
+      if (res.ok){ const copy = res.clone(); caches.open(CACHE).then(c => c.put(req, copy)); }
+      return res;
+    }).catch(() => caches.match(req, { ignoreSearch: true })));
+    return;
+  }
   e.respondWith(
     caches.match(req, { ignoreSearch: true }).then(hit => hit || fetch(req).then(res => {
       if (res.ok) { const copy = res.clone(); caches.open(CACHE).then(c => c.put(req, copy)); }

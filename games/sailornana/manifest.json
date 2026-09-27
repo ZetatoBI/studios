@@ -2,7 +2,7 @@
   "name": "SailorNana",
   "short_name": "SailorNana",
   "description": "Sail an endless island sea, dodge sharks and nets, and stay ahead of the megalodon.",
-  "id": "./",
+  "id": "/games/sailornana/",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
