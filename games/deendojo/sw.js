@@ -1,6 +1,6 @@
 /* DeenDojo service worker. Bump CACHE whenever you upload a new index.html, so phones pick up the update. */
-const CACHE = "deendojo-v0.5";
-const CORE = ["./", "./index.html", "./manifest.webmanifest",
+const CACHE = "deendojo-v0.7";
+const CORE = ["./", "./index.html", "./config.js", "./manifest.webmanifest",
   "./icons/icon-192.png", "./icons/icon-512.png", "./icons/icon-maskable-512.png", "./icons/apple-touch-icon.png"];
 
 self.addEventListener("install", e => {
@@ -18,6 +18,12 @@ self.addEventListener("fetch", e => {
   if (req.mode === "navigate") {
     e.respondWith(fetch(req).then(r => { const copy = r.clone(); caches.open(CACHE).then(c => c.put("./index.html", copy)); return r; })
       .catch(() => caches.match("./index.html")));
+    return;
+  }
+  // Settings file: always try the network first, so a new stats URL or email applies right away
+  if (url.origin === location.origin && url.pathname.endsWith("/config.js")) {
+    e.respondWith(fetch(req).then(r => { const copy = r.clone(); caches.open(CACHE).then(c => c.put(req, copy)); return r; })
+      .catch(() => caches.match(req)));
     return;
   }
   // Google Fonts (Quran and Arabic fonts): serve from cache, refresh in the background
