@@ -124,7 +124,8 @@ button{font:inherit;color:inherit;touch-action:manipulation;cursor:pointer;borde
 #stageBtns button{width:50px;height:50px;border-radius:14px;background:rgba(245,249,252,.94);color:#14263A;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(0,0,0,.25)}
 #targetBtn svg{width:18px;height:18px;color:#B23A30}
 #stanceBtn svg{width:19px;height:19px;color:#2F6FD0}
-#stanceBtn b{font-size:10.5px;font-weight:800}
+#stanceBtn b{font-size:9.5px;font-weight:800;line-height:1.05;text-align:center;max-width:46px}
+.stic{width:48px;height:38px;flex:none;display:grid;place-items:center;color:#2F6FD0;background:rgba(127,160,190,.15);border-radius:8px}.stic svg{width:22px;height:22px}
 #targetBtn span{display:none}
 #targetBtn b{font-size:10.5px;font-weight:800}
 #preview{position:absolute;left:8px;top:46px;display:flex;align-items:center;gap:4px;background:rgba(12,22,34,.78);color:#F2F7FB;border-radius:12px;padding:3px 8px 3px 4px;z-index:3;max-width:calc(100% - 76px);overflow:hidden}
@@ -822,6 +823,7 @@ function pickTalent(h,tier,k){ if(!h||talentPending(h)!==tier) return; const T=T
 function hit(src,t,amt,opt){
  if(!t||t.dead) return 0;
  if(t.buffs.immune) return 0;
+ if(t.team==='p'&&src&&src.team==='e'){ t.hitBy=src; t.hitAt=S.time; }
  let a=amt;
  if(t.buffs.mark) a*=1.4;
  if(t.buffs.guard) a*=.7;
@@ -1167,6 +1169,7 @@ function update(dt){
   if(b.hp<b.maxHp*.5&&Math.random()<dt*2) smoke(b.x+rnd(-b.r*.6,b.r*.6),b.y-b.h*.5,rnd(5,9));
  }
  // units
+ refreshFormation();
  const regen=S.R.perks.regen, aura=S.heroes.filter(h=>!h.dead&&hasT(h,'rally'));
  for(const u of S.units){
   if(u.dead) continue;
@@ -1221,40 +1224,58 @@ function deposit(w){
  bump(w.carryType==='gold'?'rGold':'rLumber');
  w.carry=0; w.carryType=null; sfx('coin');
 }
-function formationSpot(u){
- const mil=S.units.filter(x=>x.type!=='worker');
- const front=mil.filter(x=>x.type!=='ranged'), back=mil.filter(x=>x.type==='ranged');
- const row=u.type==='ranged'?back:front, i=row.indexOf(u), per=9, rr=Math.floor(i/per), c=i%per;
- const R0=S.rally, x=clamp(R0.x+(c-(Math.min(per,row.length-rr*per)-1)/2)*18,12,WW-12);
- const y=clamp(u.type==='ranged'?R0.y+30+rr*16:R0.y-4-rr*16,40,WH-10);
- return {x,y};
-}
-const STANCES={hold:{name:'Hold',desc:'Stay in formation. Archers shoot, melee waits for the enemy.',zone:0,heroZone:70},
- defend:{name:'Defend',desc:'Fight as one around the banner, then return.',zone:170,heroZone:200},
- charge:{name:'Charge',desc:'Hunt enemies anywhere on the map.',zone:9999,heroZone:9999}};
+/* ---------- formation: rows around the banner, facing up the road ---------- */
+const FORM={perRow:8,gap:18,row:16,groupGap:6,lead:8};
+const formGroup=u=>u.type==='ranged'||u.type==='healer'?1:u.type==='siege'?2:0;     // 0 front (melee, heavy, pets), 1 ranged and healers, 2 siege
+function bannerFacing(pt){ // towards the nearest upstream point of the road
+ const P=S.path; let best=0,bd=1e9,bt=0;
+ for(let i=0;i<P.length-1;i++){ const a=P[i], b=P[i+1], vx=b.x-a.x, vy=b.y-a.y, L=vx*vx+vy*vy||1, t=clamp(((pt.x-a.x)*vx+(pt.y-a.y)*vy)/L,0,1), d=Math.hypot(a.x+vx*t-pt.x,a.y+vy*t-pt.y); if(d<bd){bd=d;best=i;bt=t;} }
+ let i=best, px=P[i].x+(P[i+1].x-P[i].x)*bt, py=P[i].y+(P[i+1].y-P[i].y)*bt, left=60;   // walk 60 upstream
+ while(left>0&&i>=0){ const d=Math.hypot(px-P[i].x,py-P[i].y); if(d>=left){ px+=(P[i].x-px)*left/d; py+=(P[i].y-py)*left/d; left=0; } else { left-=d; px=P[i].x; py=P[i].y; i--; } }
+ let fx=px-pt.x, fy=py-pt.y, n=Math.hypot(fx,fy); if(n<1){ fx=P[0].x-pt.x; fy=P[0].y-pt.y; n=Math.hypot(fx,fy)||1; } return {x:fx/n,y:fy/n}; }
+function layoutFormation(R0,units,heroes){
+ const f=bannerFacing(R0), p={x:-f.y,y:f.x}, slots={}, G=[[],[],[]];
+ units.forEach(u=>G[formGroup(u)].push(u));
+ let off=FORM.lead, front=0;
+ G.forEach((g,gi)=>{ if(!g.length) return; for(let r0=0;r0<g.length;r0+=FORM.perRow){ const row=g.slice(r0,r0+FORM.perRow), n=row.length; if(gi===0&&r0===0) front=n;
+   row.forEach((u,c)=>{ const lat=(c-(n-1)/2)*FORM.gap; slots[u.id]={x:clamp(R0.x+f.x*off+p.x*lat,12,WW-12),y:clamp(R0.y+f.y*off+p.y*lat,40,WH-10),g:gi}; }); off-=FORM.row; } off-=FORM.groupGap; });
+ heroes.forEach((h,k)=>{ const side=k%2?1:-1, lat=side*(Math.max(front,1)-1)/2*FORM.gap+side*(22+Math.floor(k/2)*FORM.gap);
+  slots[h.id]={x:clamp(R0.x+f.x*FORM.lead+p.x*lat,12,WW-12),y:clamp(R0.y+f.y*FORM.lead+p.y*lat,40,WH-10),g:3}; });
+ return {slots,f}; }
+function refreshFormation(){ const F=layoutFormation(S.rally,S.units.filter(u=>u.type!=='worker'),S.heroes.filter(h=>h.follow!==false)); S.slots=F.slots; S.facing=F.f; }
+function formationSpot(u){ return (S.slots&&S.slots[u.id])||{x:S.rally.x,y:S.rally.y}; }
+const STANCES={hold:{name:'Hold the line',desc:'Stay in formation. Melee guard 45 around their spot, ranged fire at anything in range. Nobody chases.',guard:45,heroZone:70},
+ defend:{name:'Defend',desc:'Hold formation until an enemy enters the zone around the banner, then fight freely inside it.',zone:170,heroZone:200},
+ charge:{name:'Charge',desc:'Fight your way to the banner, attacking everything on the way, then hold there.',aggro:50,hold:120}};
 function soldierAI(u,dt){
- u.retarget-=dt;
- if(!u.anchor||Math.random()<dt) u.anchor=formationSpot(u);
+ u.retarget-=dt; u.anchor=formationSpot(u);
  if(u.march){ // march together at the pace of the slowest soldier; only fight back if something is in reach
   const adj=pickEnemy(u,'nearest',u.range+u.r+10);
   if(adj){ engage(u,adj,dt); return; }
   const sp=u.speed; u.speed=Math.min(sp,S.marchSpeed||sp); const ok=step(u,u.anchor.x,u.anchor.y,dt,5); u.speed=sp;
   if(ok||S.time-S.marchAt>14) u.march=false; return;
  }
- const st=S.stance, R0=S.rally;
+ const st=S.stance, R0=S.rally, A=u.anchor, melee=formGroup(u)===0, H=STANCES.hold.guard, C=STANCES.charge;
  let t=u.target;
- const zoneOK=e=> st==='charge' ? true : st==='hold' ? dist(e,u.anchor)<=u.range+u.r+e.r+34 : dist(e,R0)<=STANCES.defend.zone+60;
+ const hitBy=u.hitBy&&!u.hitBy.dead&&S.time-u.hitAt<4?u.hitBy:null;
+ const zoneOK=e=> (!melee&&edgeDist(u,e)<=u.range+6) || (st==='defend'&&e===hitBy) || (st==='hold' ? (melee&&dist(e,A)<=H+e.r+10)
+  : st==='defend' ? dist(e,R0)<=STANCES.defend.zone+60 : (dist(e,u)<=u.range+u.r+C.aggro+30||dist(e,R0)<=C.hold+30));
  if(t&&(t.dead||!zoneOK(t))) t=u.target=null;
  if(!t||u.retarget<=0){ u.retarget=.35;
-  const c= st==='charge' ? pickEnemy(u,S.mode,9999) : st==='hold' ? pickEnemy(u,S.mode,u.range+u.r+30,u.anchor) : pickEnemy(u,S.mode,STANCES.defend.zone,R0);
-  if(c) t=u.target=c; }
- if(t){ if(st==='hold'&&edgeDist(u,t)>u.range){ step(u,u.anchor.x,u.anchor.y,dt,3); u.face=t.x>=u.x?1:-1; } else engage(u,t,dt); }
- else step(u,u.anchor.x,u.anchor.y,dt,3);
+  const c= st==='hold' ? (melee?pickEnemy(u,S.mode,H,A):pickEnemy(u,S.mode,u.range+u.r,u))
+   : st==='defend' ? pickEnemy(u,S.mode,STANCES.defend.zone,R0)
+   : (pickEnemy(u,S.mode,u.range+u.r+C.aggro,u)||pickEnemy(u,S.mode,C.hold,R0));
+  // ranged always fire at anything in range from where they stand; on Defend, strike back at an attacker just outside the zone
+  const c2=c||(!melee?pickEnemy(u,S.mode,u.range+u.r,u):null)||(st==='defend'&&hitBy&&dist(hitBy,R0)<=STANCES.defend.zone+140?hitBy:null);
+  if(c2) t=u.target=c2; }
+ if(t){ if(st==='hold'&&!melee&&edgeDist(u,t)>u.range){ step(u,A.x,A.y,dt,3); u.face=t.x>=u.x?1:-1; } else engage(u,t,dt); }   // melee on Hold steps out inside its guard radius
+ else step(u,A.x,A.y,dt,3);
 }
 function moveArmy(){ const mil=S.units.filter(u=>u.type!=='worker');
- S.marchSpeed=mil.length?Math.max(38,Math.min(...mil.map(u=>u.speed))):50; S.marchAt=S.time;
- mil.forEach(u=>{u.march=true; u.target=null; u.anchor=null;});
- S.heroes.forEach(h=>{ if(h.follow!==false&&!h.dead){ const k=S.heroes.indexOf(h); h.moveTo={x:clamp(S.rally.x+(k-1)*22,12,WW-12),y:clamp(S.rally.y-26,40,WH-10)}; h.focus=null; h.target=null; } });
+ S.marchSpeed=mil.length?Math.max(38,Math.min(...mil.map(u=>u.speed))):50; S.marchAt=S.time; refreshFormation();
+ const ch=S.stance==='charge';   // Charge: dragging sets where the army pushes to (attack-move); Hold/Defend: march, ignoring enemies unless attacked
+ mil.forEach(u=>{u.march=!ch; u.target=null;});
+ S.heroes.forEach(h=>{ if(h.follow!==false&&!h.dead){ h.moveTo=ch?null:{...formationSpot(h)}; h.focus=null; h.target=null; } });
  S.zoneShow=2; }
 function setStance(st){ S.stance=st; S.zoneShow=2; [...S.units,...S.heroes].forEach(u=>{u.target=null;u.retarget=0;}); uiDirty=true;
  const b=$('#stanceBtn'); if(b) b.innerHTML=stanceIcon(st)+`<b>${STANCES[st].name}</b>`; }
@@ -1267,10 +1288,19 @@ function heroAI(h,dt){
  if(h.ghostT>0) h.ghostT-=dt; tickBuffs(h,dt); h.atkT-=dt; h.atk=Math.max(0,h.atk-dt*4); h.flash=Math.max(0,h.flash-dt);
  if(hasG(h,'tusk')) h.hp=Math.min(h.maxHp,h.hp+h.maxHp*GEAR.tusk.regen*dt);
  h.autoT=(h.autoT||0)-dt; if(h.autoT<=0){h.autoT=.3; autoCast(h);}
+ const fol=h.follow!==false; if(fol) h.anchor=formationSpot(h);   // heroes stand at the ends of the front row unless moved away
  if(h.moveTo){ if(step(h,h.moveTo.x,h.moveTo.y,dt,4)){h.anchor={x:h.moveTo.x,y:h.moveTo.y};h.moveTo=null;} return; }
+ const st=S.stance, R0=S.rally, C=STANCES.charge;
  let t=(h.focus&&!h.focus.dead)?h.focus:null;
- if(!t){ h.focus=null; h.retarget-=dt; t=h.target; if(t&&(t.dead||(S.stance!=='charge'&&dist(t,h.anchor)>STANCES[S.stance].heroZone+70))) t=h.target=null;
-  if(!t||h.retarget<=0){h.retarget=.35; const Z=STANCES[S.stance].heroZone; const c=pickEnemy(h,S.mode,Z,Z>2000?h:h.anchor); if(c) t=h.target=c;} }
+ if(!t){ h.focus=null; h.retarget-=dt; t=h.target;
+  const hb=h.hitBy&&!h.hitBy.dead&&S.time-h.hitAt<4?h.hitBy:null, rng=h.range>=100;
+  const ok=e=> (rng&&edgeDist(h,e)<=h.range+6) || (st!=='hold'&&e===hb) || (st==='hold'?dist(e,h.anchor)<=STANCES.hold.heroZone+70 : st==='defend'?(fol?dist(e,R0)<=STANCES.defend.zone+60:dist(e,h.anchor)<=STANCES.defend.heroZone+70) : (dist(e,h)<=h.range+C.aggro+40||dist(e,fol?R0:h.anchor)<=C.hold+30));
+  if(t&&(t.dead||!ok(t))) t=h.target=null;
+  if(!t||h.retarget<=0){h.retarget=.35;
+   const c= st==='hold'?pickEnemy(h,S.mode,STANCES.hold.heroZone,h.anchor) : st==='defend'?(fol?pickEnemy(h,S.mode,STANCES.defend.zone,R0):pickEnemy(h,S.mode,STANCES.defend.heroZone,h.anchor))
+    : (pickEnemy(h,S.mode,h.range+C.aggro,h)||pickEnemy(h,S.mode,C.hold,fol?R0:h.anchor));
+   const c2=c||(rng?pickEnemy(h,S.mode,h.range+h.r,h):null)||(st!=='hold'&&hb&&dist(hb,h)<=h.range+160?hb:null);
+   if(c2) t=h.target=c2;} }
  if(t) engage(h,t,dt);
  else { step(h,h.anchor.x,h.anchor.y,dt,3); h.hp=Math.min(h.maxHp,h.hp+h.maxHp*.012*dt); }
 }
@@ -1885,9 +1915,16 @@ function draw(){
  // army zone preview (after stance change or banner move)
  if(S.zoneShow>0||(drag&&drag.kind==='rally')){ const a=Math.min(1,Math.max(S.zoneShow,drag&&drag.kind==='rally'?1:0)); c.save(); c.setLineDash([5,5]); c.lineWidth=1.6;
   if(S.stance==='defend'){ c.strokeStyle=`rgba(255,211,106,${.8*a})`; c.fillStyle=`rgba(255,211,106,${.08*a})`; c.beginPath(); c.ellipse(S.rally.x,S.rally.y,STANCES.defend.zone,STANCES.defend.zone*.5,0,0,TAU); c.fill(); c.stroke(); }
-  else if(S.stance==='hold'){ c.strokeStyle=`rgba(140,200,255,${.8*a})`; S.units.forEach(u=>{ if(u.type==='worker'||!u.anchor) return; const R=u.range+u.r+30; c.beginPath(); c.ellipse(u.anchor.x,u.anchor.y,R,R*.5,0,0,TAU); c.stroke(); }); }
-  else { c.strokeStyle=`rgba(255,110,90,${.8*a})`; c.beginPath(); c.ellipse(S.rally.x,S.rally.y,40,18,0,0,TAU); c.stroke(); c.setLineDash([]); for(let k=0;k<3;k++){ c.beginPath(); c.moveTo(S.rally.x-12+k*12,S.rally.y-30); c.lineTo(S.rally.x-12+k*12,S.rally.y-60); c.lineTo(S.rally.x-17+k*12,S.rally.y-54); c.moveTo(S.rally.x-12+k*12,S.rally.y-60); c.lineTo(S.rally.x-7+k*12,S.rally.y-54); c.stroke(); } }
+  else if(S.stance==='hold'){ c.strokeStyle=`rgba(140,200,255,${.8*a})`; const H=STANCES.hold.guard; S.units.forEach(u=>{ if(u.type==='worker'||formGroup(u)!==0) return; const A=formationSpot(u); c.beginPath(); c.ellipse(A.x,A.y,H,H*.5,0,0,TAU); c.stroke(); }); }
+  else { const mil=S.units.filter(u=>u.type!=='worker'); if(mil.length){ const cx=mil.reduce((q,u)=>q+u.x,0)/mil.length, cy=mil.reduce((q,u)=>q+u.y,0)/mil.length, L=Math.hypot(S.rally.x-cx,S.rally.y-cy);
+    if(L>20){ const ux=(S.rally.x-cx)/L, uy=(S.rally.y-cy)/L, ex=S.rally.x-ux*14, ey=S.rally.y-uy*14; c.setLineDash([]); c.strokeStyle=`rgba(255,110,90,${.85*a})`; c.lineWidth=3; c.beginPath(); c.moveTo(cx,cy); c.lineTo(ex,ey); c.stroke();
+     c.fillStyle=`rgba(255,110,90,${.85*a})`; poly(c,[[ex+ux*10,ey+uy*10],[ex-uy*7,ey+ux*7],[ex+uy*7,ey-ux*7]]); c.fill(); } }
+   c.strokeStyle=`rgba(255,110,90,${.8*a})`; c.lineWidth=1.6; c.setLineDash([5,5]); c.beginPath(); c.ellipse(S.rally.x,S.rally.y,STANCES.charge.hold,STANCES.charge.hold*.5,0,0,TAU); c.stroke(); }
   c.restore(); }
+ // while dragging the banner: faint slot markers at the drop point, rotated to the new facing
+ if(drag&&drag.kind==='rally'&&S.slots){ const col=['rgba(255,140,110,.75)','rgba(120,190,255,.75)','rgba(255,211,106,.8)','rgba(255,230,160,.85)'];
+  for(const id in S.slots){ const q=S.slots[id]; c.fillStyle=col[q.g]; ell(c,q.x,q.y,4.2,2); }
+  if(S.facing){ c.strokeStyle='rgba(255,211,106,.8)'; c.lineWidth=1.5; c.beginPath(); c.moveTo(S.rally.x,S.rally.y); c.lineTo(S.rally.x+S.facing.x*34,S.rally.y+S.facing.y*34); c.stroke(); } }
  // boss telegraphs
  S.enemies.forEach(e=>{ if(!e.wind) return; const d=ENEMIES[e.type], k=1-e.wind.t/e.wind.max;
   if(e.wind.kind==='slam'){ c.fillStyle=`rgba(255,70,50,${.12+k*.22})`; c.beginPath(); c.ellipse(e.x,e.y,d.slam.r,d.slam.r*.45,0,0,TAU); c.fill();
@@ -2217,7 +2254,10 @@ $('#sheetBody').addEventListener('click',e=>{
 $('#sheetClose').onclick=closeSheet;
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>openTab(b.dataset.tab));
 $('#waveBtn').onclick=()=>{ if(mode!=='play') return; if(S.waveState==='idle'||S.waveState==='countdown') startWave(); };
-$('#stanceBtn').onclick=()=>{ if(mode!=='play') return; const o=['defend','hold','charge'], st=o[(o.indexOf(S.stance)+1)%3]; setStance(st); sfx(st==='charge'?'horn':'click'); toast(`${STANCES[st].name}: ${STANCES[st].desc}`); };
+$('#stanceBtn').onclick=()=>{ if(mode!=='play') return; const o=['defend','hold','charge'], st=o[(o.indexOf(S.stance)+1)%3]; setStance(st); sfx(st==='charge'?'horn':'click');
+ if(!PROG.stanceHelp){ PROG.stanceHelp=true; store.set('prog',PROG); paused=true;
+  showModal(`<h2>Stances</h2>${['hold','defend','charge'].map(k=>`<div class="erow"><span class="ic stic">${stanceIcon(k)}</span><span><b>${STANCES[k].name}${k==='defend'?' (default)':''}</b><small>${STANCES[k].desc}</small></span></div>`).join('')}<p class="hint" style="margin-top:8px">Drag the banner to choose where the army stands. On Charge, it fights its way there.</p><div class="row"><button class="mbtn pri" data-m="resume">Got it</button></div>`); }
+ else toast(`${STANCES[st].name}: ${STANCES[st].desc}`); };
 $('#targetBtn').onclick=()=>{ const m=['nearest','weakest','strongest']; S.mode=m[(m.indexOf(S.mode)+1)%3]; S.heroes.forEach(h=>{h.target=null;h.retarget=0;}); S.units.forEach(u=>{u.target=null;u.retarget=0;}); sfx('click'); uiDirty=true; toast(`Target: ${S.mode}`); };
 // ability buttons: tap = cast, hold = toggle autocast
 document.querySelectorAll('.ab').forEach(b=>{ let t0=0,timer=null,fired=false;
@@ -2258,7 +2298,7 @@ window.addEventListener('pointermove',e=>{
  if(!drag.moved) return;
  const g=$('#dragGhost'); if(g){g.style.left=e.clientX+'px'; g.style.top=e.clientY+'px';}
  const w=worldAt(e.clientX,e.clientY); drag.wx=clamp(w.x,10,WW-10); drag.wy=clamp(w.y,40,WH-10); drag.inside=w.inside;
- if(drag.kind==='rally'){ S.rally.x=clamp(w.x,20,WW-20); S.rally.y=clamp(w.y,90,WH-60); }
+ if(drag.kind==='rally'){ S.rally.x=clamp(w.x,20,WW-20); S.rally.y=clamp(w.y,90,WH-60); refreshFormation(); }
 });
 function endDrag(e){
  if(!drag) return; const d=drag; drag=null; const g=$('#dragGhost'); if(g) g.remove();
@@ -2485,7 +2525,7 @@ function mapTap(x,y){
   if(c.k==='b'){ openRing({kind:'b',obj:c.o}); return; }
   if(c.k==='plot'){ S.selPlot=c.o.i; openRing({kind:'plot',obj:c.o}); return; }
  }
- if(h&&!h.dead){ h.moveTo={x:clamp(x,10,WW-10),y:clamp(y,40,WH-10)}; h.focus=null; h.target=null; S.marker={x:h.moveTo.x,y:h.moveTo.y,t:.8}; S.heroMoved=true; sfx('click'); }
+ if(h&&!h.dead){ h.moveTo={x:clamp(x,10,WW-10),y:clamp(y,40,WH-10)}; h.follow=false; h.focus=null; h.target=null; S.marker={x:h.moveTo.x,y:h.moveTo.y,t:.8}; S.heroMoved=true; sfx('click'); }
 }
 
 /* =====================================================================
@@ -2647,7 +2687,7 @@ const HOWTO=`<h2>How to play</h2><ul>
 <li>Tap an <b>empty plot</b> to build. Farms raise your food cap, which limits army size.</li>
 <li>Recruit heroes and soldiers in <b>Army</b> once the Barracks is up. Heroes level up from nearby kills and unlock a third ability at level 3.</li>
 <li>At levels 3, 6 and 9 a hero can learn a <b>talent</b>: tap the portrait with the gold <b>!</b> and pick one of two (tap twice). Talents last for the battle.</li>
-<li>Drag the <b>banner</b> to march your whole army together. The <b>stance</b> button sets how they fight: Hold waits in formation, Defend fights as a group around the banner, Charge hunts anywhere.</li>
+<li>Drag the <b>banner</b> to move your army. It lines up facing the road: melee in front, ranged and healers behind, siege at the back, heroes at the ends of the front row. The <b>stance</b> button sets how they fight: <b>Hold the line</b> braces in formation (melee guard their spot), <b>Defend</b> fights freely once enemies enter the zone around the banner, <b>Charge</b> fights its way to the banner.</li>
 <li>Bosses drop <b>gear</b> the first time you beat them. Equip it in the <b>Armory</b> (battle list or briefing): one item per hero.</li>
 <li>Tap the ground to move your hero. Tap an enemy to focus it. <b>Target</b> switches between nearest, weakest and strongest for everyone.</li>
 <li>Upgrade gear at the <b>Forge</b>. Upgrade the Town Center to a Keep for elite units and higher forge levels.</li>
@@ -2691,7 +2731,7 @@ function frame(now){
 new ResizeObserver(()=>resize()).observe(stage);
 resize(); newGame(chosenRace);
 requestAnimationFrame(frame);
-if(/[?&]debug/.test(location.search)) window.__IC={saveRun,restoreRun,specTower,snapshot,clearW:()=>{for(const k in WCACHE) delete WCACHE[k];},trainUnit,trainWorker,forgeUp,upgradeKeep,setJob,setStance,foodCap,foodUsed,waveDef,genWave,MAPS,PROG_SET:p=>{PROG=normProg(p);},startMap,showMaps,get PROG(){return PROG;},tick:n=>{for(let i=0;i<n;i++)update(.05);},get S(){return S;},startWave,tryBuild,recruitHero,assignWorker,setMode:m=>mode=m,reseed:n=>{Math.random=mulberry(n);},showChronicle,talentPending,pickTalent,TALENTS,grantXP,GEAR,equipGear,showArmory};
+if(/[?&]debug/.test(location.search)) window.__IC={saveRun,restoreRun,specTower,snapshot,clearW:()=>{for(const k in WCACHE) delete WCACHE[k];},trainUnit,trainWorker,forgeUp,upgradeKeep,setJob,setStance,foodCap,foodUsed,waveDef,genWave,MAPS,PROG_SET:p=>{PROG=normProg(p);},startMap,showMaps,get PROG(){return PROG;},tick:n=>{for(let i=0;i<n;i++)update(.05);},get S(){return S;},startWave,tryBuild,recruitHero,assignWorker,setMode:m=>mode=m,moveArmy,refreshFormation,reseed:n=>{Math.random=mulberry(n);},showChronicle,talentPending,pickTalent,TALENTS,grantXP,GEAR,equipGear,showArmory};
 })();
 </script>
 <script>
