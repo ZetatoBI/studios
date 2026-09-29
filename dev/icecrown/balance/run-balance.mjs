@@ -50,9 +50,8 @@ for (const m of maps) {
     for (let i = 0; i < runs; i++) {
       await page.evaluate(s => __IC.reseed(s), SEED + i);
       const r = await page.evaluate(`(${BOT})(${JSON.stringify({ map: m, prog, workers: 12, keepAt: 5 })})`);
-      r.stuck = await page.evaluate(() => __IC.S.antiStuck || 0);
       rows.push(`${r.won ? 'WON ' : 'LOST'} wave ${r.wave}/${r.of}  minTC ${r.minTC}%  soldiersLost ${r.lost}  heroDeaths ${r.deaths}  ${r.min}min` +
-        (r.share != null ? `  heroShare ${r.share}% (w${r.shareWave})` : '') + `  antiStuck ${r.stuck}`);
+        (r.share != null ? `  heroShare ${r.share}% (w${r.shareWave})` : '') + `  antiStuck ${r.stuck}  minWorkers ${r.minW ?? '-'}  masterwork ${r.master}${r.castle ? '' : '  (no castle)'}`);
     }
     console.log(`\n${['Iron: Frostmere', 'Bronze: Hollow Pass', 'Silver: Whitefang', 'Gold: Ice Crown'][m] || 'map ' + m} | ${name}`);
     rows.forEach(x => console.log('  ' + x));

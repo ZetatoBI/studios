@@ -599,21 +599,21 @@ const MAPS=[
   plots:[{x:106,y:386},{x:316,y:386},{x:126,y:534},{x:290,y:536},{x:56,y:318},{x:366,y:318},{x:120,y:290},{x:300,y:290}],
   road:[[210,64],[224,150],[198,250],[222,350],[210,440]],
   list:[[['wolf',4],['goblin',2]],[['goblin',6],['gobArcher',2]],[['wolf',6],['goblin',3],['gobArcher',2]],[['skeleton',4],['goblin',4],['gobArcher',2]],[['wolf',8],['skeleton',4]],[['wolf',4],['goblin',4],['trollKing',1]]]},
- {id:'hollow',tier:'Bronze',name:'Hollow Pass',need:2,waves:16,hp:1,dmg:1,mod:'finite',mineGold:9000,seed:2,b0:5,bg:.36,gm:7,hm:2,lateK:1.1,themes:['horde','dead','pack','heavy','mixed'],unlock:{gobArcher:1,skeleton:3,troll:5,shaman:4,knight:11},bosses:{8:'trollKing',16:'giant'},
+ {id:'hollow',tier:'Bronze',name:'Hollow Pass',need:2,waves:16,hp:1,dmg:1,mod:'finite',mineGold:9000,seed:2,b0:5,bg:.36,gm:9,hm:2.7,lateK:1.2,themes:['horde','dead','pack','heavy','mixed'],unlock:{gobArcher:1,skeleton:3,troll:5,shaman:4,knight:11},bosses:{8:'trollKing',16:'giant'},
   story:'High in the Greyspine, an old dwarf hold guards the only pass south. Its gold seam is rich but will not last. Grimhorn the Frost Giant is marching to break the gate.',
   twist:'The mine holds 9,000 gold, then it is gone. Spend it wisely.',
   portal:{x:300,y:62},tc:{x:150,y:482},mine:{x:356,y:470},woods:{x0:26,x1:80,y0:392,y1:552,n:10},rally:{x:215,y:300},
   plots:[{x:262,y:404},{x:262,y:534},{x:112,y:360},{x:196,y:374},{x:318,y:284},{x:118,y:270},{x:330,y:380}],
   road:[[300,62],[282,160],[236,250],[184,352],[152,442]],
   list:[[['goblin',6],['wolf',2]],[['gobArcher',4],['goblin',4]],[['skeleton',5],['wolf',4]],[['troll',1],['goblin',8]],[['skeleton',6],['gobArcher',4],['troll',1]],[['wolf',10],['troll',2]],[['skeleton',8],['gobArcher',6]],[['goblin',8],['skeleton',4],['giant',1]]]},
- {id:'whitefang',tier:'Silver',name:'Whitefang Wood',need:5,waves:20,hp:1.1,dmg:1.05,mod:'blizzard',mineGold:9000,seed:3,b0:5,bg:.38,gm:5.3,hm:1.95,lateK:1.25,themes:['pack','pack','horde','heavy','dead','mixed'],unlock:{gobArcher:2,skeleton:3,troll:4,shaman:5,knight:9},bosses:{10:'giant',20:'wyrm'},
+ {id:'whitefang',tier:'Silver',name:'Whitefang Wood',need:5,waves:20,hp:1.1,dmg:1.05,mod:'blizzard',mineGold:9000,seed:3,b0:5,bg:.38,gm:6.8,hm:2.7,lateK:1.4,themes:['pack','pack','horde','heavy','dead','mixed'],unlock:{gobArcher:2,skeleton:3,troll:4,shaman:5,knight:9},bosses:{10:'giant',20:'wyrm'},
   story:'The wolves of Whitefang have turned. Deep in the old forest, a woodcutters\u2019 camp sits on a poor gold vein while the sky itself fights for the frost. Vyrnax the Frost Wyrm circles above.',
   twist:'Blizzards sweep in regularly and slow everyone. Lumber is plentiful, gold is scarce.',
   portal:{x:120,y:62},tc:{x:268,y:482},mine:{x:52,y:392},woods:{x0:330,x1:410,y0:330,y1:470,n:15},rally:{x:190,y:300},
   plots:[{x:150,y:480},{x:176,y:384},{x:290,y:292},{x:84,y:492},{x:176,y:540},{x:62,y:276},{x:300,y:210},{x:100,y:330}],
   road:[[120,62],[148,168],[204,262],[248,362],[268,444]],
   list:[[['wolf',6],['goblin',2]],[['wolf',6],['gobArcher',3]],[['wolf',8],['goblin',4],['gobArcher',3]],[['skeleton',6],['gobArcher',4],['troll',1]],[['goblin',6],['skeleton',4],['giant',1]],[['wolf',12],['skeleton',6],['troll',2]],[['gobArcher',8],['skeleton',8],['troll',2]],[['wolf',14],['goblin',8],['troll',3]],[['skeleton',12],['gobArcher',8],['troll',4]],[['wolf',8],['troll',3],['wyrm',1]]]},
- {id:'icecrown',tier:'Gold',name:'The Ice Crown',need:8,waves:24,hp:1.22,dmg:1.12,mod:'night',mineGold:14000,seed:4,b0:5.5,bg:.4,gm:2.9,hm:1.75,lateK:1.3,themes:['dead','heavy','horde','pack','mixed','dead'],unlock:{gobArcher:1,skeleton:1,troll:3,shaman:3,knight:6},bosses:{8:'trollKing',14:'giant',19:'wyrm',24:'lich'},
+ {id:'icecrown',tier:'Gold',name:'The Ice Crown',need:8,waves:24,hp:1.22,dmg:1.12,mod:'night',mineGold:14000,seed:4,b0:5.5,bg:.4,gm:3.2,hm:1.98,lateK:1.3,themes:['dead','heavy','horde','pack','mixed','dead'],unlock:{gobArcher:1,skeleton:1,troll:3,shaman:3,knight:6},bosses:{8:'trollKing',14:'giant',19:'wyrm',24:'lich'},
   story:'At the roof of the world stands the throne of the frost. Hrimgar, the Pale King, has worn the Ice Crown for a thousand winters. End the endless night: break his siege, and the crown with it.',
   twist:'Eternal night: raiders move 10% faster. Every boss returns for a final stand.',
   portal:{x:210,y:60},tc:{x:210,y:492},mine:{x:46,y:470},woods:{x0:356,x1:412,y0:420,y1:552,n:10},rally:{x:210,y:330},
@@ -911,8 +911,9 @@ function step(a,x,y,dt,tol,seek){
  // steer around buildings and the mine that sit on the straight path (never around the destination itself)
  if(a.type!=='worker'&&!(a.ghostT>0)){ let sx=0, sy=0;
   const avoid=(ox,oy,orr)=>{ const rx=ox-a.x, ry=oy-a.y, along=rx*ux+ry*uy; if(along<=0||along>d) return;
-   if(Math.hypot(ox-x,oy-y)<orr+(tol||2)+8) return; const lat=rx*uy-ry*ux, R=orr*.75+a.r*.5+6; if(Math.abs(lat)>=R||along>R+40) return;
-   const w=(R-Math.abs(lat))/R, sg=lat>0?1:-1; sx+=-uy*sg*w; sy+=ux*sg*w; };   // lat>0: obstacle on the left, steer right
+   if(Math.hypot(ox-x,oy-y)<orr*.75+(tol||2)+2) return;   // heading into this building (e.g. attacking it)
+   const lat=rx*uy-ry*ux, R=orr*.75+a.r*.5+6; if(Math.abs(lat)>=R||along>R+40) return;
+   const w=(R-Math.abs(lat))/R, sg=Math.abs(lat)<3?(a.side||(a.side=1)):(a.side=lat>0?1:-1); sx+=-uy*sg*w; sy+=ux*sg*w; };   // lat>0: obstacle on the left, steer right
   for(const b of S.buildings) if(!b.dead) avoid(b.x,b.y,b.r); avoid(MINE.x,MINE.y,MINE.r);
   if(sx||sy){ ux+=sx*1.6; uy+=sy*1.6; const n=Math.hypot(ux,uy)||1; ux/=n; uy/=n; } }
  const k=Math.min(v,d);
@@ -1268,6 +1269,9 @@ function layoutFormation(R0,units,heroes){
    row.forEach((u,c)=>{ const lat=(c-(n-1)/2)*FORM.gap; slots[u.id]={x:clamp(R0.x+f.x*off+p.x*lat,12,WW-12),y:clamp(R0.y+f.y*off+p.y*lat,40,WH-10),g:gi}; }); off-=FORM.row; } off-=FORM.groupGap; });
  heroes.forEach((h,k)=>{ const side=k%2?1:-1, lat=side*(Math.max(front,1)-1)/2*FORM.gap+side*(22+Math.floor(k/2)*FORM.gap);
   slots[h.id]={x:clamp(R0.x+f.x*FORM.lead+p.x*lat,12,WW-12),y:clamp(R0.y+f.y*FORM.lead+p.y*lat,40,WH-10),g:3}; });
+ // a slot inside a building or the mine is unreachable: nudge it just outside
+ const obs=S.buildings.filter(b=>!b.dead).map(b=>[b.x,b.y,b.r*.75+8]).concat([[MINE.x,MINE.y,MINE.r+6]]);
+ for(const id in slots){ const q=slots[id]; for(const [ox,oy,R] of obs){ const dx=q.x-ox, dy=q.y-oy, d=Math.hypot(dx,dy); if(d<R){ const k=d>.5?R/d:1; q.x=clamp(ox+(d>.5?dx:0)*k,12,WW-12); q.y=clamp(oy+(d>.5?dy*k:R),40,WH-10); } } }
  return {slots,f}; }
 function refreshFormation(){ const F=layoutFormation(S.rally,S.units.filter(u=>u.type!=='worker'),S.heroes.filter(h=>h.follow!==false)); S.slots=F.slots; S.facing=F.f; }
 function formationSpot(u){ return (S.slots&&S.slots[u.id])||{x:S.rally.x,y:S.rally.y}; }
@@ -2807,13 +2811,13 @@ function frame(now){
 new ResizeObserver(()=>resize()).observe(stage);
 resize(); newGame(chosenRace);
 requestAnimationFrame(frame);
-if(/[?&]debug/.test(location.search)) window.__IC={saveRun,restoreRun,specTower,snapshot,clearW:()=>{for(const k in WCACHE) delete WCACHE[k];},trainUnit,trainWorker,forgeUp,upgradeKeep,setJob,setStance,foodCap,foodUsed,waveDef,genWave,MAPS,PROG_SET:p=>{PROG=normProg(p);},startMap,showMaps,get PROG(){return PROG;},tick:n=>{for(let i=0;i<n;i++)update(.05);},get S(){return S;},startWave,tryBuild,recruitHero,assignWorker,setMode:m=>mode=m,moveArmy,refreshFormation,upgradeCastle,buyMasterwork,reseed:n=>{Math.random=mulberry(n);},showChronicle,talentPending,pickTalent,TALENTS,grantXP,GEAR,equipGear,showArmory};
+if(/[?&]debug/.test(location.search)) window.__IC={saveRun,restoreRun,specTower,snapshot,clearW:()=>{for(const k in WCACHE) delete WCACHE[k];},trainUnit,trainWorker,forgeUp,upgradeKeep,setJob,setStance,foodCap,foodUsed,waveDef,genWave,MAPS,PROG_SET:p=>{PROG=normProg(p);},startMap,showMaps,get PROG(){return PROG;},tick:n=>{for(let i=0;i<n;i++)update(.05);},get S(){return S;},startWave,tryBuild,recruitHero,assignWorker,setMode:m=>mode=m,moveArmy,refreshFormation,upgradeCastle,buyMasterwork,forgeCost,masterCost,reseed:n=>{Math.random=mulberry(n);},showChronicle,talentPending,pickTalent,TALENTS,grantXP,GEAR,equipGear,showArmory};
 })();
 </script>
 <script>
 /* Ice Crown PWA: offline worker with silent updates, plus the install hint. */
 (function(){
- var VERSION='1.4.0';
+ var VERSION='1.5.0';
  var v=document.getElementById('verLbl'); if(v) v.textContent='Ice Crown v'+VERSION+' beta';
  // Silent updates: the worker fetches the newest game page whenever online, so the next open is always current.
  if('serviceWorker' in navigator && location.protocol!=='file:'){
