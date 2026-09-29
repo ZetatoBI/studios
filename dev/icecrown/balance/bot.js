@@ -1,7 +1,8 @@
 // Ice Crown balance bot: plays one map like a solid average player (economy, build order, all heroes with
 // autocast, forge upgrades, steady army). No micro, stances or focus fire, so a human who uses those should beat it.
+// v1.4: always picks the first talent option; wears no boss gear unless the profile passes prog.gear.
 // Runs inside the game page opened with ?debug (which exposes window.__IC).
-(opts)=>{ const I=__IC; I.PROG_SET(opts.prog); I.startMap(opts.map); const S=()=>I.S;
+(opts)=>{ const I=__IC; I.PROG_SET(Object.assign({gear:{owned:[],equipped:{}}},opts.prog)); I.startMap(opts.map); const S=()=>I.S;
  const heroOrder=['warrior','mage','ranger'], buildOrder=['barracks','farm','forge','farm','farm','tower','farm','tower','farm'];
  let tick=0, log=[], lost=0, minTC=1, prevN=0;
  const cost=(c)=>c.gold<=S().res.gold&&(c.lumber||0)<=S().res.lumber;
@@ -17,12 +18,14 @@
   if(!s.keep&&!s.tc.upg&&s.wave>=opts.keepAt&&s.res.gold>=380&&s.res.lumber>=240) I.upgradeKeep();
   if(s.buildings.some(b=>b.type==='forge'&&b.built)){ for(const k of ['weapons','armor','weapons','armor','arcana']){ if(s.forge[k]<(s.keep?5:3)&&s.res.gold>200&&s.res.lumber>150){ I.forgeUp(k); break; } } }
   if(bar&&bar.queue.length<2&&I.foodUsed()+3<=I.foodCap()){ const n=s.units.filter(u=>u.type!=='worker').length; const k=s.keep&&n%3===0?'heavy':n%2?'ranged':'melee'; if(s.res.gold>=150) I.trainUnit(k); }
+  s.heroes.forEach(h=>{ let t; while((t=I.talentPending(h))>=0) I.pickTalent(h,t,0); });
   s.auto={warrior:[1,1,1],mage:[1,1,1],ranger:[1,1,1]};
  }
  const M=I.MAPS[opts.map]; let guard=0;
  while(!S().over&&guard++<200000){ if(tick%20===0) think(); if(S().waveState==='idle'&&S().wave<M.waves&&tick>20*60) I.startWave();
   const nb=S().units.filter(u=>u.type!=='worker').length; if(nb<prevN) lost+=prevN-nb; prevN=nb; minTC=Math.min(minTC,S().tc.hp/S().tc.maxHp);
   I.tick(1); tick++; if(S().waveState==='idle'&&S().wave===M.waves) break; }
- const s=S(); if(s.over) log.push(JSON.stringify({b:s.buildings.map(b=>b.type+(b.built?'':'*')),res:[Math.round(s.res.gold),Math.round(s.res.lumber)],w:s.units.filter(u=>u.type==='worker').map(u=>u.job).join(','),h:s.heroes.length,mine:s.mineLeft}));
- return {log,map:M.id,wave:s.wave,of:M.waves,won:s.wave===M.waves&&!s.over&&s.tc.hp>0,tc:Math.round(s.tc.hp/s.tc.maxHp*100),army:s.units.filter(u=>u.type!=='worker').length,heroes:s.heroes.map(h=>h.lvl).join('/'),deaths:s.heroDeaths,lost,minTC:Math.round(minTC*100),min:Math.round(tick*0.05/60)};
+ const s=S(), late=Object.entries(s.dmgLog||{}).filter(([n])=>+n>M.waves*2/3&&!M.bosses[+n]).sort((a,b)=>b[1].t-a[1].t)[0];
+ if(s.over) log.push(JSON.stringify({b:s.buildings.map(b=>b.type+(b.built?'':'*')),res:[Math.round(s.res.gold),Math.round(s.res.lumber)],w:s.units.filter(u=>u.type==='worker').map(u=>u.job).join(','),h:s.heroes.length,mine:s.mineLeft}));
+ return {log,map:M.id,wave:s.wave,of:M.waves,won:s.wave===M.waves&&!s.over&&s.tc.hp>0,tc:Math.round(s.tc.hp/s.tc.maxHp*100),army:s.units.filter(u=>u.type!=='worker').length,heroes:s.heroes.map(h=>h.lvl).join('/'),deaths:s.heroDeaths,lost,minTC:Math.round(minTC*100),min:Math.round(tick*0.05/60),share:late?Math.round(late[1].h/late[1].t*100):null,shareWave:late?+late[0]:null};
 }
