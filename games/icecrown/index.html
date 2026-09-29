@@ -233,6 +233,8 @@ button{font:inherit;color:inherit;touch-action:manipulation;cursor:pointer;borde
 .mbox h2{margin:0 0 8px;font-family:Cinzel,serif;font-size:24px}
 .mbox p,.mbox li{font-size:15px;line-height:1.4;color:var(--ink)}
 .mbox ul{padding-left:18px;margin:6px 0}
+.mbox p.mq{font-style:italic;background:var(--panel2);border-left:3px solid var(--gold);padding:8px 10px;border-radius:8px}
+.mbox p.mq b{font-style:normal;font-family:Cinzel,serif;font-size:13px;display:block;color:var(--muted)}
 .mbox .row{display:flex;flex-direction:column;gap:8px;margin-top:14px}
 .mbtn{height:46px;border-radius:12px;background:var(--panel2);font-weight:800;font-size:16px}
 .mbtn.pri{background:var(--accent);color:var(--accent-ink)}
@@ -262,7 +264,22 @@ button{font:inherit;color:inherit;touch-action:manipulation;cursor:pointer;borde
 .qi{display:flex;align-items:center;gap:8px;background:var(--panel2);border-radius:10px;padding:6px 8px;font-weight:700;font-size:14px}
 .qi .qline{flex:1;margin:0}
 .qi button{width:30px;height:30px;border-radius:8px;background:var(--chip);font-weight:800;font-size:16px;color:var(--bad)}
-@media (prefers-reduced-motion:reduce){.pulse,#banner.show,.res.bump{animation:none}#banner.show{opacity:1}}
+#say{position:absolute;left:10px;right:66px;top:80px;display:flex;flex-direction:column;gap:1px;background:rgba(12,22,34,.84);color:#F2F7FB;border-radius:12px;padding:7px 12px 8px;pointer-events:none;z-index:3;box-shadow:0 4px 14px rgba(0,0,0,.3);border-left:3px solid #8FD0FF;opacity:0;transition:opacity .25s}
+#say.show{opacity:1}
+#say.maera{border-left-color:#FFD36A}
+#say b{font-family:Cinzel,serif;font-weight:800;font-size:12px;color:#BFE6FF;letter-spacing:.02em}
+#say.maera b{color:#FFE3A0}
+#say span{font-size:14.5px;font-weight:700;line-height:1.3}
+#story{z-index:27;background:#060C16;justify-content:flex-end;opacity:0;transition:opacity .25s ease}
+#story.show{opacity:1}
+#stCv{position:absolute;inset:0;width:100%;height:100%;display:block}
+#stSkip{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:14px;color:#C4D3E0;font-weight:700;font-size:14px;padding:6px 10px;border-radius:10px;background:rgba(255,255,255,.08);z-index:2}
+.stPanel{position:relative;z-index:1;margin:0 12px calc(14px + env(safe-area-inset-bottom,0px));background:rgba(10,18,30,.9);border:1.5px solid rgba(191,230,255,.22);border-radius:18px;padding:16px 18px 16px;color:#EEF5FB;min-height:33%;display:flex;flex-direction:column;transition:opacity .25s ease}
+.stPanel.fade{opacity:0}
+#stWho{font-family:Cinzel,serif;font-weight:800;font-size:15px;color:#FFE3A0;letter-spacing:.03em}
+#stTxt{margin:10px 0 0;font-size:17px;line-height:1.55;font-weight:500;flex:1}
+#stGo{margin-top:14px}
+@media (prefers-reduced-motion:reduce){.pulse,#banner.show,.res.bump{animation:none}#banner.show{opacity:1}#story,.stPanel,#say{transition:none}}
 </style>
 </head>
 <body>
@@ -279,6 +296,7 @@ button{font:inherit;color:inherit;touch-action:manipulation;cursor:pointer;borde
   <div id="quest"></div>
   <div id="bossBar" hidden><div class="nm" id="bossName"></div><div class="tr"><i id="bossHp"></i></div></div>
   <div id="banner"><h3 id="banTitle"></h3><p id="banSub"></p></div>
+  <div id="say" aria-live="polite"><b id="sayWho"></b><span id="sayTxt"></span></div>
   <section id="sheet" hidden><div class="sheetHead"><h2 id="sheetTitle"></h2><button id="sheetClose" aria-label="Close">×</button></div><div id="sheetBody"></div></section>
   <div id="ring" hidden></div>
   <div id="stageBtns"><button id="pauseBtn" aria-label="Pause"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg></button><button id="speedBtn" aria-label="Game speed"><b>1x</b></button><button id="stanceBtn" aria-label="Army stance"></button><button id="targetBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.2" fill="currentColor"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg><span>Target</span><b id="targetLbl">Nearest</b></button></div>
@@ -329,6 +347,7 @@ button{font:inherit;color:inherit;touch-action:manipulation;cursor:pointer;borde
  </div>
 
  <div id="modal" class="modal" hidden><div class="mbox" id="mbox"></div></div>
+ <div id="story" class="ov" hidden><canvas id="stCv"></canvas><button id="stSkip">Skip</button><div class="stPanel" id="stPanel"><div id="stWho"></div><p id="stTxt"></p><button class="bigbtn" id="stGo">Continue</button></div></div>
 </div>
 <script>
 (function(){
@@ -525,7 +544,8 @@ const UPGRADES={
  granary:{name:'Granary',desc:'+4 food cap',max:2,cost:[1,2]},
  forgemaster:{name:'Forgemaster',desc:'Forge upgrades cost 10% less',max:2,cost:[2,3]}
 };
-function loadProg(){ const p=store.get('prog',{}); p.stars=p.stars||{}; p.ups=p.ups||{}; p.spent=p.spent||0; return p; }
+function normProg(p){ p=p||{}; p.stars=p.stars||{}; p.ups=p.ups||{}; p.spent=p.spent||0; p.story=Array.isArray(p.story)?p.story:[]; if(typeof p.storyOn!=='boolean') p.storyOn=true; return p; }
+function loadProg(){ return normProg(store.get('prog',{})); }
 let PROG=loadProg();
 const totalStars=()=>Object.values(PROG.stars).reduce((a,v)=>a+v.filter(Boolean).length,0);
 const crowns=()=>totalStars()-PROG.spent;
@@ -541,6 +561,48 @@ const QUESTS=[
  {t:'Tap the ground to move your hero; tap an enemy to focus it', done:()=>S.wave>=2||S.heroMoved},
  {t:'Build a <b>Forge</b> and upgrade Weapons', done:()=>S.forge.weapons>0,hl:'forge'}
 ];
+/* ---------- STORY: Maera's cards and boss dialogue (text is final) ---------- */
+const MAERA='Maera, the frost-seer';
+// at: intro | mid | victory | epilogue | defeat. Mid lines are in-battle strips; when = {boss} on arrival or {clear} after that wave.
+// Lines may use {warrior} {mage} {ranger} for the race's hero names.
+const STORY={
+ frostmere:[
+  {id:'frostmere.intro1',at:'intro',text:'The ice sang last night, Warden. By morning a rift had torn open above the Frostmere ford, and things are crawling out of it.'},
+  {id:'frostmere.intro2',at:'intro',text:'The ferry village is all that stands between those raiders and the southern farms. Hold for twelve nights, until the thaw road opens. Light the fires. Raise the banner.'},
+  {id:'frostmere.victory',at:'victory',text:'Skarn went through the ice and did not come up. But look what he dropped: a shard of blue ice that does not melt in my hand. This came from the Ice Crown itself. Someone has woken the Pale King.'},
+  {id:'frostmere.defeat',at:'defeat',text:'The fires went out at Frostmere. Fires can be lit again, Warden.'}],
+ hollow:[
+  {id:'hollow.intro1',at:'intro',text:'The dwarves left Hollow Pass long ago. Their gold seam is still there, rich but not endless. Spend it like it\'s the last gold in the world, because here it is.'},
+  {id:'hollow.intro2',at:'intro',text:'Grimhorn once kept this gate for the dwarves. Three hundred years of loyalty. Now the Crown has him, and he is coming to open it for the Pale King.'},
+  {id:'hollow.mid',at:'mid',when:{boss:'trollKing'},text:'Skarn? We saw him sink! ...The Crown does not let its servants rest, Warden. Break him again.'},
+  {id:'hollow.victory',at:'victory',text:'The carvings behind the gate show the first Wardens sealing Hrimgar. The seal was bound by four hearts of winter. Skarn\'s and Grimhorn\'s are broken. Two remain.'},
+  {id:'hollow.defeat',at:'defeat',text:'The pass is lost, but the mountain remembers who held it. So will I.'}],
+ whitefang:[
+  {id:'whitefang.intro1',at:'intro',text:'The wolves of Whitefang have turned, and the sky over the forest has not been blue in a month. Those storms have wings, Warden. Vyrnax is circling.'},
+  {id:'whitefang.intro2',at:'intro',text:'Plenty of timber here, and almost no gold. And when the blizzard comes, everyone slows: them and us. Plan for it.'},
+  {id:'whitefang.mid',at:'mid',when:{boss:'giant'},text:'Grimhorn again. He looks tired. Let\'s give him his rest.'},
+  {id:'whitefang.victory',at:'victory',text:'The storms have broken, and the road north is clear to the roof of the world. Three hearts of winter are broken. Only one remains: his own.'},
+  {id:'whitefang.defeat',at:'defeat',text:'The wood is lost to the storm. We\'ll come back when the wind turns.'}],
+ icecrown:[
+  {id:'icecrown.intro1',at:'intro',text:'This is where the night begins. Hrimgar has worn the Ice Crown for a thousand winters, and every servant he has ever raised will come down that road for you.'},
+  {id:'icecrown.intro2',at:'intro',text:'Twenty-four waves until dawn. I have walked a long way to see a sunrise, Warden. Don\'t make me miss it.'},
+  {id:'icecrown.mid',at:'mid',when:{clear:12},text:'Halfway to dawn. Look up: the aurora is fading.'},
+  {id:'icecrown.victory',at:'victory',text:'The Ice Crown lies in pieces, and the night is over. Somewhere far to the south, a farmer is watching the snow begin to melt and has no idea why. That\'s how it should be.'},
+  {id:'icecrown.epilogue',at:'epilogue',text:'Not every rift has closed, Warden. I can feel them, out past the edges of the map. Rest while you can.'},
+  {id:'icecrown.defeat',at:'defeat',text:'The night held, this time. The Crown is patient. So are we.'}]
+};
+const BOSS_LINES={
+ trollKing:{arrive:'Little fire-keepers. Skarn will eat your ferry, and your fire.',ret:'Skarn is BACK, fire-keeper.',enrage:'SKARN DOES NOT FALL!',death:'The Crown... promised... no spring...'},
+ giant:{arrive:'I held this gate for three hundred years. Now I hold it for him.',ret:'Again, Warden. Always again.',enrage:'The mountain is MINE!',death:'Free... at last. Tell the dwarves... I\'m sorry.'},
+ wyrm:{arrive:'Your fires are small. Let me show you true cold.',ret:'The storm returns.',enrage:'Burn in the frost!',death:'The sky... is yours. For now.'},
+ lich:{arrive:'A thousand winters I have waited. You are one small candle.',enrage:'Kneel, and be frozen forever!',death:'The crown... cracks... The night... ends...'}
+};
+const storyOf=(mid,at)=>(STORY[mid]||[]).filter(c=>c.at===at);
+const seenStory=id=>PROG.story.includes(id);
+function markStory(id){ if(!seenStory(id)){ PROG.story.push(id); store.set('prog',PROG); } }
+const storyText=t=>t.replace(/\{(warrior|mage|ranger)\}/g,(m,k)=>RACES[S?S.race:chosenRace].heroNames[k]);
+// a boss speaks its "return" line if it already appeared on an earlier map of the campaign
+const bossReturns=type=>MAPS.findIndex(M=>Object.values(M.bosses).includes(type))<mapIdx;
 
 /* =====================================================================
    STATE
@@ -566,7 +628,8 @@ function newGame(race,mi){
   buildings:[],units:[],heroes:[],enemies:[],proj:[],fx:[],texts:[],
   forge:{weapons:0,armor:0,tools:0,arcana:0},keep:false,
   sel:null,mode:'nearest',quest:0,time:0,over:false,endless:false,heroMoved:false,
-  plots:PLOTS.map((p,i)=>({x:p.x,y:p.y,i,b:null})),rally:{x:RALLY.x,y:RALLY.y},stance:'defend',marchSpeed:50,marchAt:0,zoneShow:0,auto:store.get('auto',{}),selPlot:null,marker:null,shake:0,kills:0};
+  plots:PLOTS.map((p,i)=>({x:p.x,y:p.y,i,b:null})),rally:{x:RALLY.x,y:RALLY.y},stance:'defend',marchSpeed:50,marchAt:0,zoneShow:0,auto:store.get('auto',{}),selPlot:null,marker:null,shake:0,kills:0,says:[]};
+ if(typeof sayClear==='function') sayClear();
  S.path=makePath(); S.quest=mapIdx===0?0:QUESTS.length; TREES=makeTrees();
  const tc=makeBuilding('townhall',TCPOS.x,TCPOS.y,-1,true); tc.maxHp*=1+.2*upg('walls'); tc.hp=tc.maxHp; S.buildings.push(tc); S.tc=tc;
  for(let i=0;i<4;i++){const w=makeUnit('worker',TCPOS.x-30+i*20,TCPOS.y+18); S.units.push(w);}
@@ -664,7 +727,7 @@ function kill(t,src){
   for(let i=0;i<(t.boss?40:8);i++) part(t.x,t.y-10*t.s,rnd(-70,70),rnd(-110,-20),t.boss?'#BFE6FF':'#DDEFFF',rnd(1.5,3),.7,160);
   S.heroes.forEach(h=>{ if(!h.dead&&dist(h,t)<280) grantXP(h,d.xp); });
   sfx(t.boss?'bossdie':'die');
-  if(t.boss){ S.shake=12; banner(`${d.name.split(' ')[0]} falls`,`+${d.gold} gold`); }
+  if(t.boss){ S.shake=12; banner(`${d.name.split(' ')[0]} falls`,`+${d.gold} gold`); bossSpeak(t,'death'); }
  }else if(t.kind==='h'){
   t.revive=15+t.lvl*2; t.buffs={}; t.focus=null; t.moveTo=null; S.heroDeaths++;
   toast(`${t.name} has fallen. Back in ${Math.round(t.revive)}s`); sfx('herodie');
@@ -895,7 +958,7 @@ function startWave(){
 function updateWaves(dt){
  if(S.waveState==='spawning'){
   S.spawnT-=dt;
-  if(S.spawnT<=0&&S.spawnQ.length){const type=S.spawnQ.shift(); S.enemies.push(makeEnemy(type)); if(ENEMIES[type].boss){ sfx('bossarrive'); S.shake=10; banner(ENEMIES[type].name.split(' the ')[0],ENEMIES[type].name.split(' the ')[1]?'The '+ENEMIES[type].name.split(' the ')[1]+' has come':''); } S.spawnT=ENEMIES[type].boss?1.2:(S.spawnQ.length%4?Math.min(.5,7/Math.max(1,S.spawnTotal)):Math.min(1.1,14/Math.max(1,S.spawnTotal)));
+  if(S.spawnT<=0&&S.spawnQ.length){const type=S.spawnQ.shift(); S.enemies.push(makeEnemy(type)); if(ENEMIES[type].boss){ sfx('bossarrive'); S.shake=10; banner(ENEMIES[type].name.split(' the ')[0],ENEMIES[type].name.split(' the ')[1]?'The '+ENEMIES[type].name.split(' the ')[1]+' has come':''); bossSpeak(S.enemies[S.enemies.length-1],'arrive'); storyMid({boss:type}); } S.spawnT=ENEMIES[type].boss?1.2:(S.spawnQ.length%4?Math.min(.5,7/Math.max(1,S.spawnTotal)):Math.min(1.1,14/Math.max(1,S.spawnTotal)));
    for(let i=0;i<5;i++) part(PORTAL.x+rnd(-20,20),PORTAL.y-6,rnd(-30,30),rnd(-50,10),'#BFE8FF',1.6,.5,0);}
   if(!S.spawnQ.length) S.waveState='fighting';
  }else if(S.waveState==='fighting'){
@@ -930,7 +993,7 @@ function waveCleared(){
  sfx('victory');
  if(!(S.wave===S.map.waves&&!S.endless)&&!S.endless) setTimeout(()=>{ if(S&&!S.over&&mode==='play') saveRun(); },50);
  if(S.wave===S.map.waves&&!S.endless){ S.waveState='idle'; setTimeout(()=>gameOver(true),1200); banner(`${S.map.name} holds`,'Victory'); return; }
- banner(`Wave ${S.wave} cleared`,`+${g} gold  +${l} lumber`);
+ banner(`Wave ${S.wave} cleared`,`+${g} gold  +${l} lumber`); storyMid({clear:S.wave});
  S.waveState='countdown'; S.countdown=30; uiDirty=true;
 }
 
@@ -980,6 +1043,7 @@ function update(dt){
  S.buildings=S.buildings.filter(b=>!b.dead);
  for(const t of TREES) t.shake=Math.max(0,t.shake-dt*3);
  theme().fires.forEach(([fx,fy])=>{ if(Math.random()<dt*5) part(fx+rnd(-4,4),fy-10,rnd(-8,8),rnd(-45,-25),Math.random()<.5?'#FFB24A':'#FF7A2A',1.3,.9,-10); if(Math.random()<dt*1.2) smoke(fx+rnd(-3,3),fy-18,rnd(3,5)); });
+ if(S.says.length){ S.says.forEach(q=>{ q.t-=dt; if(!q.e.dead){q.x=q.e.x;q.y=q.e.y;} }); S.says=S.says.filter(q=>q.t>0); }
  if(S.marker){S.marker.t-=dt; if(S.marker.t<=0) S.marker=null;}
  if(S.zoneShow>0) S.zoneShow-=dt;
  if(mode==='play'&&S.quest<QUESTS.length&&QUESTS[S.quest].done()){S.quest++;uiDirty=true;while(S.quest<QUESTS.length&&QUESTS[S.quest].done())S.quest++;}
@@ -1094,7 +1158,7 @@ function enemyAI(e,dt){
 function bossTick(e,d,t,dt){
  const name=d.name.split(' ')[0];
  if(e.moving){ e.stepT=(e.stepT||0)-dt; if(e.stepT<=0){ e.stepT=e.type==='giant'?.75:1.1; if(!e.fly){ sfx('stomp'); S.shake=Math.max(S.shake,2); smoke(e.x+rnd(-8,8),e.y,rnd(5,8)); } } }
- if(!e.enraged&&e.hp<e.maxHp*.3){ e.enraged=true; e.speed*=1.3; e.cd*=.7; sfx('enrage'); S.shake=10; banner(`${name} is enraged`,'Faster and deadlier'); ring(e.x,e.y-6,10,120,'#FF6A5A',.8,6); }
+ if(!e.enraged&&e.hp<e.maxHp*.3){ e.enraged=true; e.speed*=1.3; e.cd*=.7; sfx('enrage'); S.shake=10; banner(`${name} is enraged`,'Faster and deadlier'); bossSpeak(e,'enrage'); ring(e.x,e.y-6,10,120,'#FF6A5A',.8,6); }
  if(!e.halfDone&&e.hp<e.maxHp*.55){ e.halfDone=true;
   if(d.summon){ d.summon.forEach((ty,k)=>{ const g=makeEnemy(ty); g.x=e.x+rnd(-40,40); g.y=e.y-rnd(10,40); S.enemies.push(g); for(let q=0;q<8;q++) part(g.x,g.y-8,rnd(-40,40),rnd(-60,-10),'#DDF4FF',1.8,.5,60); });
    sfx('summon'); text(e.x,e.y-70,{trollKing:'To me, pack!',giant:'Rise, my kin!',lich:'Rise, dead of winter!'}[e.type]||'Rise!','#BFE6FF',15); toast(`${name} calls reinforcements`); }
@@ -1521,7 +1585,8 @@ function drawFigure(c,o){
  if(o.shield){c.fillStyle=o.shield; c.strokeStyle=o.trim||'#C9A24A'; c.lineWidth=1*s; c.beginPath(); c.moveTo(-8*s,-15*s); c.lineTo(-2*s,-15*s); c.lineTo(-2*s,-9*s); c.quadraticCurveTo(-5*s,-4*s,-8*s,-9*s); c.closePath(); c.fill(); c.stroke();}
  // head
  const hx=.5*s, hy=-19.8*s, hr=4*s;
- if(o.head==='hood'){c.fillStyle=o.hood; c.beginPath(); c.arc(hx-.6*s,hy,hr*1.2,0,TAU); c.fill(); c.fillStyle=o.skin; c.beginPath(); c.arc(hx+1.4*s,hy+.6*s,hr*.72,0,TAU); c.fill();}
+ if(o.head==='hood'){c.fillStyle=o.hood; c.beginPath(); c.arc(hx-.6*s,hy,hr*1.2,0,TAU); c.fill(); c.fillStyle=o.skin; c.beginPath(); c.arc(hx+1.4*s,hy+.6*s,hr*.72,0,TAU); c.fill();
+  if(o.hair){c.fillStyle=o.hair; poly(c,[[hx-.6*s,hy-2.9*s],[hx+3.6*s,hy-2.2*s],[hx+1*s,hy-1*s],[hx-.2*s,hy+3.4*s],[hx-1.4*s,hy+3*s]]); c.fill();}}
  else{c.fillStyle=o.skin; c.beginPath(); c.arc(hx,hy,hr,0,TAU); c.fill();}
  switch(o.head){
   case 'helm': c.fillStyle=o.helm||'#B7BCC4'; c.beginPath(); c.arc(hx,hy,hr*1.08,Math.PI,0); c.fill(); c.fillRect(hx-hr*1.1,hy-.4*s,hr*2.2,1.3*s); c.fillRect(hx+2.2*s,hy-1*s,1.1*s,3.6*s); break;
@@ -1544,7 +1609,7 @@ function drawFigure(c,o){
  }else if(o.weapon==='staff'){
   c.strokeStyle='#5A3E27'; c.lineWidth=1.8*s; c.beginPath(); c.moveTo(6*s,1*s); c.lineTo(6*s,-27*s); c.stroke();
   const gl=.6+atk*.4+Math.sin(S.time*5)*.1; const gr=c.createRadialGradient(6*s,-29*s,0,6*s,-29*s,6*s);
-  gr.addColorStop(0,o.orb||'#FFD9A0'); gr.addColorStop(1,'rgba(255,140,60,0)'); c.fillStyle=gr; c.globalAlpha=gl; ell(c,6*s,-29*s,6*s,6*s); c.globalAlpha=1;
+  gr.addColorStop(0,o.orb||'#FFD9A0'); gr.addColorStop(1,o.orbFade||'rgba(255,140,60,0)'); c.fillStyle=gr; c.globalAlpha=gl; ell(c,6*s,-29*s,6*s,6*s); c.globalAlpha=1;
   c.fillStyle=o.orb||'#FFD9A0'; ell(c,6*s,-29*s,2*s,2*s);
   c.strokeStyle=o.skin; c.lineWidth=2.2*s; c.beginPath(); c.moveTo(2*s,-13*s); c.lineTo(6*s,-15*s); c.stroke();
  }else{
@@ -1627,6 +1692,7 @@ function drawEnemy(c,e){
  drawFigure(c,enemyLook(e));
 }
 function visH(e){if(e.kind==='b') return e.h; if(e.type==='wolf') return 22; if(e.fly) return 76; return 26*(e.s||1);}
+function wrapWords(t,n){ const out=[]; let ln=''; t.split(' ').forEach(w=>{ if(ln&&(ln+' '+w).length>n){out.push(ln);ln=w;} else ln=ln?ln+' '+w:w; }); if(ln) out.push(ln); return out; }
 function hpBar(c,x,y,w,p,col){c.fillStyle='rgba(10,20,30,.6)'; c.fillRect(x-w/2-1,y-1,w+2,4.4); c.fillStyle=col; c.fillRect(x-w/2,y,w*clamp(p,0,1),2.4);}
 
 function draw(){
@@ -1736,6 +1802,9 @@ function draw(){
  // floating text
  c.textAlign='center';
  for(const tx of S.texts){c.globalAlpha=clamp(tx.life/tx.max*1.6,0,1); c.font=`800 ${tx.size}px "Alegreya Sans",sans-serif`; c.lineWidth=3; c.strokeStyle='rgba(10,20,30,.75)'; c.strokeText(tx.txt,tx.x,tx.y); c.fillStyle=tx.color; c.fillText(tx.txt,tx.x,tx.y);}
+ c.font='800 11px "Alegreya Sans",sans-serif';
+ for(const q of S.says){ const lines=wrapWords(q.txt,26), top=Math.max(14,q.y-visH(q.e)-16-lines.length*12); c.globalAlpha=clamp(q.t/.5,0,1);
+  lines.forEach((ln,k)=>{ const y=top+k*12, x=clamp(q.x,70,WW-70); c.lineWidth=3.4; c.strokeStyle='rgba(10,20,34,.85)'; c.strokeText(ln,x,y); c.fillStyle='#DDF4FF'; c.fillText(ln,x,y); }); }
  c.globalAlpha=1;
  // falling snow (screen-space feel, world coords)
  const NS=S.blizT>0?140:40; if(S.blizT>0){ c.fillStyle='rgba(235,245,255,.22)'; c.fillRect(-60,-60,WW+120,WH+120); }
@@ -2068,6 +2137,18 @@ function fireHold(k){ const [a,v]=k.split(':');
 let toastT=0, SILENT=false;
 function toast(m){ if(SILENT) return;const t=$('#toast'); t.textContent=m; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),1900);}
 function banner(a,b){$('#banTitle').textContent=a; $('#banSub').textContent=b||''; const el=$('#banner'); el.classList.remove('show'); void el.offsetWidth; el.classList.add('show');}
+// speech strip under the boss bar (non-blocking), queued so lines never overlap
+let sayQ=[], sayBusy=false, sayTm=0;
+function say(who,txt,maera){ sayQ.push({who,txt,maera}); if(!sayBusy) sayNext(); }
+function sayNext(){ const el=$('#say'), q=sayQ.shift(); if(!q){ sayBusy=false; el.classList.remove('show'); return; }
+ sayBusy=true; $('#sayWho').textContent=q.who; $('#sayTxt').textContent=q.txt; el.classList.toggle('maera',!!q.maera); el.classList.add('show');
+ clearTimeout(sayTm); sayTm=setTimeout(()=>{ el.classList.remove('show'); sayTm=setTimeout(sayNext,260); },3000); }
+function sayClear(){ sayQ=[]; sayBusy=false; clearTimeout(sayTm); $('#say').classList.remove('show'); }
+function bossSpeak(e,kind){ const L=BOSS_LINES[e.type]; if(!L||mode!=='play') return;
+ const txt=kind==='arrive'&&L.ret&&bossReturns(e.type)?L.ret:L[kind]; if(!txt) return;
+ say(ENEMIES[e.type].name.split(' the ')[0],txt); S.says.push({e,txt,x:e.x,y:e.y,t:3}); }
+function storyMid(ev){ if(mode!=='play') return; const c=storyOf(S.map.id,'mid').find(c=>(ev.boss&&c.when.boss===ev.boss)||(ev.clear&&c.when.clear===ev.clear));
+ if(c){ say(MAERA,storyText(c.text),1); markStory(c.id); } }
 function bump(id){const el=document.getElementById(id); if(!el) return; el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump');}
 
 let uiT=0, lastQuest=-1;
@@ -2232,19 +2313,22 @@ function gameOver(win){
   const gained=now.filter(Boolean).length-old.filter(Boolean).length; PROG.stars[M.id]=now; store.set('prog',PROG);
   const next=MAPS[mapIdx+1], unlocked=next&&totalStars()>=next.need;
   const lines=['Held every wave','Town Center above half health','No hero fell'];
-  showModal(`<h2>Victory</h2><p>${M.name} holds. ${S.kills} raiders defeated.</p><div class="starrow">${lines.map((t,k)=>`<div><span class="s ${got[k]?'':'off'}">★</span>${t}</div>`).join('')}</div>
+  const vic=()=>showModal(`<h2>Victory</h2><p>${M.name} holds. ${S.kills} raiders defeated.</p><div class="starrow">${lines.map((t,k)=>`<div><span class="s ${got[k]?'':'off'}">★</span>${t}</div>`).join('')}</div>
    <p><b>${gained>0?`+${gained} Crown${gained>1?'s':''} earned.`:'No new stars this time.'}</b> ${crowns()} Crowns to spend.</p>
    <div class="row">${unlocked?`<button class="mbtn pri" data-m="march" data-i="${mapIdx+1}">Next: ${next.name}</button>`:''}<button class="mbtn ${unlocked?'':'pri'}" data-m="council">War council</button><button class="mbtn" data-m="maps">Choose a battle</button><button class="mbtn" data-m="endless">Keep defending (endless)</button></div>`);
+  const cards=PROG.storyOn?storyOf(M.id,'victory').concat(storyOf(M.id,'epilogue').filter(c=>!seenStory(c.id))):[];
+  showStory(cards,vic,{map:mapIdx});
  }else{
-  showModal(`<h2>The hold has fallen</h2><p>${M.name} fell on wave ${S.wave} of ${M.waves}. ${S.kills} raiders defeated.</p><p>Tip: upgrades from the War council carry over between battles.</p><div class="row"><button class="mbtn pri" data-m="retry">Try again</button><button class="mbtn" data-m="council">War council</button><button class="mbtn" data-m="maps">Choose a battle</button></div>`);
+  const dl=storyOf(M.id,'defeat')[0]; if(dl) markStory(dl.id);
+  showModal(`<h2>The hold has fallen</h2>${dl?`<p class="mq"><b>${MAERA}:</b> ${storyText(dl.text)}</p>`:''}<p>${M.name} fell on wave ${S.wave} of ${M.waves}. ${S.kills} raiders defeated.</p><div class="row"><button class="mbtn pri" data-m="retry">Try again</button><button class="mbtn" data-m="council">War council</button><button class="mbtn" data-m="maps">Choose a battle</button></div>`);
  }
 }
 /* ---------- campaign screens ---------- */
-function mapPreview(i){
- const k='map:'+i+':'+chosenRace; if(THUMBMAP[k]) return THUMBMAP[k];
+function mapPreview(i,W,H){
+ W=W||840; H=H||260; const k='map:'+i+':'+chosenRace+':'+W+'x'+H; if(THUMBMAP[k]) return THUMBMAP[k];
  const save={mapIdx,PORTAL,TCPOS,MINE,RALLY,PLOTS}, M=MAPS[i];
  mapIdx=i; PORTAL={...M.portal}; TCPOS={...M.tc}; MINE={...M.mine,r:28};
- const W=840,H=260, sc=H/(WH-30), c=document.createElement('canvas'); c.width=W; c.height=H; const g=c.getContext('2d');
+ const sc=H/(WH-30), c=document.createElement('canvas'); c.width=W; c.height=H; const g=c.getContext('2d');
  const ox=(W-WW*sc)/2; g.setTransform(sc,0,0,sc,ox,-20*sc);
  paintGround(g,-ox/sc,20,(W-ox)/sc,WH+10);
  const P=RACES[chosenRace].pal, items=[];
@@ -2278,8 +2362,11 @@ function toastAny(m){ const t=$('#toast'); t.textContent=m; t.classList.add('sho
 function briefing(i){ const M=MAPS[i], sv=store.get('save',null), has=sv&&sv.map===i;
  showModal(`<h2>${M.name}</h2><div class="brief">${M.story}</div><div class="tw">${M.twist}</div>
   <div class="starrow"><div><span class="s">★</span>Hold for all ${M.waves} waves</div><div><span class="s">★</span>Keep the Town Center above half health</div><div><span class="s">★</span>Don't lose a hero</div></div>
-  <div class="row">${has?`<button class="mbtn pri" data-m="continue">Continue from wave ${sv.wave+1}</button><button class="mbtn" data-m="march" data-i="${i}">Start over</button>`:`<button class="mbtn pri" data-m="march" data-i="${i}">March</button>`}<button class="mbtn" data-m="maps">Back</button></div>`); }
-function startMap(i){ clearSave(); store.set('map',i); hideModal(); $('#maps').hidden=true; $('#title').hidden=true; newGame(chosenRace,i); mode='play'; paused=false; lastQuest=-1; uiDirty=true; closeSheet(); banner(MAPS[i].name,`${MAPS[i].tier} tier: hold ${MAPS[i].waves} waves`); }
+  <div class="row">${has?`<button class="mbtn pri" data-m="continue">Continue from wave ${sv.wave+1}</button><button class="mbtn" data-m="march" data-i="${i}">Start over</button>`:`<button class="mbtn pri" data-m="march" data-i="${i}">March</button>`}${(()=>{const it=storyOf(M.id,'intro'); return it.length&&seenStory(it[0].id)?`<button class="mbtn" data-m="story" data-i="${i}">Story</button>`:'';})()}<button class="mbtn" data-m="maps">Back</button></div>`); }
+function startMap(i){ clearSave(); store.set('map',i); hideModal(); $('#maps').hidden=true; $('#title').hidden=true; newGame(chosenRace,i); mode='play'; paused=false; lastQuest=-1; uiDirty=true; closeSheet();
+ const go=()=>{ paused=false; banner(MAPS[i].name,`${MAPS[i].tier} tier: hold ${MAPS[i].waves} waves`); }, intro=storyOf(MAPS[i].id,'intro');
+ // intro cards the first time a map is started (replays: "Story" on the briefing); the battle waits
+ if(PROG.storyOn&&intro.length&&!seenStory(intro[0].id)){ paused=true; showStory(intro,go,{map:i}); } else go(); }
 function showUpgrades(){ const wasPlay=mode==='play';
  const html=`<h2>War council</h2><p>Spend Crowns on permanent upgrades. You earn one Crown for each new star.</p><p><b>${crowns()} Crowns available</b></p><div class="upl">${Object.entries(UPGRADES).map(([k,u])=>{const lv=upg(k), max=lv>=u.max, c=u.cost[lv];
   return `<button class="upi ${max||crowns()<c?'dis':''}" ${max?'':`data-hold="up:${k}"`}><span class="ut"><b>${u.name} ${'●'.repeat(lv)}${'○'.repeat(u.max-lv)}</b><small>${u.desc}</small></span><span class="uc">${max?'Maxed':`${c} ♛`}</span></button>`;}).join('')}</div>
@@ -2288,6 +2375,43 @@ function showUpgrades(){ const wasPlay=mode==='play';
 function buyUpgrade(k){ const u=UPGRADES[k], lv=upg(k); if(lv>=u.max) return; const c=u.cost[lv]; if(crowns()<c){ toastAny(`Needs ${c} Crowns`); sfx('err'); return; }
  PROG.ups[k]=lv+1; PROG.spent+=c; store.set('prog',PROG); sfx('levelup'); showUpgrades(); toastAny(`${u.name} upgraded`); $('#crownN').textContent=crowns(); }
 function showModal(html){$('#mbox').innerHTML=html; $('#modal').hidden=false;}
+/* ---------- story cards: full screen, Maera speaks; drawn from existing art (map preview + drawFigure) ---------- */
+const RMO=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
+let storyRun=null, stLoop=false, stLast=0;
+function maeraLook(x,y,s){ return {x,y,s,face:1,walk:0,moving:false,atk:0,flash:0,skin:'#E6C3A0',body:'#5B6878',bodyD:'#434E5C',trim:'#9AA7B4',head:'hood',hood:'#6E7A88',hair:'#DCE2E8',robe:true,weapon:'staff',orb:'#E4F6FF',orbFade:'rgba(140,210,255,0)',cape:'#3E4956',eye:'#2A2A2A'}; }
+function showStory(cards,done,opt){
+ if(!cards||!cards.length){ if(done) done(); return; }
+ const el=$('#story'); storyRun={cards,i:0,done,map:opt&&opt.map!=null?opt.map:mapIdx,snow:Array.from({length:80},()=>({x:Math.random(),y:Math.random(),r:.6+Math.random()*1.9,v:.018+Math.random()*.05,w:Math.random()*6})),busy:false};
+ el.hidden=false; void el.offsetWidth; el.classList.add('show'); $('#stPanel').classList.remove('fade'); storyCard();
+ if(!stLoop){ stLoop=true; stLast=performance.now(); requestAnimationFrame(storyFrame); } }
+function storyCard(){ const r=storyRun, c=r.cards[r.i]; markStory(c.id);
+ $('#stWho').textContent=c.boss?ENEMIES[c.boss].name:MAERA; $('#stTxt').textContent=storyText(c.text);
+ $('#stGo').textContent='Continue'; }
+function storyNext(){ const r=storyRun; if(!r||r.busy) return;
+ if(r.i>=r.cards.length-1){ storyEnd(); return; }
+ if(RMO){ r.i++; storyCard(); return; }
+ r.busy=true; const p=$('#stPanel'); p.classList.add('fade'); setTimeout(()=>{ if(storyRun!==r) return; r.i++; storyCard(); p.classList.remove('fade'); r.busy=false; },250); }
+function storyEnd(){ const r=storyRun; if(!r) return; storyRun=null; const el=$('#story'); el.classList.remove('show');
+ setTimeout(()=>{ if(!storyRun) el.hidden=true; },RMO?0:250); if(r.done) r.done(); }
+$('#stGo').onclick=()=>{ initAudio(); storyNext(); };
+$('#stSkip').onclick=()=>storyEnd();
+function storyFrame(now){
+ const r=storyRun; if(!r&&$('#story').hidden){ stLoop=false; return; }
+ const dt=Math.min(.05,(now-stLast)/1000); stLast=now; const cvs=$('#stCv'), W=cvs.clientWidth, H=cvs.clientHeight, D=Math.min(2,window.devicePixelRatio||1);
+ if(cvs.width!==Math.round(W*D)||cvs.height!==Math.round(H*D)){ cvs.width=Math.round(W*D); cvs.height=Math.round(H*D); }
+ const g=cvs.getContext('2d'); g.setTransform(D,0,0,D,0,0); g.fillStyle='#060C16'; g.fillRect(0,0,W,H);
+ if(r){
+  const im=imgOf(mapPreview(r.map,600,900));
+  if(im.complete&&im.naturalWidth){ const k=Math.max(W/im.naturalWidth,H/im.naturalHeight), iw=im.naturalWidth*k, ih=im.naturalHeight*k; g.drawImage(im,(W-iw)/2,(H-ih)*.35,iw,ih); }
+  g.fillStyle='rgba(4,9,18,.58)'; g.fillRect(0,0,W,H); g.fillStyle=lg(g,0,H*.35,0,H,'rgba(4,9,18,0)','rgba(4,9,18,.75)'); g.fillRect(0,H*.35,W,H*.65);
+  r.snow.forEach(f=>{ if(!RMO){ f.y+=f.v*dt; f.w+=dt; if(f.y>1.02){f.y=-.02;f.x=Math.random();} } g.fillStyle=`rgba(255,255,255,${.35+f.r*.2})`; ell(g,f.x*W+Math.sin(f.w)*8,f.y*H,f.r,f.r); });
+  const c=r.cards[r.i], pr=$('#stPanel').getBoundingClientRect(), orr=cvs.getBoundingClientRect(), top=pr.top-orr.top, x0=pr.left-orr.left+46;
+  g.save(); if($('#stPanel').classList.contains('fade')) g.globalAlpha=.5;
+  if(c.boss){ const bi=imgOf(thumb('e:'+c.boss)); if(bi.complete&&bi.naturalWidth) g.drawImage(bi,x0-60,top-96,116*1.05,92*1.05); }
+  else drawFigure(g,maeraLook(x0,top-2,3));
+  g.restore();
+ }
+ requestAnimationFrame(storyFrame); }
 function hideModal(){$('#modal').hidden=true;}
 const HOWTO=`<h2>How to play</h2><ul>
 <li>Tap the <b>gold mine</b> or <b>pine trees</b> to send workers. Train more at the Town Center (tap it, or Build).</li>
@@ -2308,6 +2432,7 @@ $('#modal').addEventListener('click',e=>{
  else if(m==='music'){setMusic(!musicOn); b.textContent=`Music: ${musicOn?'on':'off'}`;}
  else if(m==='retry'){startMap(mapIdx);}
  else if(m==='march'){startMap(+b.dataset.i);}
+ else if(m==='story'){ const i=+b.dataset.i; showStory(storyOf(MAPS[i].id,'intro'),null,{map:i}); }
  else if(m==='continue'){ const sv=store.get('save',null); if(sv) restoreRun(sv); }
  else if(m==='maps'){hideModal();paused=false;showMaps();}
  else if(m==='council'){showUpgrades();}
@@ -2326,7 +2451,7 @@ function frame(now){
 new ResizeObserver(()=>resize()).observe(stage);
 resize(); newGame(chosenRace);
 requestAnimationFrame(frame);
-if(/[?&]debug/.test(location.search)) window.__IC={saveRun,restoreRun,specTower,snapshot,clearW:()=>{for(const k in WCACHE) delete WCACHE[k];},trainUnit,trainWorker,forgeUp,upgradeKeep,setJob,setStance,foodCap,foodUsed,waveDef,genWave,MAPS,PROG_SET:p=>{PROG=p;},startMap,showMaps,get PROG(){return PROG;},tick:n=>{for(let i=0;i<n;i++)update(.05);},get S(){return S;},startWave,tryBuild,recruitHero,assignWorker,setMode:m=>mode=m};
+if(/[?&]debug/.test(location.search)) window.__IC={saveRun,restoreRun,specTower,snapshot,clearW:()=>{for(const k in WCACHE) delete WCACHE[k];},trainUnit,trainWorker,forgeUp,upgradeKeep,setJob,setStance,foodCap,foodUsed,waveDef,genWave,MAPS,PROG_SET:p=>{PROG=normProg(p);},startMap,showMaps,get PROG(){return PROG;},tick:n=>{for(let i=0;i<n;i++)update(.05);},get S(){return S;},startWave,tryBuild,recruitHero,assignWorker,setMode:m=>mode=m};
 })();
 </script>
 <script>
