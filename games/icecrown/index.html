@@ -434,12 +434,12 @@ const RACES={
  kingdom:{id:'kingdom',name:'Kingdom of Aldmere',
   perks:{goldMul:1.15,lumberMul:1,armor:1,dmgMul:1,regen:0},
   pal:{wall:'#CFC8B8',wallD:'#8F887A',roof:'#3E5F95',roofD:'#28416B',trim:'#E7C66A',banner:'#2F6FD0',body:'#3F6FC4',bodyD:'#27477F',skin:'#F0C9A0',hood:'#34506E'},
-  names:{worker:'Peasant',melee:'Footman',ranged:'Archer',heavy:'Knight'},
+  names:{worker:'Peasant',melee:'Footman',ranged:'Archer',heavy:'Knight',healer:'Cleric',siege:'Trebuchet'},
   heroNames:{warrior:'Sir Aldric',mage:'Elowen',ranger:'Kestrel'}},
  horde:{id:'horde',name:'Grukash Horde',
   perks:{goldMul:1,lumberMul:1.2,armor:0,dmgMul:1.12,regen:1.2},
   pal:{wall:'#8A6A48',wallD:'#5C4330',roof:'#8E3B2A',roofD:'#62271C',trim:'#D9B26A',banner:'#B8322A',body:'#9C3A2C',bodyD:'#63231A',skin:'#7FA35A',hood:'#5B3A2A'},
-  names:{worker:'Peon',melee:'Grunt',ranged:'Axe Thrower',heavy:'Raider'},
+  names:{worker:'Peon',melee:'Grunt',ranged:'Axe Thrower',heavy:'Raider',healer:'Witch Doctor',siege:'Catapult'},
   heroNames:{warrior:'Thrakk',mage:'Mogra',ranger:'Vashka'}}
 };
 
@@ -454,13 +454,19 @@ const TOWER_SPECS={
  frost:{name:'Frost Tower',cost:{gold:120,lumber:80},dmg:9,cd:1,range:165,slow:.4,proj:'shard',desc:'Slows every target by 40%'},
  ballista:{name:'Ballista',cost:{gold:150,lumber:120},dmg:48,cd:2.4,range:210,pierce:1,proj:'snipe',desc:'Heavy bolts that ignore armor'}
 };
-const KEEP_UPGRADE={cost:{gold:300,lumber:200},time:20,hp:800,shootDmg:14,desc:'+800 health, +10 food, unlocks elite units and forge levels 4-5'};
+const KEEP_UPGRADE={cost:{gold:300,lumber:200},time:20,hp:800,shootDmg:14,desc:'+800 health, +10 food, unlocks elite units, healers and forge levels 4-5'};
+const CASTLE_UPGRADE={cost:{gold:650,lumber:450},time:30,hp:1000,food:15,shootDmg:22,h:150,desc:'+1000 health, +15 food, stronger arrows. Unlocks forge levels 6-8, siege and Masterwork'};
+// Masterwork: endless research once Weapons and Armor are both 8. Veterancy: ranks from kills (final blow).
+const MASTERWORK={cost:{gold:600,lumber:400},grow:1.25,dmg:.04,hp:.04};
+const VETERANCY={ranks:[6,15,30],bonus:.12,heal:.5};
 
 const UNITS={
- worker:{hp:70, dmg:4, range:6,  cd:1.2,speed:54,armor:0,food:1,time:6, cost:{gold:50},           at:'townhall',r:7, s:.9, desc:'Gathers gold and lumber'},
+ worker:{hp:70, dmg:4, range:6,  cd:1.2,speed:54,armor:0,food:0,time:6, cost:{gold:50},           at:'townhall',r:7, s:.9, desc:'Gathers gold and lumber'},
  melee: {hp:200,dmg:14,range:8,  cd:1.0,speed:48,armor:2,food:2,time:8, cost:{gold:70,lumber:10}, at:'barracks',r:8, s:1,  desc:'Sturdy front-line fighter'},
  ranged:{hp:110,dmg:13,range:130,cd:1.3,speed:50,armor:0,food:2,time:9, cost:{gold:60,lumber:40}, at:'barracks',r:8, s:.95,proj:1,desc:'Shoots from the back line'},
- heavy: {hp:420,dmg:26,range:10, cd:1.2,speed:60,armor:4,food:3,time:12,cost:{gold:140,lumber:60},at:'barracks',r:10,s:1.2,req:'keep',desc:'Elite warrior (needs Keep)'}
+ heavy: {hp:420,dmg:26,range:10, cd:1.2,speed:60,armor:4,food:3,time:12,cost:{gold:140,lumber:60},at:'barracks',r:10,s:1.2,req:'keep',desc:'Elite warrior (needs Keep)'},
+ healer:{hp:110,dmg:5, range:100,cd:1.6,speed:48,armor:0,food:2,time:10,cost:{gold:90,lumber:60}, at:'barracks',r:8, s:.95,proj:'bolt',req:'keep',heal:{cd:1.5,r:110,amt:18},desc:'Heals the most injured ally nearby (needs Keep)'},
+ siege: {hp:260,dmg:60,range:240,min:60,cd:3.2,speed:30,armor:2,food:4,time:16,cost:{gold:200,lumber:150},at:'barracks',r:13,s:1,proj:'stone',aoe:55,req:'castle',desc:'Hurls stones at dense waves, not up close (needs Castle)'}
 };
 
 const HEROES={
@@ -506,16 +512,16 @@ const TAL={}; Object.values(TALENTS).forEach(t=>t.forEach(p=>p.forEach(o=>TAL[o.
 // Pack Leader wolves: about 40% of a Footman, no food, respawn each wave
 UNITS.wolfpet={hp:UNITS.melee.hp*TAL.pack.str,dmg:UNITS.melee.dmg*TAL.pack.str,range:6,cd:.9,speed:66,armor:1,food:0,time:0,cost:{},r:8,s:.85,pet:1,desc:'Wolf companion'};
 // Collision masses: in a friendly-versus-enemy shove the lighter side moves more. Stance multipliers apply to my units.
-const MASS={enemy:1,elite:2.5,boss:12,soldier:1.5,heavy:2.5,hero:2,pet:1,stance:{hold:3,charge:2,defend:1},idleSpread:.3};
+const MASS={enemy:1,elite:2.5,boss:12,soldier:1.5,heavy:2.5,hero:2,pet:1,siege:3,stance:{hold:3,charge:2,defend:1},idleSpread:.3};
 const XP_TABLE=[0,120,320,620,1040,1600,2320,3220,4320,5640]; // XP needed to reach level i+1
 
 const FORGE={
- weapons:{name:'Weapons',  desc:'+12% damage, soldiers and heroes',base:{gold:80,lumber:60}, max:5},
- armor:  {name:'Armor',    desc:'+1 armor and +8% health',           base:{gold:80,lumber:80}, max:5},
- tools:  {name:'Tools',    desc:'Workers carry 15% more',            base:{gold:60,lumber:60}, max:5},
- arcana: {name:'Hero gear',desc:'+15% ability power, faster cooldowns',base:{gold:120,lumber:60},max:5}
+ weapons:{name:'Weapons',  desc:'+12% damage, soldiers and heroes',base:{gold:80,lumber:60}, max:8},
+ armor:  {name:'Armor',    desc:'+1 armor and +8% health',           base:{gold:80,lumber:80}, max:8},
+ tools:  {name:'Tools',    desc:'Workers carry 15% more',            base:{gold:60,lumber:60}, max:8},
+ arcana: {name:'Hero gear',desc:'+15% ability power, faster cooldowns',base:{gold:120,lumber:60},max:8}
 };
-const METALS=['#8E7552','#B7BCC4','#E3E9F0','#8FE0F2','#FFD36A','#FFD36A'];
+const METALS=['#8E7552','#B7BCC4','#E3E9F0','#8FE0F2','#FFD36A','#FFD36A','#FFB070','#C9A4FF','#FF8FA3'];
 
 const ENEMIES={
  wolf:     {name:'Frost Wolf',   hp:60,  dmg:6, armor:0,range:6,  cd:0.8,speed:72,r:9, gold:5,  xp:8,  s:1},
@@ -723,7 +729,7 @@ function newGame(race,mi){
  S={race,R:RACES[race],map:M,path:null,mineLeft:M.mineGold||null,blizNext:40,blizT:0,heroDeaths:0,res:{gold:RESOURCES.gold.start+60*upg('stock'),lumber:RESOURCES.lumber.start+40*upg('stock')},
   wave:0,waveState:'idle',countdown:0,spawnQ:[],spawnT:0,
   buildings:[],units:[],heroes:[],enemies:[],proj:[],fx:[],texts:[],
-  forge:{weapons:0,armor:0,tools:0,arcana:0},keep:false,
+  forge:{weapons:0,armor:0,tools:0,arcana:0},keep:false,castle:false,master:0,
   sel:null,mode:'nearest',quest:0,time:0,over:false,endless:false,heroMoved:false,
   plots:PLOTS.map((p,i)=>({x:p.x,y:p.y,i,b:null})),rally:{x:RALLY.x,y:RALLY.y},stance:'defend',marchSpeed:50,marchAt:0,zoneShow:0,auto:store.get('auto',{}),selPlot:null,marker:null,shake:0,kills:0,says:[],dmgLog:{},antiStuck:0};
  if(typeof sayClear==='function') sayClear();
@@ -756,10 +762,10 @@ function makeHero(cls,x,y){
 function applyStats(u){
  const P=S.R.perks, F=S.forge, ratio=u.maxHp?u.hp/u.maxHp:1;
  if(u.kind==='h'){const d=HEROES[u.cls],L=u.lvl-1, ch=hasT(u,'champion'), st=hasG(u,'stone');
-  const V=1+.1*upg('veterans'); u.maxHp=d.hp*(1+.12*L)*(1+.08*F.armor)*V*(ch?1+TAL.champion.hp:1)*(st?1+GEAR.stone.hp:1); u.dmg=d.dmg*(1+.08*L)*(1+.12*F.weapons)*P.dmgMul*V*(ch?1+TAL.champion.dmg:1); u.armor=d.armor+F.armor+P.armor+Math.floor(L/3)+(st?GEAR.stone.armor:0);
+  const V=(1+.1*upg('veterans'))*(1+MASTERWORK.hp*S.master); u.maxHp=d.hp*(1+.12*L)*(1+.08*F.armor)*V*(ch?1+TAL.champion.hp:1)*(st?1+GEAR.stone.hp:1); u.dmg=d.dmg*(1+.08*L)*(1+.12*F.weapons)*P.dmgMul*V*(ch?1+TAL.champion.dmg:1); u.armor=d.armor+F.armor+P.armor+Math.floor(L/3)+(st?GEAR.stone.armor:0);
   u.cd=d.cd/(hasT(u,'quickdraw')?TAL.quickdraw.as:1); u.range=d.range+(hasT(u,'eagle')?TAL.eagle.range:0);
- }else{const d=UNITS[u.type], mil=u.type!=='worker';
-  u.maxHp=d.hp*(mil?1+.08*F.armor:1); u.dmg=d.dmg*(mil?(1+.12*F.weapons)*P.dmgMul:1); u.armor=d.armor+(mil?F.armor+P.armor:0);}
+ }else{const d=UNITS[u.type], mil=u.type!=='worker', vet=mil?(1+VETERANCY.bonus*(u.rank||0))*(1+MASTERWORK.hp*S.master):1;
+  u.maxHp=d.hp*(mil?1+.08*F.armor:1)*vet; u.dmg=d.dmg*(mil?(1+.12*F.weapons)*P.dmgMul:1)*vet; u.armor=d.armor+(mil?F.armor+P.armor:0);}
  u.hp=ratio*u.maxHp;
 }
 function hmOf(n){ const M=S.map, k=Math.min(1,(n-1)/Math.max(1,M.waves-1)); return 1+((M.hm||1)-1)*k; }
@@ -773,7 +779,7 @@ function makeEnemy(type){
 }
 
 /* ---------- helpers ---------- */
-const foodCap=()=>Math.min(80,RESOURCES.food.baseCap+4*upg('granary')+(S.keep?RESOURCES.food.keepBonus:0)+S.buildings.filter(b=>b.type==='farm'&&b.built).length*BUILDINGS.farm.food);
+const foodCap=()=>Math.min(100,RESOURCES.food.baseCap+4*upg('granary')+(S.keep?RESOURCES.food.keepBonus:0)+(S.castle?CASTLE_UPGRADE.food:0)+S.buildings.filter(b=>b.type==='farm'&&b.built).length*BUILDINGS.farm.food);
 function foodUsed(){let f=0;S.units.forEach(u=>f+=u.food);S.heroes.forEach(h=>f+=h.food);S.buildings.forEach(b=>b.queue.forEach(q=>f+=q.food));return f;}
 function queuedHero(cls){return S.buildings.some(b=>b.queue.some(q=>q.kind==='hero'&&(!cls||q.key===cls)));}
 const hasB=t=>S.buildings.some(b=>b.type===t&&b.built);
@@ -801,6 +807,7 @@ function clusterCenter(from,range,R,excl){
 }
 const pw=h=>(1+.1*(h.lvl-1))*(1+.12*S.forge.arcana)*(hasG(h,'shard')?1+GEAR.shard.ap:1);
 const cdMul=()=>1-.06*S.forge.arcana;
+const rankOf=k=>VETERANCY.ranks.filter(n=>k>=n).length;
 function hasT(h,id){ return !!(h&&h.tal&&h.tal.includes(id)); }
 function talentPending(h){ if(!h||!h.tal) return -1; for(let i=0;i<3;i++) if(h.lvl>=TAL_LV[i]&&!h.tal[i]) return i; return -1; }
 function cdOf(h,i){ const a=HEROES[h.cls].abil[i]; let m=cdMul(); if(hasT(h,'arcane')) m*=TAL.arcane.cd; if(hasG(h,'shard')) m*=GEAR.shard.cd;
@@ -843,6 +850,8 @@ function kill(t,src){
  t.dead=true; t.hp=0;
  if(t.team==='e'){
   const d=ENEMIES[t.type]; S.res.gold+=d.gold; S.kills++;
+  if(src&&src.kind==='u'&&src.type!=='worker'&&!src.dead){ src.kills=(src.kills||0)+1; const rk=rankOf(src.kills);
+   if(rk>(src.rank||0)){ src.rank=rk; applyStats(src); text(src.x,src.y-34,`Rank ${rk}`,'#FFD36A',12); for(let i=0;i<8;i++) part(src.x,src.y-20,rnd(-30,30),rnd(-60,-20),'#FFD36A',1.6,.5,60); } }
   text(t.x,t.y-20,'+'+d.gold,'#FFD36A',13); bump('rGold');
   for(let i=0;i<(t.boss?40:8);i++) part(t.x,t.y-10*t.s,rnd(-70,70),rnd(-110,-20),t.boss?'#BFE6FF':'#DDEFFF',rnd(1.5,3),.7,160);
   S.heroes.forEach(h=>{ if(!h.dead&&dist(h,t)<280) grantXP(h,d.xp); });
@@ -874,7 +883,7 @@ function grantXP(h,xp){
  }
 }
 function projKind(a){
- if(a.kind==='u') return UNITS[a.type].proj?(S.race==='horde'?'axe':'arrow'):null;
+ if(a.kind==='u'){ const p=UNITS[a.type].proj; return p?(typeof p==='string'?p:(S.race==='horde'?'axe':'arrow')):null; }
  if(a.kind==='h') return HEROES[a.cls].proj||null;
  if(a.kind==='e') return a.proj||null;
  return 'arrow';
@@ -884,7 +893,8 @@ function attack(a,t){
  const pk=projKind(a);
  if(pk){
   const hy=(a.kind==='b'?a.h*.7:(a.fly?40:14*(a.s||1)));
-  S.proj.push({type:pk,x:a.x+(a.face||1)*6,y:a.y-hy,t,src:a,dmg:dmgOf(a),spd:pk==='bolt'?300:pk==='shard'?260:360,aoe:pk==='shard'?30:0,team:a.team});
+  const sg=pk==='stone';
+  S.proj.push({type:pk,x:a.x+(a.face||1)*6,y:a.y-hy,t,src:a,dmg:dmgOf(a),spd:pk==='bolt'?300:pk==='shard'?260:sg?210:360,aoe:pk==='shard'?30:sg?UNITS.siege.aoe:0,team:a.team,arc:sg?1:0,sx:a.x,sy:a.y-hy});
   sfx(pk==='bolt'?'bolt':pk==='shard'?'frost':'arrow');
  }else{
   hit(a,t,dmgOf(a));
@@ -1018,6 +1028,18 @@ function tryBuild(type){
  const b=makeBuilding(type,plot.x,plot.y,plot.i,false); plot.b=b; S.buildings.push(b); S.selPlot=null;
  sfx('build'); toast(`Building ${d.name}`); uiDirty=true;
 }
+function upgradeCastle(){
+ const tc=S.tc; if(!S.keep||S.castle||tc.upg) return;
+ if(!pay(CASTLE_UPGRADE.cost)) return;
+ tc.upg={t:0,time:CASTLE_UPGRADE.time,to:'castle'}; sfx('build'); toast('Raising the Castle'); uiDirty=true;
+}
+function buyMasterwork(){
+ if(!S.castle||S.forge.weapons<8||S.forge.armor<8){ toast('Masterwork needs Weapons and Armor at level 8'); return; }
+ if(!pay(masterCost())) return; S.master++; [...S.units,...S.heroes].forEach(applyStats);
+ const f=getB('forge'); if(f) for(let i=0;i<20;i++) part(f.x+rnd(-10,10),f.y-20,rnd(-80,80),rnd(-140,-40),'#FFE08A',1.8,.6,220);
+ sfx('anvil'); toast(`Masterwork ${S.master}: +4% damage and health`); uiDirty=true;
+}
+const masterCost=()=>{ const m=Math.pow(MASTERWORK.grow,S.master), r=v=>Math.round(v*m/5)*5; return {gold:r(MASTERWORK.cost.gold),lumber:r(MASTERWORK.cost.lumber)}; };
 function upgradeKeep(){
  const tc=S.tc; if(S.keep||tc.upg){return;}
  if(!pay(KEEP_UPGRADE.cost)) return;
@@ -1033,6 +1055,7 @@ function trainWorker(){const d=UNITS.worker; enqueue(S.tc,{kind:'unit',key:'work
 function trainUnit(key){
  const b=getB('barracks'); if(!b){toast('Build a Barracks first');return;}
  const d=UNITS[key]; if(d.req==='keep'&&!S.keep){toast('Upgrade your Town Center to a Keep first');return;}
+ if(d.req==='castle'&&!S.castle){toast('Upgrade your Keep to a Castle first');return;}
  enqueue(b,{kind:'unit',key,t:0,time:d.time,food:d.food,cost:d.cost});
 }
 function recruitHero(cls){
@@ -1045,6 +1068,7 @@ function forgeUp(key){
  const lv=S.forge[key], d=FORGE[key];
  if(lv>=d.max) return;
  if(lv>=3&&!S.keep){toast('Levels 4 and 5 need a Keep');return;}
+ if(lv>=5&&!S.castle){toast('Levels 6 to 8 need a Castle');return;}
  if(!pay(forgeCost(key))) return;
  S.forge[key]++; [...S.units,...S.heroes].forEach(applyStats);
  const f=getB('forge'); for(let i=0;i<16;i++) part(f.x+rnd(-10,10),f.y-20,rnd(-80,80),rnd(-140,-40),'#FFB35A',1.8,.6,220);
@@ -1079,7 +1103,7 @@ function unassignWorker(job){
  const w=S.units.filter(u=>u.type==='worker'&&u.job===job).pop();
  if(!w){toast(`No workers on ${job}`);return;} setJob(w,'idle'); sfx('click'); toast(`${S.R.names.worker} is now idle`); uiDirty=true;
 }
-function forgeCost(key){const b=FORGE[key].base, m=Math.pow(1.6,S.forge[key])*(1-.1*upg('forgemaster')), r=v=>Math.round(v*m/5)*5; return {gold:r(b.gold),lumber:r(b.lumber)};}
+function forgeCost(key){const b=FORGE[key].base, lv=S.forge[key], m=(lv<5?Math.pow(1.6,lv):Math.pow(1.6,4)*Math.pow(1.45,lv-4))*(1-.1*upg('forgemaster')), r=v=>Math.round(v*m/5)*5; return {gold:r(b.gold),lumber:r(b.lumber)};}
 
 /* =====================================================================
    WAVES
@@ -1108,9 +1132,9 @@ function updateWaves(dt){
   S.countdown-=dt; if(S.countdown<=0) startWave();
  }
 }
-function snapshot(){ return {v:2,map:mapIdx,race:S.race,wave:S.wave,res:{...S.res},forge:{...S.forge},keep:S.keep,mineLeft:S.mineLeft,stance:S.stance,mode:S.mode,rally:{...S.rally},heroDeaths:S.heroDeaths,kills:S.kills,
+function snapshot(){ return {v:3,castle:S.castle,master:S.master,map:mapIdx,race:S.race,wave:S.wave,res:{...S.res},forge:{...S.forge},keep:S.keep,mineLeft:S.mineLeft,stance:S.stance,mode:S.mode,rally:{...S.rally},heroDeaths:S.heroDeaths,kills:S.kills,
  buildings:S.buildings.filter(b=>!b.dead&&b!==S.tc).map(b=>({type:b.type,plot:b.plot,built:b.built,prog:b.prog,hp:b.hp,spec:b.spec||null,queue:b.queue})),
- tc:{hp:S.tc.hp,queue:S.tc.queue,upg:S.tc.upg}, units:S.units.filter(u=>u.type!=='wolfpet').map(u=>({type:u.type,x:u.x,y:u.y,hp:u.hp,job:u.job||null})),
+ tc:{hp:S.tc.hp,queue:S.tc.queue,upg:S.tc.upg}, units:S.units.filter(u=>u.type!=='wolfpet').map(u=>({type:u.type,x:u.x,y:u.y,hp:u.hp,job:u.job||null,kills:u.kills||0})),
  heroes:S.heroes.map(h=>({cls:h.cls,lvl:h.lvl,xp:h.xp,hp:h.hp,dead:h.dead,revive:h.revive,x:h.x,y:h.y,follow:h.follow,tal:h.tal.slice()}))}; }
 function saveRun(){ try{ store.set('save',snapshot()); }catch(e){} }
 function clearSave(){ try{ localStorage.removeItem('icecrown.save'); }catch(e){} }
@@ -1118,9 +1142,10 @@ function restoreRun(sv){
  chosenRace=sv.race; newGame(sv.race,sv.map); S.quest=QUESTS.length;
  Object.assign(S.res,sv.res); Object.assign(S.forge,sv.forge); S.mineLeft=sv.mineLeft; S.mode=sv.mode||'nearest'; S.rally={...sv.rally}; S.heroDeaths=sv.heroDeaths||0; S.kills=sv.kills||0;
  if(sv.keep){ S.keep=true; S.tc.maxHp+=KEEP_UPGRADE.hp; S.tc.h=132; }
+ if(sv.castle){ S.castle=true; S.tc.maxHp+=CASTLE_UPGRADE.hp; S.tc.h=CASTLE_UPGRADE.h; } S.master=sv.master||0;
  S.tc.hp=Math.min(S.tc.maxHp,sv.tc.hp); S.tc.queue=sv.tc.queue||[]; S.tc.upg=sv.tc.upg||null;
  sv.buildings.forEach(o=>{ const p=S.plots[o.plot]; if(!p) return; const b=makeBuilding(o.type,p.x,p.y,o.plot,o.built); b.prog=o.prog; b.hp=o.hp; b.spec=o.spec; b.queue=o.queue||[]; if(b.spec) b.maxHp+=150; p.b=b; S.buildings.push(b); });
- S.units=[]; sv.units.forEach(o=>{ const u=makeUnit(o.type,o.x,o.y); u.hp=Math.min(u.maxHp,o.hp); S.units.push(u); if(o.type==='worker') setJob(u,o.job||'idle'); });
+ S.units=[]; sv.units.forEach(o=>{ if(!UNITS[o.type]) return; const u=makeUnit(o.type,o.x,o.y); u.kills=o.kills||0; u.rank=rankOf(u.kills); applyStats(u); u.hp=Math.min(u.maxHp,o.hp); S.units.push(u); if(o.type==='worker') setJob(u,o.job||'idle'); });
  sv.heroes.forEach(o=>{ const h=makeHero(o.cls,o.x,o.y); h.lvl=o.lvl; h.xp=o.xp; if(Array.isArray(o.tal)) h.tal=[0,1,2].map(i=>o.tal[i]||null); applyStats(h); h.hp=Math.min(h.maxHp,o.hp); h.dead=o.dead; h.revive=o.revive; h.follow=o.follow; S.heroes.push(h); });
  [...S.units,...S.heroes].forEach(applyStats); ensurePets();
  S.wave=sv.wave; S.waveState='countdown'; S.countdown=20; setStance(sv.stance||'defend');
@@ -1146,7 +1171,7 @@ function update(dt){
  S.time+=dt;
  if(S.shake>0) S.shake=Math.max(0,S.shake-dt*30);
  updateWaves(dt);
- if(mode==='play'&&(S.waveState==='countdown'||S.waveState==='idle')&&!S.enemies.length){ [...S.units,...S.heroes].forEach(u=>{ if(!u.dead) u.hp=Math.min(u.maxHp,u.hp+u.maxHp*.05*dt); }); S.buildings.forEach(b=>{ if(b.built&&!b.dead) b.hp=Math.min(b.maxHp,b.hp+b.maxHp*.006*dt); }); }
+ if(mode==='play'&&(S.waveState==='countdown'||S.waveState==='idle')&&!S.enemies.length){ [...S.units,...S.heroes].forEach(u=>{ if(!u.dead) u.hp=Math.min(u.maxHp,u.hp+u.maxHp*.05*(1+VETERANCY.heal*(u.rank||0))*dt); }); S.buildings.forEach(b=>{ if(b.built&&!b.dead) b.hp=Math.min(b.maxHp,b.hp+b.maxHp*.006*dt); }); }
  if(S.map.mod==='blizzard'&&mode==='play'){ S.blizNext-=dt; if(S.blizT>0) S.blizT-=dt; if(S.blizNext<=0){ S.blizNext=55; S.blizT=12; banner('Blizzard','Everyone moves slower'); sfx('storm'); } }
  // buildings
  for(const b of S.buildings){
@@ -1159,12 +1184,14 @@ function update(dt){
     for(let i=0;i<14;i++) part(b.x+rnd(-b.r,b.r),b.y-rnd(0,b.h),rnd(-40,40),rnd(-80,-20),'#FFE9A8',1.6,.6,80);}
    continue;
   }
-  if(b.upg){b.upg.t+=dt; if(b.upg.t>=b.upg.time){b.upg=null;S.keep=true;b.maxHp+=KEEP_UPGRADE.hp;b.hp+=KEEP_UPGRADE.hp;b.h=132;sfx('built');banner('Keep raised','Elite units and forge levels 4-5 unlocked');uiDirty=true;}}
+  if(b.upg){b.upg.t+=dt; if(b.upg.t>=b.upg.time){ const to=b.upg.to; b.upg=null; sfx('built'); uiDirty=true;
+   if(to==='castle'){ S.castle=true; b.maxHp+=CASTLE_UPGRADE.hp; b.hp+=CASTLE_UPGRADE.hp; b.h=CASTLE_UPGRADE.h; banner('Castle raised','Forge levels 6-8, siege engines and Masterwork'); }
+   else { S.keep=true; b.maxHp+=KEEP_UPGRADE.hp; b.hp+=KEEP_UPGRADE.hp; b.h=132; banner('Keep raised','Elite units, healers and forge levels 4-5 unlocked'); } }}
   if(b.queue.length){const q=b.queue[0]; q.t+=dt; if(q.t>=q.time){b.queue.shift(); spawnFrom(b,q); uiDirty=true;}}
   const sh=BUILDINGS[b.type].shoots;
   if(sh){b.atkT-=dt; if(b.atkT<=0){const sp=b.spec&&TOWER_SPECS[b.spec], rng=sp?sp.range:sh.range, t=pickEnemy(b,sp&&sp.pierce?'strongest':'nearest',rng);
    if(t){ if(sp){ b.atkT=sp.cd; S.proj.push({type:sp.proj,x:b.x,y:b.y-b.h*.75,t,src:b,dmg:sp.dmg*(1+.1*S.forge.weapons),spd:sp.proj==='shard'?340:640,team:'p',slowM:sp.slow||0,pure:sp.pierce||0}); sfx(sp.slow?'frost':'snipe'); }
-    else { b.atkT=sh.cd; b.dmg=(b===S.tc&&S.keep)?KEEP_UPGRADE.shootDmg:sh.dmg; b.face=1; attack(b,t);} } else b.atkT=.3;}}
+    else { b.atkT=sh.cd; b.dmg=b===S.tc&&S.castle?CASTLE_UPGRADE.shootDmg:(b===S.tc&&S.keep)?KEEP_UPGRADE.shootDmg:sh.dmg; b.face=1; attack(b,t);} } else b.atkT=.3;}}
   if(b.type==='forge'){b.smokeT-=dt; if(b.smokeT<=0){b.smokeT=.35; smoke(b.x+13,b.y-58,rnd(4,6));}}
   if(b.hp<b.maxHp*.5&&Math.random()<dt*2) smoke(b.x+rnd(-b.r*.6,b.r*.6),b.y-b.h*.5,rnd(5,9));
  }
@@ -1174,7 +1201,7 @@ function update(dt){
  for(const u of S.units){
   if(u.dead) continue;
   if(u.ghostT>0) u.ghostT-=dt; tickBuffs(u,dt); u.atkT-=dt*(aura.length&&u.type!=='worker'&&aura.some(h=>dist(h,u)<TAL.rally.r)?TAL.rally.as:1); u.atk=Math.max(0,u.atk-dt*4); u.flash=Math.max(0,u.flash-dt);
-  if(u.type==='worker') workerAI(u,dt); else { if(regen) u.hp=Math.min(u.maxHp,u.hp+regen*dt); soldierAI(u,dt); }
+  if(u.type==='worker') workerAI(u,dt); else { if(regen) u.hp=Math.min(u.maxHp,u.hp+regen*dt); if(u.type==='healer') healTick(u,dt); if(u.type==='siege') siegeAI(u,dt); else soldierAI(u,dt); }
  }
  for(const h of S.heroes) heroAI(h,dt);
  for(const e of S.enemies){ if(e.dead) continue; tickBuffs(e,dt); e.atkT-=dt; e.atk=Math.max(0,e.atk-dt*4); e.flash=Math.max(0,e.flash-dt); enemyAI(e,dt); }
@@ -1271,6 +1298,17 @@ function soldierAI(u,dt){
  if(t){ if(st==='hold'&&!melee&&edgeDist(u,t)>u.range){ step(u,A.x,A.y,dt,3); u.face=t.x>=u.x?1:-1; } else engage(u,t,dt); }   // melee on Hold steps out inside its guard radius
  else step(u,A.x,A.y,dt,3);
 }
+function healTick(u,dt){ const H=UNITS.healer.heal; u.healT=(u.healT==null?rnd(0,H.cd):u.healT)-dt; if(u.healT>0) return; u.healT=H.cd;
+ let best=null,bv=.999; [...S.units.filter(x=>x.type!=='worker'&&!x.dead&&x!==u),...S.heroes.filter(x=>!x.dead)].forEach(x=>{ if(dist(x,u)>H.r) return; const v=x.hp/x.maxHp; if(v<bv){bv=v;best=x;} });
+ if(!best) return; const amt=H.amt*(1+.12*S.forge.weapons); best.hp=Math.min(best.maxHp,best.hp+amt); u.atk=1;
+ text(best.x,best.y-30,'+'+Math.round(amt),'#8BE08A',11); for(let q=0;q<5;q++) part(best.x+rnd(-5,5),best.y-12,rnd(-12,12),rnd(-40,-15),'#B8FFC4',1.6,.5,0); }
+function siegeAI(u,dt){ // stays in its slot and lobs stones at the densest group between 60 and its range
+ u.retarget-=dt; u.anchor=formationSpot(u);
+ const sp=u.speed; if(u.march) u.speed=Math.min(sp,S.marchSpeed||sp); const there=step(u,u.anchor.x,u.anchor.y,dt,5); u.speed=sp; if(u.march&&(there||S.time-S.marchAt>20)) u.march=false;
+ if(!there&&u.march) return;
+ if(u.atkT>0) return; const d=UNITS.siege; let best=null,bn=0;
+ for(const e of S.enemies){ if(e.dead||e.fly) continue; const r=dist(e,u); if(r<d.min||r>d.range+e.r) continue; let n=0; for(const o of S.enemies) if(!o.dead&&Math.hypot(o.x-e.x,o.y-e.y)<d.aoe) n+=o.boss?3:1; if(n>bn){bn=n;best=e;} }
+ if(!best){ u.atkT=.4; return; } u.face=best.x>=u.x?1:-1; u.atkT=u.cd; u.atk=1; attack(u,best); }
 function moveArmy(){ const mil=S.units.filter(u=>u.type!=='worker');
  S.marchSpeed=mil.length?Math.max(38,Math.min(...mil.map(u=>u.speed))):50; S.marchAt=S.time; refreshFormation();
  const ch=S.stance==='charge';   // Charge: dragging sets where the army pushes to (attack-move); Hold/Defend: march, ignoring enemies unless attacked
@@ -1370,6 +1408,7 @@ function updateProj(dt){
     pool.forEach(o=>{if(!o.dead&&Math.hypot(o.x-p.tx,o.y-(p.ty+10))<p.aoe+(o.r||0)) hit(p.src,o,p.dmg,{show:1,proj:1});});
     if(p.type==='fireball'&&p.burn){ const W=TAL.wildfire; S.fx.push({type:'burn',x:p.tx,y:p.ty+10,r:W.r,dps:W.dps,src:p.src,life:W.t,max:W.t,tk:0}); }
     if(p.type==='fireball'){ring(p.tx,p.ty+8,6,p.aoe,'#FFB24A',.35,5); for(let i=0;i<18;i++){const a=rnd(0,TAU);part(p.tx,p.ty,Math.cos(a)*rnd(40,120),Math.sin(a)*rnd(30,80),i%2?'#FFD36A':'#FF6A2A',rnd(2,3.5),.5,60);} sfx('boom'); S.shake=4;}
+    else if(p.type==='stone'){ ring(p.tx,p.ty+8,6,p.aoe,'#D8C8A8',.4,5); for(let i=0;i<14;i++){const a=rnd(0,TAU);part(p.tx,p.ty+6,Math.cos(a)*rnd(40,110),Math.sin(a)*rnd(20,60)-30,i%2?'#9AA3AD':'#CBB89A',rnd(2,3.4),.6,160);} smoke(p.tx,p.ty+6,rnd(8,12)); sfx('thud'); S.shake=Math.max(S.shake,3); }
     else ring(p.tx,p.ty+8,4,p.aoe,'#CFEFFF',.3,3);
    }else if(p.t&&!p.t.dead){
     if(p.mark) p.t.buffs.mark={t:p.mark};
@@ -1411,7 +1450,7 @@ function updateFx(dt){
 }
 function massOf(a){
  if(a.team==='e') return a.boss?MASS.boss:(a.type==='troll'||a.type==='knight')?MASS.elite:MASS.enemy;
- let m=a.kind==='h'?MASS.hero:a.type==='heavy'?MASS.heavy:a.type==='wolfpet'?MASS.pet:MASS.soldier;
+ let m=a.kind==='h'?MASS.hero:a.type==='heavy'?MASS.heavy:a.type==='wolfpet'?MASS.pet:a.type==='siege'?MASS.siege:MASS.soldier;
  if(S.stance==='hold'&&!a.moving&&!a.march&&a.anchor&&dist(a,a.anchor)<10) m*=MASS.stance.hold;       // braced in formation
  else if(S.stance==='charge'&&a.moving) m*=MASS.stance.charge;                                          // advancing
  return m; }
@@ -1676,6 +1715,12 @@ function drawBuildingShape(c,type,P,horde,keep,t,spec){
    if(horde){for(let i=0;i<3;i++){c.fillStyle='#EDE3CF';poly(c,[[-19+i*14,-104],[-16+i*14,-112],[-13+i*14,-104]]);c.fill();}}}
   else {c.fillStyle=P.roofD; poly(c,[[-16,-66],[16,-66],[0,-86]]); c.fill(); win(c,-3,-76,6,7); snowCap(c,[[0,-86],[-7,-78],[-2,-80],[5,-77]]); top=-86;}
   if(horde){for(let i=0;i<7;i++){c.fillStyle='#EDE3CF';poly(c,[[-44+i*14,-40],[-41+i*14,-50],[-38+i*14,-40]]);c.fill();}}
+  if(keep===2){ // Castle: a second tower and hanging banners
+   c.fillStyle=lg(c,0,-112,0,-40,P.wall,P.wallD); c.fillRect(-44,-112,20,72); wallTex(c,-44,-112,20,72,horde); win(c,-38,-100,7,10); win(c,-38,-78,7,10);
+   c.fillStyle=P.wallD; for(let i=0;i<3;i++) c.fillRect(-46+i*8,-118,5,6); c.fillRect(-46,-114,24,3);
+   c.fillStyle=P.roof; poly(c,[[-47,-118],[-21,-118],[-34,-142]]); c.fill(); snowCap(c,[[-34,-142],[-40,-131],[-36,-133],[-31,-130],[-27,-132]]); flag(c,-34,-142,P.banner,t);
+   c.fillStyle=lg(c,0,-104,0,-40,P.wall,P.wallD); c.fillRect(26,-96,16,56); wallTex(c,26,-96,16,56,horde); c.fillStyle=P.roofD; poly(c,[[23,-96],[45,-96],[34,-116]]); c.fill(); snowCap(c,[[34,-116],[29,-107],[33,-108],[38,-106]]);
+   [[-22,-38],[16,-38]].forEach(([bx,by])=>{ c.fillStyle=P.banner; c.beginPath(); c.moveTo(bx,by); c.lineTo(bx+7,by); c.lineTo(bx+7,by+17); c.lineTo(bx+3.5,by+13); c.lineTo(bx,by+17); c.closePath(); c.fill(); c.fillStyle=P.trim; c.fillRect(bx,by,7,2); }); }
   if(t) { drawTorch(c,-14,-6,t); drawTorch(c,14,-6,t); }
   flag(c,0,top,P.banner,t);
  }else if(type==='farm'){
@@ -1725,7 +1770,7 @@ function drawBuildingShape(c,type,P,horde,keep,t,spec){
  }
 }
 function drawBuilding(c,b){
- const P=S.R.pal, horde=S.race==='horde', t=S.time, keep=b===S.tc&&S.keep;
+ const P=S.R.pal, horde=S.race==='horde', t=S.time, keep=b===S.tc?(S.castle?2:S.keep?1:0):0;
  c.save(); c.translate(b.x,b.y);
  if(!b.built){
   c.fillStyle='rgba(110,95,75,.55)'; ell(c,0,0,b.r+4,b.r*.38);
@@ -1818,6 +1863,8 @@ function unitLook(u){
   case 'melee': return {...base,head:horde?'horns':'helm',helm:armorMetal,weapon:horde?'axe':'sword',shield:horde?null:P.bodyD,pads:F.armor>=2,padCol:armorMetal};
   case 'ranged': return {...base,head:'hood',hood:horde?'#5B3A2A':'#2F5A3A',body:horde?'#7A4A2E':'#3E6B45',weapon:horde?'taxe':'bow'};
   case 'heavy': return {...base,head:horde?'horns':'helm',helm:armorMetal,weapon:horde?'great':'spear',shield:P.banner,cape:P.bodyD,pads:true,padCol:armorMetal};
+  case 'healer': return horde?{...base,body:'#4E6A3A',bodyD:'#34492A',trim:'#D9B26A',head:'hood',hood:'#6B4A2B',robe:true,weapon:'staff',orb:'#9FFFB0',orbFade:'rgba(120,255,160,0)',cape:'#3A2A1E'}
+   :{...base,body:'#E8E2D0',bodyD:'#C9BFA4',trim:'#E7C66A',head:'hood',hood:'#F4EEDC',robe:true,weapon:'staff',orb:'#FFF2B0',orbFade:'rgba(255,230,140,0)',cape:P.banner};
  }
 }
 function heroLook(h,o){
@@ -1843,6 +1890,21 @@ function enemyLook(e){
 }
 const WOLF_PAL={leg:'#8A99A8',tail:'#DCE6EE',body:'#E4ECF2',back:'#A9B8C6',eye:'#4FB8FF'};
 const PET_PAL={leg:'#5E5044',tail:'#A08C74',body:'#8F7C66',back:'#6B5B49',eye:'#1E1A16',collar:'#2F7FD6'};   // Pack Leader wolves: grey-brown, blue collar
+function drawSiege(c,o,horde){ // Trebuchet (Kingdom) / Catapult (Horde): a wooden engine whose arm flings on attack
+ const s=o.s||1, a=o.atk||0; c.save(); c.translate(o.x,o.y); c.fillStyle='rgba(20,40,70,.25)'; ell(c,0,0,16*s,4*s); c.scale(o.face||1,1);
+ c.fillStyle='#6B4A2B'; rr(c,-15*s,-8*s,30*s,6*s,2*s); c.fill(); c.fillStyle='#8A6A45'; c.fillRect(-15*s,-8*s,30*s,1.6*s);
+ [-10,10].forEach(wx=>{ c.fillStyle='#3A2A1E'; ell(c,wx*s,-1.5*s,3.6*s,3.6*s); c.fillStyle='#9A7A55'; ell(c,wx*s,-1.5*s,1.3*s,1.3*s); });
+ if(!horde){ c.strokeStyle='#7A5634'; c.lineWidth=2.4*s; c.beginPath(); c.moveTo(-9*s,-8*s); c.lineTo(0,-27*s); c.lineTo(9*s,-8*s); c.stroke();
+  c.save(); c.translate(0,-27*s); c.rotate(2.64-a*3.64); c.strokeStyle='#8A6A45'; c.lineWidth=2*s; c.beginPath(); c.moveTo(-8*s,0); c.lineTo(22*s,0); c.stroke();
+  c.fillStyle='#5E6873'; rr(c,-13*s,-3*s,7*s,8*s,1.5*s); c.fill(); c.strokeStyle='#C9B48A'; c.lineWidth=.8*s; c.beginPath(); c.moveTo(22*s,0); c.lineTo(22*s,6*s); c.stroke(); if(a<.5){ c.fillStyle='#9AA3AD'; ell(c,22*s,7*s,2.2*s,2.2*s); } c.restore();
+  c.fillStyle=o.trim||'#E7C66A'; c.fillRect(-2*s,-29*s,4*s,3*s); c.fillStyle=o.banner||'#2F6FD0'; poly(c,[[9*s,-8*s],[9*s,-17*s],[15*s,-14*s]]); c.fill(); }
+ else { c.fillStyle='#5A3E27'; poly(c,[[-7*s,-8*s],[-2*s,-19*s],[2*s,-19*s],[7*s,-8*s]]); c.fill();
+  c.save(); c.translate(0,-15*s); c.rotate(2.84-a*3.74); c.strokeStyle='#8A5A2E'; c.lineWidth=2.4*s; c.beginPath(); c.moveTo(0,0); c.lineTo(20*s,0); c.stroke();
+  c.fillStyle='#6B4A2B'; ell(c,21*s,0,3.6*s,2.6*s); if(a<.5){ c.fillStyle='#9AA3AD'; ell(c,21*s,-1.6*s,2*s,1.8*s); } c.restore();
+  c.fillStyle='#EDE3CF'; poly(c,[[-15*s,-8*s],[-19*s,-14*s],[-13*s,-10*s]]); c.fill(); c.fillStyle=o.banner||'#B8322A'; poly(c,[[12*s,-8*s],[12*s,-18*s],[17*s,-15*s]]); c.fill(); }
+ if(o.flash>0){c.globalAlpha=Math.min(1,o.flash*5)*.5; c.fillStyle='#fff'; ell(c,0,-10*s,15*s,10*s); c.globalAlpha=1;}
+ c.restore(); }
+function drawChevrons(c,x,y,n){ c.strokeStyle='#FFD36A'; c.lineWidth=1.3; c.lineCap='round'; for(let i=0;i<n;i++){ const yy=y-i*2.8; c.beginPath(); c.moveTo(x-3,yy-1.5); c.lineTo(x,yy+.5); c.lineTo(x+3,yy-1.5); c.stroke(); } }
 function drawWolf(c,e,P){
  P=P||WOLF_PAL; const s=e.s||1, w=e.walk, lgm=e.moving?Math.sin(w)*3*s:0, bite=e.atk>0?e.atk*3*s:0;
  c.save(); c.translate(e.x,e.y); c.fillStyle='rgba(20,40,70,.25)'; ell(c,0,0,11*s,3*s); c.scale(e.face,1);
@@ -1883,7 +1945,7 @@ function drawEnemy(c,e){
  if(e.type==='giant'||e.type==='trollKing'||e.type==='lich'){const gr=c.createRadialGradient(e.x,e.y-20,4,e.x,e.y-20,60); gr.addColorStop(0,'rgba(140,210,255,.35)'); gr.addColorStop(1,'rgba(140,210,255,0)'); c.fillStyle=gr; c.fillRect(e.x-60,e.y-80,120,120);}
  drawFigure(c,enemyLook(e));
 }
-function visH(e){if(e.kind==='b') return e.h; if(e.type==='wolf') return 22; if(e.fly) return 76; return 26*(e.s||1);}
+function visH(e){if(e.kind==='b') return e.h; if(e.type==='wolf'||e.type==='wolfpet') return 22; if(e.type==='siege') return 34; if(e.fly) return 76; return 26*(e.s||1);}
 function wrapWords(t,n){ const out=[]; let ln=''; t.split(' ').forEach(w=>{ if(ln&&(ln+' '+w).length>n){out.push(ln);ln=w;} else ln=ln?ln+' '+w:w; }); if(ln) out.push(ln); return out; }
 function hpBar(c,x,y,w,p,col){c.fillStyle='rgba(10,20,30,.6)'; c.fillRect(x-w/2-1,y-1,w+2,4.4); c.fillStyle=col; c.fillRect(x-w/2,y,w*clamp(p,0,1),2.4);}
 
@@ -1944,7 +2006,7 @@ function draw(){
  L.push({y:MINE.y,f:()=>drawMine(c,t)});
  theme().fires.forEach(([fx,fy])=>L.push({y:fy,f:()=>drawFire(c,fx,fy,t)}));
  S.buildings.forEach(b=>L.push({y:b.y,f:()=>drawBuilding(c,b)}));
- S.units.forEach(u=>{if(!u.hidden) L.push({y:u.y,f:()=>u.type==='wolfpet'?drawWolf(c,u,PET_PAL):drawFigure(c,unitLook(u))});});
+ S.units.forEach(u=>{if(!u.hidden) L.push({y:u.y,f:()=>u.type==='wolfpet'?drawWolf(c,u,PET_PAL):u.type==='siege'?drawSiege(c,{...u,trim:S.R.pal.trim,banner:S.R.pal.banner},S.race==='horde'):drawFigure(c,unitLook(u))});});
  S.heroes.forEach(h=>{if(!h.dead) L.push({y:h.y,f:()=>{ if(h.buffs.immune){c.fillStyle=`rgba(255,211,106,${.25+Math.sin(t*14)*.1})`; ell(c,h.x,h.y-14,15,19);} if(h.buffs.guard){c.strokeStyle='rgba(255,140,100,.7)';c.lineWidth=1.5;c.beginPath();c.arc(h.x,h.y-14,15,0,TAU);c.stroke();}
   if(h.buffs.warcry){c.fillStyle='rgba(255,211,106,.25)';ell(c,h.x,h.y,14,5);} drawFigure(c,heroLook(h));}});});
  S.enemies.forEach(e=>{if(!e.fly) L.push({y:e.y,f:()=>drawEnemy(c,e)});});
@@ -1959,6 +2021,8 @@ function draw(){
   else if(p.type==='bolt'){const g=c.createRadialGradient(0,0,0,0,0,7); g.addColorStop(0,'#FFFFFF'); g.addColorStop(.4,'#B9A4FF'); g.addColorStop(1,'rgba(150,120,255,0)'); c.fillStyle=g; ell(c,0,0,7,7);}
   else if(p.type==='fireball'){const g=c.createRadialGradient(0,0,0,0,0,11); g.addColorStop(0,'#FFF4C0'); g.addColorStop(.35,'#FFB24A'); g.addColorStop(1,'rgba(255,90,30,0)'); c.fillStyle=g; ell(c,0,0,11,11);}
   else if(p.type==='shard'){c.fillStyle='#DDF4FF'; poly(c,[[-7,-2],[7,0],[-7,2]]); c.fill();}
+  else if(p.type==='stone'){ c.rotate(-(p.ang||0)); const D=Math.hypot((p.tx||p.x)-p.sx,(p.ty||p.y)-p.sy)+Math.hypot(p.x-p.sx,p.y-p.sy)||1, k=clamp(Math.hypot(p.x-p.sx,p.y-p.sy)/D,0,1), lift=Math.sin(k*Math.PI)*Math.min(70,D*.35);
+   c.fillStyle='rgba(20,40,70,.2)'; ell(c,0,lift*.1+2,4,1.6); c.fillStyle='#8A929C'; ell(c,0,-lift,4.4,4); c.fillStyle='#B7BEC6'; ell(c,-1.2,-lift-1.2,1.8,1.6); }
   c.restore();
  }
  // fx
@@ -1987,6 +2051,7 @@ function draw(){
   if(e.buffs&&e.buffs.mark){c.strokeStyle='#FFB36A'; c.lineWidth=1.4; c.beginPath(); c.arc(e.x,e.y-visH(e)*.5,e.r+5,0,TAU); c.stroke();}};
  drawBadges(c);
  S.buildings.forEach(bars); S.units.forEach(u=>{if(!u.hidden)bars(u);}); S.heroes.forEach(bars); S.enemies.forEach(bars);
+ S.units.forEach(u=>{ if(u.rank&&!u.hidden&&!u.dead) drawChevrons(c,u.x,u.y-visH(u)-(u.hp<u.maxHp-.5?10:4),u.rank); });
  // worker counts over resource sources
  if(mode==='play'){ const cnt=j=>S.units.filter(u=>u.type==='worker'&&u.job===j).length;
   const woodX=TREES.reduce((a,t)=>a+t.x,0)/TREES.length, woodY=Math.min(...TREES.map(t=>t.y))-34;
@@ -2155,7 +2220,8 @@ function thumb(key){
  const P=S.R.pal, horde=S.race==='horde';
  g.save();
  if(key.startsWith('tower:')){ g.translate(29,45); g.scale(.46,.46); drawBuildingShape(g,'tower',P,horde,false,0,key.slice(6)); }
- else if(key==='keep'||BUILDINGS[key]){const sc={townhall:.4,keep:.36,farm:.72,barracks:.6,forge:.7,tower:.52}[key]; g.translate(29,43); g.scale(sc,sc); drawBuildingShape(g,key==='keep'?'townhall':key,P,horde,key==='keep',0);}
+ else if(key==='keep'||key==='castle'||BUILDINGS[key]){const sc={townhall:.4,keep:.36,castle:.3,farm:.72,barracks:.6,forge:.7,tower:.52}[key]; g.translate(key==='castle'?32:29,key==='castle'?44:43); g.scale(sc,sc); drawBuildingShape(g,key==='keep'||key==='castle'?'townhall':key,P,horde,key==='castle'?2:key==='keep'?1:0,0);}
+ else if(key==='siege'){ g.translate(30,42); g.scale(1.25,1.25); drawSiege(g,{x:0,y:0,face:1,atk:0,s:1,flash:0,trim:P.trim,banner:P.banner},horde); }
  else if(key.startsWith('e:')){const t=key.slice(2), d=ENEMIES[t], sc={wolf:1.35,goblin:1.45,gobArcher:1.45,skeleton:1.3,shaman:1.4,knight:1.1,troll:.95,giant:.62,wyrm:.5,trollKing:.72,lich:.66}[t]; g.translate(t==='wolf'?24:29,t==='wyrm'?52:46); g.scale(sc,sc); drawEnemy(g,{type:t,x:0,y:0,face:1,walk:0,moving:false,atk:0,flash:0,s:d.s,fly:!!d.fly,r:d.r});}
  else if(key.startsWith('h:')){g.translate(29,43); g.scale(1.25,1.25); drawFigure(g,heroLook({cls:key.slice(2),x:0,y:0,face:1,walk:0,moving:false,atk:0,flash:0}));}
  else{g.translate(29,43); g.scale(1.45,1.45); const u={type:key,x:0,y:0,face:1,walk:0,moving:false,atk:0,flash:0,s:UNITS[key].s,job:'gold'}; drawFigure(g,unitLook(u));}
@@ -2186,6 +2252,8 @@ function costHtml(c,food){
 let sheetTab=null, uiDirty=true;
 function openTab(tab){ if(mode!=='play') return; if(ringCtx){ringCtx=null;$('#ring').hidden=true;} if(talHero) closeTalent(); if(sheetTab===tab){closeSheet();return;} sheetTab=tab; $('#sheet').hidden=false; renderSheet(); sfx('click'); document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.tab===tab)); }
 function closeSheet(){sheetTab=null; $('#sheet').hidden=true; S&&(S.selPlot=null); document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));}
+const ARMY_KEYS=['melee','ranged','heavy','healer','siege'];
+const unitLock=k=>{ const d=UNITS[k]; return d.req==='keep'&&!S.keep?'Needs a Keep':d.req==='castle'&&!S.castle?'Needs a Castle':''; };
 function queueHtml(b){ if(!b.queue.length) return ''; const N=S.R.names;
  return `<div class="sec">In training <span class="hint">(× cancels with a full refund)</span></div><div class="qlist">${b.queue.map((q,i)=>`<div class="qi"><span>${q.kind==='hero'?S.R.heroNames[q.key]:N[q.key]}</span><span class="qline"><i style="width:${i?0:Math.round(q.t/q.time*100)}%"></i></span><button data-act="q:${b.id}:${i}" aria-label="Cancel">×</button></div>`).join('')}</div>`; }
 function renderSheet(){
@@ -2203,7 +2271,8 @@ function renderSheet(){
   ['barracks','farm','forge','tower'].forEach(k=>{const d=BUILDINGS[k], n=S.buildings.filter(b=>b.type===k).length, full=n>=d.max; const desc=k==='tower'?d.desc+'. Tap a built tower to specialize it.':d.desc;
    h+=`<button class="card ${full?'dis':''} ${(k==='barracks'&&S.quest===2)||(k==='forge'&&S.quest===6)?'hot':''}" data-hold="b:${k}"><img src="${thumb(k)}" alt=""><span class="ct"><b>${d.name}</b><small>${full?(d.max===1?'Built':'Limit reached'):desc}</small>${full?'':costHtml(d.cost)}</span>${n&&d.max>1?`<span class="badge">${n}/${d.max}</span>`:''}</button>`;});
   const tc=S.tc;
-  h+=`<button class="card ${S.keep||tc.upg?'dis':''}" data-hold="keep"><img src="${thumb('keep')}" alt=""><span class="ct"><b>Upgrade to Keep</b><small>${S.keep?'Done':tc.upg?'Upgrading…':KEEP_UPGRADE.desc}</small>${S.keep||tc.upg?'':costHtml(KEEP_UPGRADE.cost)}</span></button>`;
+  if(!S.keep) h+=`<button class="card ${tc.upg?'dis':''}" data-hold="keep"><img src="${thumb('keep')}" alt=""><span class="ct"><b>Upgrade to Keep</b><small>${tc.upg?'Upgrading…':KEEP_UPGRADE.desc}</small>${tc.upg?'':costHtml(KEEP_UPGRADE.cost)}</span></button>`;
+  else h+=`<button class="card ${S.castle||tc.upg?'dis':''}" data-hold="castle"><img src="${thumb('castle')}" alt=""><span class="ct"><b>Upgrade to Castle</b><small>${S.castle?'Done':tc.upg?'Raising the Castle…':CASTLE_UPGRADE.desc}</small>${S.castle||tc.upg?'':costHtml(CASTLE_UPGRADE.cost)}</span></button>`;
   h+=`</div>`;
  }else if(sheetTab==='army'){
   $('#sheetTitle').textContent='Army';
@@ -2221,10 +2290,11 @@ function renderSheet(){
     S.heroes.forEach((x,i)=>{ const got=x.tal.filter(Boolean).map(id=>TAL[id].name), pend=talentPending(x)>=0;
      const gi=gearOf(x); h+=`<div class="trow"><span><b>${x.name}</b>${gi?` <small>· ${GEAR[gi].name}</small>`:''}<br><small>${got.length?got.join(' · '):'No talents yet'}</small></span>${pend?`<button class="wbtn" data-act="tal:${i}">Choose</button>`:''}</div>`; }); }
    h+=`<div class="sec">Soldiers <span class="hint">(tap to train)</span></div><div class="grid">`;
-   ['melee','ranged','heavy'].forEach(k=>{const d=UNITS[k], lock=d.req==='keep'&&!S.keep, n=S.units.filter(u=>u.type===k).length, qn=b.queue.filter(x=>x.key===k).length;
-    h+=`<button class="card ${lock?'dis':''}" data-act="u:${k}"><img src="${thumb(k)}" alt=""><span class="ct"><b>${N[k]}</b><small>${lock?'Needs a Keep':d.desc}</small>${lock?'':costHtml(d.cost,d.food)}</span>${n||qn?`<span class="badge">${n}${qn?' +'+qn:''}</span>`:''}</button>`;});
+   ARMY_KEYS.forEach(k=>{const d=UNITS[k], lock=unitLock(k), n=S.units.filter(u=>u.type===k).length, qn=b.queue.filter(x=>x.key===k).length;
+    h+=`<button class="card ${lock?'dis':''}" data-act="u:${k}"><img src="${thumb(k)}" alt=""><span class="ct"><b>${N[k]}</b><small>${lock||d.desc}</small>${lock?'':costHtml(d.cost,d.food)}</span>${n||qn?`<span class="badge">${n}${qn?' +'+qn:''}</span>`:''}</button>`;});
    h+=`</div>`;
-   const have=['melee','ranged','heavy'].filter(k=>S.units.some(u=>u.type===k));
+   const ranked=S.units.filter(u=>u.rank).length; if(ranked) h+=`<div class="hint" style="margin:6px 2px">${ranked} veteran${ranked>1?'s':''} (gold chevrons): +12% health and damage per rank, faster healing.</div>`;
+   const have=ARMY_KEYS.filter(k=>S.units.some(u=>u.type===k));
    if(have.length) h+=`<div class="sec">Dismiss to free food <span class="hint">(tap twice)</span></div><div class="wrow">${have.map(k=>`<button class="wbtn alt" data-hold="dis:${k}">${N[k]} (${S.units.filter(u=>u.type===k).length})</button>`).join('')}</div>`;
    h+=queueHtml(b);
   }
@@ -2232,8 +2302,10 @@ function renderSheet(){
   $('#sheetTitle').textContent='Forge';
   if(!hasB('forge')){h+=`<div class="note">${S.buildings.some(b=>b.type==='forge')?'Your Forge is still being built.':'Build a Forge to upgrade weapons, armor, tools and hero gear. Upgrades change how your soldiers look, too.'}<div style="margin-top:10px"><button class="wbtn" data-act="tab:build">Go to Build</button></div></div>`;}
   else{h+=`<div class="grid">`;
-   Object.keys(FORGE).forEach(k=>{const d=FORGE[k], lv=S.forge[k], max=lv>=d.max, capped=lv>=3&&!S.keep;
-    h+=`<button class="card ${max||capped?'dis':''} ${k==='weapons'&&S.quest===6?'hot':''}" data-hold="f:${k}"><span class="ic">${svgI(k)}</span><span class="ct"><b>${d.name}</b><small>${max?'Maxed':capped?'Needs a Keep':d.desc}</small>${max||capped?'':costHtml(forgeCost(k))}<span class="pips">${Array.from({length:d.max},(_,i)=>`<span class="${i<lv?'on':''}"></span>`).join('')}</span></span></button>`;});
+   Object.keys(FORGE).forEach(k=>{const d=FORGE[k], lv=S.forge[k], max=lv>=d.max, capped=(lv>=3&&!S.keep)?'Needs a Keep':(lv>=5&&!S.castle)?'Needs a Castle':'';
+    h+=`<button class="card ${max||capped?'dis':''} ${k==='weapons'&&S.quest===6?'hot':''}" data-hold="f:${k}"><span class="ic">${svgI(k)}</span><span class="ct"><b>${d.name}</b><small>${max?'Maxed':capped||d.desc}</small>${max||capped?'':costHtml(forgeCost(k))}<span class="pips">${Array.from({length:d.max},(_,i)=>`<span class="${i<lv?'on':''}"></span>`).join('')}</span></span></button>`;});
+   const mwOK=S.castle&&S.forge.weapons>=8&&S.forge.armor>=8;
+   h+=`<button class="card ${mwOK?'':'dis'}" data-hold="mw"><span class="ic">${svgI('arcana')}</span><span class="ct"><b>Masterwork${S.master?` ×${S.master}`:''}</b><small>${mwOK?'+4% damage and health for soldiers and heroes. Repeatable.':'Needs Weapons and Armor at level 8 (Castle)'}</small>${mwOK?costHtml(masterCost()):''}</span>${S.master?`<span class="badge">${S.master}</span>`:''}</button>`;
    h+=`</div>`;}
  }
  body.innerHTML=h; body.scrollTop=st;
@@ -2244,6 +2316,7 @@ $('#sheetBody').addEventListener('click',e=>{
  if(a==='w'){ if(k==='train') trainWorker(); else assignWorker(k); }
  else if(a==='b') tryBuild(k);
  else if(a==='keep') upgradeKeep();
+ else if(a==='castle') upgradeCastle();
  else if(a==='h') recruitHero(k);
  else if(a==='u') trainUnit(k);
  else if(a==='f') forgeUp(k);
@@ -2323,7 +2396,7 @@ function openRing(ctxObj){ ringCtx=ctxObj; if(sheetTab) closeSheet(); renderRing
 function closeRing(){ ringCtx=null; const r=$('#ring'); r.hidden=true; r.innerHTML=''; if(S) S.selPlot=null; }
 function ringAnchor(){ const t=ringCtx; if(t.kind==='plot') return {x:t.obj.x,y:t.obj.y-14,name:'Empty plot'};
  if(t.kind==='mine') return {x:MINE.x+6,y:MINE.y-16,name:S.mineLeft==null?'Gold mine':`Gold mine (${Math.floor(S.mineLeft)} left)`}; if(t.kind==='trees') return {x:t.obj.x,y:t.obj.y-18,name:'Pine woods'};
- const b=t.obj; return {x:b.x,y:b.y-b.h*.45,name:(b===S.tc&&S.keep?'Keep':b.spec?TOWER_SPECS[b.spec].name:BUILDINGS[b.type].name)+(b.built?'':' (building)')}; }
+ const b=t.obj; return {x:b.x,y:b.y-b.h*.45,name:(b===S.tc&&S.castle?'Castle':b===S.tc&&S.keep?'Keep':b.spec?TOWER_SPECS[b.spec].name:BUILDINGS[b.type].name)+(b.built?'':' (building)')}; }
 function ringItems(){
  const t=ringCtx, N=S.R.names, it=[];
  if(t.kind==='plot'){ ['barracks','farm','forge','tower'].forEach(k=>{const d=BUILDINGS[k], n=S.buildings.filter(b=>b.type===k).length;
@@ -2334,9 +2407,10 @@ function ringItems(){
    if(b.type==='townhall'){ const tq=b.queue.length;
      it.push({img:thumb('worker'),name:N.worker,cost:UNITS.worker.cost,stay:1,qn:tq,act:trainWorker});
      if(!S.keep&&!b.upg) it.push({icon:'build',name:'Keep',cost:KEEP_UPGRADE.cost,hold:1,act:upgradeKeep});
+     else if(S.keep&&!S.castle&&!b.upg) it.push({img:thumb('castle'),name:'Castle',cost:CASTLE_UPGRADE.cost,hold:1,act:upgradeCastle});
      it.push({icon:'plus',name:'Workers',act:()=>openTab('build')}); }
-   if(b.type==='barracks'&&b.built){ ['melee','ranged','heavy'].forEach(k=>{const d=UNITS[k];
-     it.push({img:thumb(k),name:N[k],cost:d.cost,stay:1,qn:b.queue.filter(q=>q.key===k).length,dis:d.req==='keep'&&!S.keep,why:'Needs a Keep',act:()=>trainUnit(k)});});
+   if(b.type==='barracks'&&b.built){ ARMY_KEYS.forEach(k=>{const d=UNITS[k];
+     it.push({img:thumb(k),name:N[k].split(' ')[0],cost:d.cost,stay:1,qn:b.queue.filter(q=>q.key===k).length,dis:!!unitLock(k),why:unitLock(k),act:()=>trainUnit(k)});});
      it.push({icon:'heroes',name:'Heroes',act:()=>openTab('army')}); }
    if(b.type==='forge'&&b.built) it.push({icon:'anvil',name:'Upgrade',act:()=>openTab('forge')});
    if(b.type==='tower'&&b.built&&!b.spec) Object.entries(TOWER_SPECS).forEach(([k,sp])=>it.push({img:thumb('tower:'+k),name:sp.name.split(' ')[0],cost:sp.cost,hold:1,dis:!hasB('forge'),why:'Specialized towers need a Forge',act:()=>specTower(b,k)}));
@@ -2374,7 +2448,7 @@ function reapplyArmed(){ if(!armed) return; if(performance.now()-armed.t>ARM_MS)
 function holdTick(){ reapplyArmed(); }
 function fireHold(k){ const [a,v]=k.split(':');
  if(a==='tal'){ const [,hid,tier,ch]=k.split(':'); pickTalent(S.heroes.find(h=>h.id===+hid),+tier,+ch); return; }
- if(a==='ring') runRing(+v); else if(a==='b') tryBuild(v); else if(a==='keep') upgradeKeep(); else if(a==='f') forgeUp(v);
+ if(a==='ring') runRing(+v); else if(a==='b') tryBuild(v); else if(a==='keep') upgradeKeep(); else if(a==='castle') upgradeCastle(); else if(a==='mw') buyMasterwork(); else if(a==='f') forgeUp(v);
  else if(a==='h') recruitHero(v); else if(a==='dis') dismissUnit(v); else if(a==='up') buyUpgrade(v);
  uiDirty=true; if(sheetTab&&S) renderSheet(); }
 
@@ -2400,7 +2474,7 @@ function jobList(){
  const J=[], N=S.R.names;
  S.buildings.forEach(b=>{
   if(!b.built) J.push({b,img:thumb(b.type),p:b.prog,cls:'build',txt:BUILDINGS[b.type].name});
-  else if(b.upg) J.push({b,img:thumb('keep'),p:b.upg.t/b.upg.time,cls:'build',txt:'Keep'});
+  else if(b.upg) J.push({b,img:thumb(b.upg.to==='castle'?'castle':'keep'),p:b.upg.t/b.upg.time,cls:'build',txt:b.upg.to==='castle'?'Castle':'Keep'});
   if(b.queue.length){const q=b.queue[0]; J.push({b,img:thumb(q.kind==='hero'?'h:'+q.key:q.key),p:q.t/q.time,cls:'',txt:(q.kind==='hero'?S.R.heroNames[q.key]:N[q.key])+(b.queue.length>1?` +${b.queue.length-1}`:'')});}
  });
  S.heroes.forEach(h=>{ if(h.dead) J.push({img:thumb('h:'+h.cls),p:1-h.revive/(15+h.lvl*2),cls:'rev',txt:`${Math.ceil(h.revive)}s`}); });
@@ -2417,7 +2491,7 @@ function drawBadges(c){
  for(const b of S.buildings){ if(b.dead) continue;
   let p=null,src=null,col='#6FB8FF',n=0;
   if(b.queue.length){const q=b.queue[0]; p=q.t/q.time; src=thumb(q.kind==='hero'?'h:'+q.key:q.key); n=b.queue.length;}
-  else if(b.upg){p=b.upg.t/b.upg.time; src=thumb('keep'); col='#FFC24A';}
+  else if(b.upg){p=b.upg.t/b.upg.time; src=thumb(b.upg.to==='castle'?'castle':'keep'); col='#FFC24A';}
   else if(!b.built){p=b.prog; col='#FFC24A';}
   if(p==null) continue;
   const x=b.x+b.r*.55, y=b.y-b.h-4, R=9;
@@ -2690,7 +2764,9 @@ const HOWTO=`<h2>How to play</h2><ul>
 <li>Drag the <b>banner</b> to move your army. It lines up facing the road: melee in front, ranged and healers behind, siege at the back, heroes at the ends of the front row. The <b>stance</b> button sets how they fight: <b>Hold the line</b> braces in formation (melee guard their spot), <b>Defend</b> fights freely once enemies enter the zone around the banner, <b>Charge</b> fights its way to the banner.</li>
 <li>Bosses drop <b>gear</b> the first time you beat them. Equip it in the <b>Armory</b> (battle list or briefing): one item per hero.</li>
 <li>Tap the ground to move your hero. Tap an enemy to focus it. <b>Target</b> switches between nearest, weakest and strongest for everyone.</li>
-<li>Upgrade gear at the <b>Forge</b>. Upgrade the Town Center to a Keep for elite units and higher forge levels.</li>
+<li>Upgrade gear at the <b>Forge</b>. Upgrade the Town Center to a <b>Keep</b> (elite units, healers, forge 4-5), then a <b>Castle</b> (forge 6-8, siege engines and endless <b>Masterwork</b>: +4% damage and health each).</li>
+<li>Workers cost no food: food is only for your army and heroes. Soldiers earn <b>ranks</b> from kills (gold chevrons: +12% health and damage each), so keep them alive.</li>
+<li>The <b>Cleric</b> or <b>Witch Doctor</b> heals the most injured ally nearby. The <b>Trebuchet</b> or <b>Catapult</b> hurls stones at dense waves from the back rows, but can't hit anything closer than 60.</li>
 <li>Maera's story cards can be switched off in this menu (Story: on/off) and re-read in the <b>Chronicle</b> on the battle list.</li>
 <li>Each battle ends with a boss. Clearing a wave pays out; calling the next one early pays extra gold.</li><li>Your battle saves after every cleared wave. Continue from the title screen or the battle list.</li><li>Tap a built Watch Tower to turn it into a Frost Tower (slows) or a Ballista (ignores armor). Both need a Forge.</li><li>Earn up to three stars per battle. Stars unlock harder tiers and give Crowns for permanent upgrades in the War council.</li></ul>
 <div class="row"><button class="mbtn pri" data-m="resume">Got it</button></div>`;
@@ -2731,7 +2807,7 @@ function frame(now){
 new ResizeObserver(()=>resize()).observe(stage);
 resize(); newGame(chosenRace);
 requestAnimationFrame(frame);
-if(/[?&]debug/.test(location.search)) window.__IC={saveRun,restoreRun,specTower,snapshot,clearW:()=>{for(const k in WCACHE) delete WCACHE[k];},trainUnit,trainWorker,forgeUp,upgradeKeep,setJob,setStance,foodCap,foodUsed,waveDef,genWave,MAPS,PROG_SET:p=>{PROG=normProg(p);},startMap,showMaps,get PROG(){return PROG;},tick:n=>{for(let i=0;i<n;i++)update(.05);},get S(){return S;},startWave,tryBuild,recruitHero,assignWorker,setMode:m=>mode=m,moveArmy,refreshFormation,reseed:n=>{Math.random=mulberry(n);},showChronicle,talentPending,pickTalent,TALENTS,grantXP,GEAR,equipGear,showArmory};
+if(/[?&]debug/.test(location.search)) window.__IC={saveRun,restoreRun,specTower,snapshot,clearW:()=>{for(const k in WCACHE) delete WCACHE[k];},trainUnit,trainWorker,forgeUp,upgradeKeep,setJob,setStance,foodCap,foodUsed,waveDef,genWave,MAPS,PROG_SET:p=>{PROG=normProg(p);},startMap,showMaps,get PROG(){return PROG;},tick:n=>{for(let i=0;i<n;i++)update(.05);},get S(){return S;},startWave,tryBuild,recruitHero,assignWorker,setMode:m=>mode=m,moveArmy,refreshFormation,upgradeCastle,buyMasterwork,reseed:n=>{Math.random=mulberry(n);},showChronicle,talentPending,pickTalent,TALENTS,grantXP,GEAR,equipGear,showArmory};
 })();
 </script>
 <script>
