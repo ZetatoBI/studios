@@ -32,3 +32,11 @@ This repo (ZetatoBI/studios) is the Zetato Studios site, served by GitHub Pages 
 ## Deployment
 Merging to the default branch publishes automatically through GitHub Pages. The site updates within a few
 minutes; the Actions tab shows the "pages build and deployment" run.
+
+## Ice Crown (games/icecrown/)
+- Read dev/icecrown/DESIGN.md before changing gameplay, balance, controls or releases.
+- After any change to combat, economy, waves, heroes or units, run the balance bot
+  (node dev/icecrown/balance/run-balance.mjs) and put the results in the PR, compared with the targets in DESIGN.md.
+- Every release: bump VERSION in games/icecrown/sw.js and in the PWA script at the end of games/icecrown/index.html.
+- Never change the manifest id or the icecrown.* storage keys without a migration.
+- Before opening any PR that changes a game, load it headless and confirm there are no page errors.
