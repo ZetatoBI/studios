@@ -299,6 +299,28 @@ button{font:inherit;color:inherit;touch-action:manipulation;cursor:pointer;borde
 .trow span{flex:1;line-height:1.3}
 .trow small{color:var(--muted);font-weight:700}
 @media (prefers-reduced-motion:reduce){.tmark{animation:none}}
+#loot{position:absolute;left:0;right:0;top:47%;text-align:center;pointer-events:none;opacity:0;z-index:3}
+#loot.show{animation:ban 3.2s ease forwards}
+#loot small{display:block;font-weight:800;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#FFE3A0;text-shadow:0 1px 3px #000}
+#loot b{display:inline-block;margin-top:3px;font-family:Cinzel,serif;font-weight:800;font-size:clamp(16px,5.2vw,23px);color:#1C0F05;background:linear-gradient(180deg,#FFE9A8,#E3B341);padding:5px 14px;border-radius:12px;box-shadow:0 0 22px rgba(255,211,106,.7),0 4px 12px rgba(0,0,0,.4)}
+@media (prefers-reduced-motion:reduce){#loot.show{animation:none;opacity:1}}
+.aslots{display:flex;flex-direction:column;gap:6px;margin:8px 0 4px}
+.aslot{display:flex;align-items:center;gap:8px;background:var(--panel2);border-radius:12px;padding:6px 8px;text-align:left;border:2px solid transparent;width:100%}
+.aslot.on{border-color:var(--accent)}
+.aslot>img{width:44px;height:36px;object-fit:contain;flex:none}
+.aslot>span{display:flex;flex-direction:column;flex:1;min-width:0}
+.aslot>span b{font-size:15px}.aslot>span small{font-size:12.5px;color:var(--muted)}
+.aitem{flex:none;display:flex;align-items:center;gap:5px;font-size:12px;font-weight:800;color:var(--muted);max-width:48%;text-align:right;line-height:1.15}
+.aitem img{width:30px;height:30px;flex:none}
+.agrid{display:flex;flex-direction:column;gap:6px}
+.agear{display:flex;align-items:center;gap:10px;background:var(--panel2);border-radius:12px;padding:8px;text-align:left;width:100%;border:2px solid transparent}
+.agear.on{border-color:#E3B341}
+.agear img{width:46px;height:46px;flex:none}
+.agear span{display:flex;flex-direction:column;gap:2px;min-width:0}
+.agear b{font-size:14.5px;line-height:1.15}.agear small{font-size:12.5px;color:var(--muted);line-height:1.25}
+.agear i{font-style:normal;font-size:12px;font-weight:800;color:var(--accent)}
+.agear.lock b{color:var(--muted)}
+.mhead .crownb{padding:6px 8px}
 @media (prefers-reduced-motion:reduce){.pulse,#banner.show,.res.bump{animation:none}#banner.show{opacity:1}#story,.stPanel,#say{transition:none}}
 </style>
 </head>
@@ -316,6 +338,7 @@ button{font:inherit;color:inherit;touch-action:manipulation;cursor:pointer;borde
   <div id="quest"></div>
   <div id="bossBar" hidden><div class="nm" id="bossName"></div><div class="tr"><i id="bossHp"></i></div></div>
   <div id="banner"><h3 id="banTitle"></h3><p id="banSub"></p></div>
+  <div id="loot"><small>Item found</small><b id="lootName"></b></div>
   <div id="say" aria-live="polite"><b id="sayWho"></b><span id="sayTxt"></span></div>
   <section id="sheet" hidden><div class="sheetHead"><h2 id="sheetTitle"></h2><button id="sheetClose" aria-label="Close">×</button></div><div id="sheetBody"></div></section>
   <div id="ring" hidden></div>
@@ -357,7 +380,7 @@ button{font:inherit;color:inherit;touch-action:manipulation;cursor:pointer;borde
  </div>
 
  <div id="maps" class="ov" hidden>
-  <div class="mhead"><button class="mback" id="mapsBack" aria-label="Back">‹</button><h2>Choose your battle</h2><button class="crownb" id="upBtn"><svg viewBox="0 0 24 24" fill="#FFD36A" stroke="#8A6212" stroke-width="1.2"><path d="M3 18l2-10 4 4 3-7 3 7 4-4 2 10z"/></svg><b id="crownN">0</b></button></div>
+  <div class="mhead"><button class="mback" id="mapsBack" aria-label="Back">‹</button><h2>Choose your battle</h2><button class="crownb" id="armBtn" aria-label="Armory"><svg viewBox="0 0 24 24" fill="#FFD36A" stroke="#8A6212" stroke-width="1.2"><path d="M12 2l8 3v6.5c0 5-3.4 8.6-8 10.5-4.6-1.9-8-5.5-8-10.5V5z"/><path d="M12 6v12M7.5 10.5h9" stroke="#8A6212" stroke-width="1.8" fill="none"/></svg></button><button class="crownb" id="upBtn"><svg viewBox="0 0 24 24" fill="#FFD36A" stroke="#8A6212" stroke-width="1.2"><path d="M3 18l2-10 4 4 3-7 3 7 4-4 2 10z"/></svg><b id="crownN">0</b></button></div>
   <div class="mlist" id="mapList"></div>
  </div>
  <div id="intro" class="ov" aria-label="Zetato Studios">
@@ -593,7 +616,18 @@ const UPGRADES={
  granary:{name:'Granary',desc:'+4 food cap',max:2,cost:[1,2]},
  forgemaster:{name:'Forgemaster',desc:'Forge upgrades cost 10% less',max:2,cost:[2,3]}
 };
-function normProg(p){ p=p||{}; p.stars=p.stars||{}; p.ups=p.ups||{}; p.spent=p.spent||0; p.story=Array.isArray(p.story)?p.story:[]; if(typeof p.storyOn!=='boolean') p.storyOn=true; return p; }
+// Boss gear: dropped the first time a boss is defeated (any map, win or lose). One item per hero class.
+const GEAR={
+ tusk:{name:"Skarn's Tusk Charm",boss:'trollKing',desc:'Regenerates 1% of max health per second',regen:.01},
+ stone:{name:"Grimhorn's Stoneheart",boss:'giant',desc:'+20% health and +2 armor',hp:.2,armor:2},
+ scale:{name:"Vyrnax's Frost Scale",boss:'wyrm',desc:"Takes 30% less damage from projectiles and breath; can't be slowed",cut:.3},
+ shard:{name:'Shard of the Pale Crown',boss:'lich',desc:'+20% ability power and -10% cooldowns',ap:.2,cd:.9}
+};
+function normProg(p){ p=p||{}; p.stars=p.stars||{}; p.ups=p.ups||{}; p.spent=p.spent||0; p.story=Array.isArray(p.story)?p.story:[]; if(typeof p.storyOn!=='boolean') p.storyOn=true;
+ const g=p.gear&&typeof p.gear==='object'?p.gear:{}; g.owned=Array.isArray(g.owned)?g.owned.filter(k=>GEAR[k]):[]; g.equipped=Object.assign({warrior:null,mage:null,ranger:null},g.equipped||{}); p.gear=g;
+ return p; }
+function gearOf(h){ const id=h&&h.kind==='h'?PROG.gear.equipped[h.cls]:null; return id&&PROG.gear.owned.includes(id)?id:null; }
+const hasG=(h,id)=>gearOf(h)===id;
 function loadProg(){ return normProg(store.get('prog',{})); }
 let PROG=loadProg();
 const totalStars=()=>Object.values(PROG.stars).reduce((a,v)=>a+v.filter(Boolean).length,0);
@@ -707,8 +741,8 @@ function makeHero(cls,x,y){
 }
 function applyStats(u){
  const P=S.R.perks, F=S.forge, ratio=u.maxHp?u.hp/u.maxHp:1;
- if(u.kind==='h'){const d=HEROES[u.cls],L=u.lvl-1, ch=hasT(u,'champion');
-  const V=1+.1*upg('veterans'); u.maxHp=d.hp*(1+.12*L)*(1+.08*F.armor)*V*(ch?1+TAL.champion.hp:1); u.dmg=d.dmg*(1+.08*L)*(1+.12*F.weapons)*P.dmgMul*V*(ch?1+TAL.champion.dmg:1); u.armor=d.armor+F.armor+P.armor+Math.floor(L/3);
+ if(u.kind==='h'){const d=HEROES[u.cls],L=u.lvl-1, ch=hasT(u,'champion'), st=hasG(u,'stone');
+  const V=1+.1*upg('veterans'); u.maxHp=d.hp*(1+.12*L)*(1+.08*F.armor)*V*(ch?1+TAL.champion.hp:1)*(st?1+GEAR.stone.hp:1); u.dmg=d.dmg*(1+.08*L)*(1+.12*F.weapons)*P.dmgMul*V*(ch?1+TAL.champion.dmg:1); u.armor=d.armor+F.armor+P.armor+Math.floor(L/3)+(st?GEAR.stone.armor:0);
   u.cd=d.cd/(hasT(u,'quickdraw')?TAL.quickdraw.as:1); u.range=d.range+(hasT(u,'eagle')?TAL.eagle.range:0);
  }else{const d=UNITS[u.type], mil=u.type!=='worker';
   u.maxHp=d.hp*(mil?1+.08*F.armor:1); u.dmg=d.dmg*(mil?(1+.12*F.weapons)*P.dmgMul:1); u.armor=d.armor+(mil?F.armor+P.armor:0);}
@@ -751,11 +785,11 @@ function clusterCenter(from,range,R,excl){
  for(const e of S.enemies){ if(e.dead||dist(e,from)>range||out(e)) continue; let n=0; for(const o of S.enemies) if(!o.dead&&!out(o)&&dist(o,e)<R) n+=o.boss?3:1; if(n>bn){bn=n;best=e;} }
  return best?{x:best.x,y:best.y}:null;
 }
-const pw=h=>(1+.1*(h.lvl-1))*(1+.12*S.forge.arcana);
+const pw=h=>(1+.1*(h.lvl-1))*(1+.12*S.forge.arcana)*(hasG(h,'shard')?1+GEAR.shard.ap:1);
 const cdMul=()=>1-.06*S.forge.arcana;
 function hasT(h,id){ return !!(h&&h.tal&&h.tal.includes(id)); }
 function talentPending(h){ if(!h||!h.tal) return -1; for(let i=0;i<3;i++) if(h.lvl>=TAL_LV[i]&&!h.tal[i]) return i; return -1; }
-function cdOf(h,i){ const a=HEROES[h.cls].abil[i]; let m=cdMul(); if(hasT(h,'arcane')) m*=TAL.arcane.cd;
+function cdOf(h,i){ const a=HEROES[h.cls].abil[i]; let m=cdMul(); if(hasT(h,'arcane')) m*=TAL.arcane.cd; if(hasG(h,'shard')) m*=GEAR.shard.cd;
  if(a.id==='warcry'&&hasT(h,'warlord')) m*=TAL.warlord.cd; if(a.id==='nova'&&hasT(h,'winterheart')) m*=TAL.winterheart.cd; if(a.id==='snipe'&&hasT(h,'deadeye')) m*=TAL.deadeye.cd;
  return a.cd*m; }
 const novaR=h=>100*(hasT(h,'winterheart')?TAL.winterheart.r:1);
@@ -778,6 +812,7 @@ function hit(src,t,amt,opt){
  let a=amt;
  if(t.buffs.mark) a*=1.4;
  if(t.buffs.guard) a*=.7;
+ if(t.kind==='h'&&opt&&(opt.proj||opt.breath)&&hasG(t,'scale')) a*=1-GEAR.scale.cut;
  if(!(opt&&opt.pure)){ const ar=(t.armor||0)+(t.buffs.ironwall?TAL.ironwall.armor:0); a*=1-(ar*.06)/(1+ar*.06); }
  t.hp-=a; t.flash=.12;
  if(t.kind==='h'&&t.hp<t.maxHp*TAL.unbreakable.at&&t.unbrW!==S.wave&&hasT(t,'unbreakable')){ t.unbrW=S.wave; t.hp=Math.max(t.hp,1); t.buffs.immune={t:TAL.unbreakable.t};
@@ -796,7 +831,7 @@ function kill(t,src){
   for(let i=0;i<(t.boss?40:8);i++) part(t.x,t.y-10*t.s,rnd(-70,70),rnd(-110,-20),t.boss?'#BFE6FF':'#DDEFFF',rnd(1.5,3),.7,160);
   S.heroes.forEach(h=>{ if(!h.dead&&dist(h,t)<280) grantXP(h,d.xp); });
   sfx(t.boss?'bossdie':'die');
-  if(t.boss){ S.shake=12; banner(`${d.name.split(' ')[0]} falls`,`+${d.gold} gold`); bossSpeak(t,'death'); }
+  if(t.boss){ S.shake=12; banner(`${d.name.split(' ')[0]} falls`,`+${d.gold} gold`); bossSpeak(t,'death'); dropGear(t.type); }
  }else if(t.kind==='h'){
   t.revive=15+t.lvl*2; t.buffs={}; t.focus=null; t.moveTo=null; S.heroDeaths++;
   toast(`${t.name} has fallen. Back in ${Math.round(t.revive)}s`); sfx('herodie');
@@ -809,6 +844,9 @@ function kill(t,src){
   if(t===S.tc) gameOver(false); else toast(`${BUILDINGS[t.type].name} destroyed`);
  }else{ for(let i=0;i<8;i++) part(t.x,t.y-10,rnd(-50,50),rnd(-80,-10),'#E57A6A',1.8,.5,140); }
 }
+function dropGear(type){ const id=Object.keys(GEAR).find(k=>GEAR[k].boss===type); if(!id||PROG.gear.owned.includes(id)) return;
+ PROG.gear.owned.push(id); store.set('prog',PROG); if(mode!=='play') return;
+ $('#lootName').textContent=GEAR[id].name; const el=$('#loot'); el.classList.remove('show'); void el.offsetWidth; el.classList.add('show'); sfx('fanfare'); }
 function grantXP(h,xp){
  h.xp+=xp;
  while(h.lvl<10&&h.xp>=XP_TABLE[h.lvl]){
@@ -842,7 +880,7 @@ function attack(a,t){
 function step(a,x,y,dt,tol){
  const dx=x-a.x, dy=y-a.y, d=Math.hypot(dx,dy);
  if(d<=(tol||2)){a.moving=false;return true;}
- const slow=(a.buffs.slow?1-a.buffs.slow.m:1)*(S.blizT>0?.7:1)*(a.buffs.warcry&&a.buffs.warcry.fast?1+a.buffs.warcry.fast:1);
+ const ns=a.kind==='h'&&hasG(a,'scale'), slow=(a.buffs.slow&&!ns?1-a.buffs.slow.m:1)*(S.blizT>0&&!ns?.7:1)*(a.buffs.warcry&&a.buffs.warcry.fast?1+a.buffs.warcry.fast:1);
  const v=a.speed*slow*dt, k=Math.min(1,v/d);
  a.x+=dx*k; a.y+=dy*k; a.moving=true; if(Math.abs(dx)>.5) a.face=dx>0?1:-1; a.walk+=dt*11*slow;
  return false;
@@ -1201,6 +1239,7 @@ function heroAI(h,dt){
  if(h.dead){ h.revive-=dt; if(h.revive<=0){h.dead=false;h.hp=h.maxHp;h.x=TCPOS.x;h.y=TCPOS.y+30;h.anchor={x:S.rally.x,y:S.rally.y-16};
   S.fx.push({type:'beam',x:h.x,y:h.y,life:1,max:1}); toast(`${h.name} returns`); uiDirty=true;} return; }
  tickBuffs(h,dt); h.atkT-=dt; h.atk=Math.max(0,h.atk-dt*4); h.flash=Math.max(0,h.flash-dt);
+ if(hasG(h,'tusk')) h.hp=Math.min(h.maxHp,h.hp+h.maxHp*GEAR.tusk.regen*dt);
  h.autoT=(h.autoT||0)-dt; if(h.autoT<=0){h.autoT=.3; autoCast(h);}
  if(h.moveTo){ if(step(h,h.moveTo.x,h.moveTo.y,dt,4)){h.anchor={x:h.moveTo.x,y:h.moveTo.y};h.moveTo=null;} return; }
  let t=(h.focus&&!h.focus.dead)?h.focus:null;
@@ -1248,7 +1287,7 @@ function bossTick(e,d,t,dt){
    if(w.kind==='slam'){ friendlies().forEach(f=>{if(f.kind!=='b'&&dist(f,e)<d.slam.r) hit(e,f,d.slam.dmg*waveDmgMul(S.wave)*(e.enraged?1.25:1));});
     ring(e.x,e.y-4,10,d.slam.r,'#CFEFFF',.5,7); S.shake=12; sfx('slam'); for(let k=0;k<22;k++){const a=rnd(0,TAU);part(e.x,e.y,Math.cos(a)*150,Math.sin(a)*75,'#E8F6FF',2.4,.55,0);} for(let k=0;k<5;k++) smoke(e.x+rnd(-30,30),e.y+rnd(-10,10),rnd(8,14)); }
    else { const ang=w.ang; friendlies().forEach(f=>{if(f.kind==='b')return; const dd=dist(f,e), a2=Math.atan2(f.y-e.y,f.x-e.x); let da=Math.abs(a2-ang); if(da>Math.PI) da=TAU-da;
-     if(dd<d.breath.r&&da<.55){hit(e,f,d.breath.dmg*waveDmgMul(S.wave)*(e.enraged?1.25:1)); f.buffs.slow={t:2.5,m:.45};}});
+     if(dd<d.breath.r&&da<.55){hit(e,f,d.breath.dmg*waveDmgMul(S.wave)*(e.enraged?1.25:1),{breath:1}); f.buffs.slow={t:2.5,m:.45};}});
     for(let k=0;k<50;k++){const a=ang+rnd(-.5,.5), sp=rnd(120,280); S.fx.push({type:'p',x:e.x+Math.cos(ang)*20,y:e.y-44,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,g:0,life:.6,max:.6,color:k%2?'#BFEAFF':'#FFFFFF',size:rnd(2,4)});}
     sfx('breath'); S.shake=7; }
   }
@@ -1272,13 +1311,13 @@ function updateProj(dt){
    p.done=true;
    if(p.aoe){
     const pool=p.team==='p'?S.enemies:friendlies().filter(f=>f.kind!=='b'||p.type!=='shard');
-    pool.forEach(o=>{if(!o.dead&&Math.hypot(o.x-p.tx,o.y-(p.ty+10))<p.aoe+(o.r||0)) hit(p.src,o,p.dmg,{show:1});});
+    pool.forEach(o=>{if(!o.dead&&Math.hypot(o.x-p.tx,o.y-(p.ty+10))<p.aoe+(o.r||0)) hit(p.src,o,p.dmg,{show:1,proj:1});});
     if(p.type==='fireball'&&p.burn){ const W=TAL.wildfire; S.fx.push({type:'burn',x:p.tx,y:p.ty+10,r:W.r,dps:W.dps*p.burn,src:p.src,life:W.t,max:W.t,tk:0}); }
     if(p.type==='fireball'){ring(p.tx,p.ty+8,6,p.aoe,'#FFB24A',.35,5); for(let i=0;i<18;i++){const a=rnd(0,TAU);part(p.tx,p.ty,Math.cos(a)*rnd(40,120),Math.sin(a)*rnd(30,80),i%2?'#FFD36A':'#FF6A2A',rnd(2,3.5),.5,60);} sfx('boom'); S.shake=4;}
     else ring(p.tx,p.ty+8,4,p.aoe,'#CFEFFF',.3,3);
    }else if(p.t&&!p.t.dead){
     if(p.mark) p.t.buffs.mark={t:p.mark};
-    hit(p.src,p.t,p.dmg,p.type==='snipe'?{show:1,crit:1,pure:p.pure}:null);
+    hit(p.src,p.t,p.dmg,p.type==='snipe'?{show:1,crit:1,pure:p.pure}:{proj:1});
     if(p.type==='bolt'&&!p.chain&&p.src&&p.src.kind==='h'&&hasT(p.src,'chain')){ let o=null,bd=TAL.chain.r; S.enemies.forEach(e=>{ if(e.dead||e===p.t) return; const d=dist(e,p.t); if(d<bd){bd=d;o=e;} });
      if(o) S.proj.push({type:'bolt',x:p.tx,y:p.ty,t:o,src:p.src,dmg:p.dmg*TAL.chain.mul,spd:320,team:'p',chain:1}); }
     if(p.slowM) p.t.buffs.slow={t:2.5,m:p.slowM};
@@ -2006,6 +2045,7 @@ function sfx(n){
   case 'enrage': tone(65,1.2,'sawtooth',.14,0,.7); tone(97,1.2,'sawtooth',.1,.05,.7); nz(1.1,.15,400,0,.7,120); break;
   case 'summon': [196,233,294].forEach((f,i)=>tone(f,.6,'sawtooth',.06,i*.12)); break;
   case 'storm': for(let i=0;i<6;i++) nz(.25,.08,3000,i*.08,3,1200); break;
+  case 'fanfare': [392,523,659,784].forEach((f,i)=>{ tone(f,.22,'sawtooth',.045,i*.11); tone(f*2,.22,'triangle',.04,i*.11); }); [523,659,784,1047].forEach(f=>tone(f,1.3,'triangle',.06,.5)); tone(131,1.3,'sawtooth',.05,.5); break;
   case 'defeat': [392,349,311,262].forEach((f,i)=>tone(f,.45,'triangle',.08,i*.18)); break;
  }
 }
@@ -2048,6 +2088,23 @@ function thumb(key){
  g.restore();
  return THUMB[k]=cc.toDataURL();
 }
+const GEARIMG={};
+function gearIcon(id,locked){ const k=id+(locked?':l':''); if(GEARIMG[k]) return GEARIMG[k];
+ const cc=document.createElement('canvas'); cc.width=96; cc.height=96; const g=cc.getContext('2d'); g.scale(2,2); g.lineCap='round'; g.lineJoin='round';
+ if(id==='tusk'){ g.strokeStyle='#6B4A2B'; g.lineWidth=2; g.beginPath(); g.moveTo(9,7); g.quadraticCurveTo(24,24,39,7); g.stroke();
+  g.fillStyle='#8A5A2E'; ell(g,24,19,3.2,3.2); g.fillStyle=lg(g,18,20,30,44,'#FFF8E8','#D8C9A6'); g.beginPath(); g.moveTo(20,21); g.quadraticCurveTo(15,34,25,43); g.quadraticCurveTo(21,33,28,22); g.closePath(); g.fill();
+  g.strokeStyle='rgba(120,100,70,.6)'; g.lineWidth=1; g.stroke(); g.fillStyle='#4FB8FF'; ell(g,24,19,1.2,1.2); }
+ else if(id==='stone'){ g.fillStyle=lg(g,0,10,0,42,'#A9B1BA','#5E6873'); g.beginPath(); g.moveTo(24,42); g.bezierCurveTo(4,30,5,12,15,11); g.bezierCurveTo(20,10,23,14,24,17); g.bezierCurveTo(25,14,28,10,33,11); g.bezierCurveTo(43,12,44,30,24,42); g.fill();
+  g.strokeStyle='#3E4650'; g.lineWidth=1.3; g.stroke(); g.beginPath(); g.moveTo(24,18); g.lineTo(21,26); g.lineTo(26,30); g.lineTo(23,37); g.moveTo(16,17); g.lineTo(19,22); g.stroke();
+  g.fillStyle='rgba(255,255,255,.3)'; ell(g,16,18,3,2); g.fillStyle='rgba(255,140,90,.5)'; ell(g,24,27,2.4,2.4); }
+ else if(id==='scale'){ g.fillStyle=lg(g,10,6,38,42,'#EAF8FF','#7FB9E6'); g.beginPath(); g.moveTo(24,5); g.quadraticCurveTo(43,14,38,30); g.quadraticCurveTo(33,42,24,44); g.quadraticCurveTo(15,42,10,30); g.quadraticCurveTo(5,14,24,5); g.fill();
+  g.strokeStyle='#5E8EB8'; g.lineWidth=1.2; g.stroke(); g.strokeStyle='rgba(94,142,184,.7)'; g.beginPath(); g.moveTo(24,9); g.lineTo(24,40); g.moveTo(16,16); g.quadraticCurveTo(24,24,32,16); g.moveTo(14,26); g.quadraticCurveTo(24,34,34,26); g.stroke();
+  g.fillStyle='rgba(255,255,255,.7)'; ell(g,18,13,2.2,3.4); }
+ else { g.fillStyle=lg(g,14,4,34,44,'#FFFFFF','#9FD8FF'); poly(g,[[22,3],[31,17],[27,27],[33,44],[17,40],[14,24],[18,14]]); g.fill(); g.strokeStyle='#6FA8D8'; g.lineWidth=1.2; g.stroke();
+  g.strokeStyle='rgba(111,168,216,.7)'; g.beginPath(); g.moveTo(22,3); g.lineTo(23,24); g.lineTo(33,44); g.moveTo(14,24); g.lineTo(23,24); g.stroke();
+  g.fillStyle='#E3B341'; poly(g,[[12,34],[20,31],[21,36],[13,39]]); g.fill(); g.fillStyle='#FF5C6A'; ell(g,16.5,35.2,1.4,1.4); }
+ if(locked){ g.globalCompositeOperation='source-in'; g.fillStyle='#3A4A5C'; g.fillRect(0,0,48,48); }
+ return GEARIMG[k]=cc.toDataURL(); }
 function costHtml(c,food){
  const g=c.gold||0,l=c.lumber||0;
  return `<span class="cost">${g?`<i class="${S.res.gold<g?'no':''}">${g}</i>`:''}${l?`<i class="l ${S.res.lumber<l?'no':''}">${l}</i>`:''}${food?`<i class="f ${foodUsed()+food>foodCap()?'no':''}">${food}</i>`:''}</span>`;
@@ -2088,7 +2145,7 @@ function renderSheet(){
    h+=`</div>`;
    if(S.heroes.length){ h+=`<div class="sec">Talents <span class="hint">(levels 3, 6 and 9)</span></div>`;
     S.heroes.forEach((x,i)=>{ const got=x.tal.filter(Boolean).map(id=>TAL[id].name), pend=talentPending(x)>=0;
-     h+=`<div class="trow"><span><b>${x.name}</b><br><small>${got.length?got.join(' · '):'No talents yet'}</small></span>${pend?`<button class="wbtn" data-act="tal:${i}">Choose</button>`:''}</div>`; }); }
+     const gi=gearOf(x); h+=`<div class="trow"><span><b>${x.name}</b>${gi?` <small>· ${GEAR[gi].name}</small>`:''}<br><small>${got.length?got.join(' · '):'No talents yet'}</small></span>${pend?`<button class="wbtn" data-act="tal:${i}">Choose</button>`:''}</div>`; }); }
    h+=`<div class="sec">Soldiers <span class="hint">(tap to train)</span></div><div class="grid">`;
    ['melee','ranged','heavy'].forEach(k=>{const d=UNITS[k], lock=d.req==='keep'&&!S.keep, n=S.units.filter(u=>u.type===k).length, qn=b.queue.filter(x=>x.key===k).length;
     h+=`<button class="card ${lock?'dis':''}" data-act="u:${k}"><img src="${thumb(k)}" alt=""><span class="ct"><b>${N[k]}</b><small>${lock?'Needs a Keep':d.desc}</small>${lock?'':costHtml(d.cost,d.food)}</span>${n||qn?`<span class="badge">${n}${qn?' +'+qn:''}</span>`:''}</button>`;});
@@ -2256,7 +2313,7 @@ function sayNext(){ const el=$('#say'), q=sayQ.shift(); if(!q){ sayBusy=false; e
 function sayClear(){ sayQ=[]; sayBusy=false; clearTimeout(sayTm); $('#say').classList.remove('show'); }
 function bossSpeak(e,kind){ const L=BOSS_LINES[e.type]; if(!L||mode!=='play') return;
  const txt=kind==='arrive'&&L.ret&&bossReturns(e.type)?L.ret:L[kind]; if(!txt) return;
- say(ENEMIES[e.type].name.split(' the ')[0],txt); S.says.push({e,txt,x:e.x,y:e.y,t:3}); }
+ say(ENEMIES[e.type].name.split(' the ')[0],txt); S.says=S.says.filter(q=>q.e!==e); S.says.push({e,txt,x:e.x,y:e.y,t:3}); }
 function storyMid(ev){ if(mode!=='play') return; const c=storyOf(S.map.id,'mid').find(c=>(ev.boss&&c.when.boss===ev.boss)||(ev.clear&&c.when.clear===ev.clear));
  if(c){ say(MAERA,storyText(c.text),1); markStory(c.id); } }
 function bump(id){const el=document.getElementById(id); if(!el) return; el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump');}
@@ -2469,11 +2526,12 @@ $('#mapList').addEventListener('click',e=>{ const b=e.target.closest('.mapc'); i
  if(totalStars()<M.need){ toastAny(`Earn ${M.need} stars to unlock ${M.name}`); return; } sfx('click'); briefing(i); });
 $('#mapsBack').onclick=()=>{ $('#maps').hidden=true; showTitle(); };
 $('#upBtn').onclick=()=>showUpgrades();
+$('#armBtn').onclick=()=>{ initAudio(); sfx('click'); showArmory(null); };
 function toastAny(m){ const t=$('#toast'); t.textContent=m; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),2000); }
 function briefing(i){ const M=MAPS[i], sv=store.get('save',null), has=sv&&sv.map===i;
  showModal(`<h2>${M.name}</h2><div class="brief">${M.story}</div><div class="tw">${M.twist}</div>
   <div class="starrow"><div><span class="s">★</span>Hold for all ${M.waves} waves</div><div><span class="s">★</span>Keep the Town Center above half health</div><div><span class="s">★</span>Don't lose a hero</div></div>
-  <div class="row">${has?`<button class="mbtn pri" data-m="continue">Continue from wave ${sv.wave+1}</button><button class="mbtn" data-m="march" data-i="${i}">Start over</button>`:`<button class="mbtn pri" data-m="march" data-i="${i}">March</button>`}${(()=>{const it=storyOf(M.id,'intro'); return it.length&&seenStory(it[0].id)?`<button class="mbtn" data-m="story" data-i="${i}">Story</button>`:'';})()}<button class="mbtn" data-m="maps">Back</button></div>`); }
+  <div class="row">${has?`<button class="mbtn pri" data-m="continue">Continue from wave ${sv.wave+1}</button><button class="mbtn" data-m="march" data-i="${i}">Start over</button>`:`<button class="mbtn pri" data-m="march" data-i="${i}">March</button>`}${(()=>{const it=storyOf(M.id,'intro'); return it.length&&seenStory(it[0].id)?`<button class="mbtn" data-m="story" data-i="${i}">Story</button>`:'';})()}<button class="mbtn" data-m="armory" data-i="${i}">Armory</button><button class="mbtn" data-m="maps">Back</button></div>`); }
 function startMap(i){ clearSave(); store.set('map',i); hideModal(); $('#maps').hidden=true; $('#title').hidden=true; newGame(chosenRace,i); mode='play'; paused=false; lastQuest=-1; uiDirty=true; closeSheet();
  const go=()=>{ paused=false; banner(MAPS[i].name,`${MAPS[i].tier} tier: hold ${MAPS[i].waves} waves`); }, intro=storyOf(MAPS[i].id,'intro');
  // intro cards the first time a map is started (replays: "Story" on the briefing); the battle waits
@@ -2486,6 +2544,20 @@ function showUpgrades(){ const wasPlay=mode==='play';
 function buyUpgrade(k){ const u=UPGRADES[k], lv=upg(k); if(lv>=u.max) return; const c=u.cost[lv]; if(crowns()<c){ toastAny(`Needs ${c} Crowns`); sfx('err'); return; }
  PROG.ups[k]=lv+1; PROG.spent+=c; store.set('prog',PROG); sfx('levelup'); showUpgrades(); toastAny(`${u.name} upgraded`); $('#crownN').textContent=crowns(); }
 function showModal(html){$('#mbox').innerHTML=html; $('#modal').hidden=false;}
+// Armory: one slot per hero class. Tap a slot, then an owned item. Equipping is free and reversible.
+let armSel='warrior', armBack=null;
+function showArmory(back){ if(back!==undefined) armBack=back; const G=PROG.gear, N=RACES[chosenRace].heroNames, bossShort=b=>ENEMIES[b].name.split(' the ')[0];
+ const cur=G.equipped[armSel];
+ showModal(`<h2>Armory</h2><p>Bosses drop gear the first time you beat them. Each hero wears one item. Equipping is free; change it any time.</p>
+  <div class="aslots">${Object.keys(HEROES).map(c=>{ const id=G.owned.includes(G.equipped[c])?G.equipped[c]:null;
+   return `<button class="aslot ${armSel===c?'on':''}" data-arm="slot:${c}"><img src="${thumb('h:'+c)}" alt=""><span><b>${N[c]}</b><small>${HEROES[c].cls}</small></span><span class="aitem">${id?`<img src="${gearIcon(id)}" alt="">${GEAR[id].name}`:'Empty slot'}</span></button>`; }).join('')}</div>
+  <div class="sec">Gear for ${N[armSel]} <span class="hint">(tap to equip)</span></div>
+  <div class="agrid">${Object.keys(GEAR).map(id=>{ const o=GEAR[id];
+   if(!G.owned.includes(id)) return `<div class="agear lock"><img src="${gearIcon(id,1)}" alt=""><span><b>Locked</b><small>Defeat ${bossShort(o.boss)}</small></span></div>`;
+   const by=Object.keys(G.equipped).find(c=>G.equipped[c]===id);
+   return `<button class="agear ${cur===id?'on':''}" data-arm="item:${id}"><img src="${gearIcon(id)}" alt=""><span><b>${o.name}</b><small>${o.desc}</small>${by?`<i>${by===armSel?'Equipped':'Worn by '+N[by]}</i>`:''}</span></button>`; }).join('')}</div>
+  <div class="row">${cur?`<button class="mbtn" data-arm="clear">Remove ${GEAR[cur].name}</button>`:''}<button class="mbtn pri" data-m="armDone">Done</button></div>`); }
+function equipGear(cls,id){ const E=PROG.gear.equipped; Object.keys(E).forEach(c=>{ if(E[c]===id) E[c]=null; }); E[cls]=id; store.set('prog',PROG); if(S) S.heroes.forEach(applyStats); }
 /* ---------- story cards: full screen, Maera speaks; drawn from existing art (map preview + drawFigure) ---------- */
 const RMO=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
 let storyRun=null, stLoop=false, stLast=0;
@@ -2530,6 +2602,7 @@ const HOWTO=`<h2>How to play</h2><ul>
 <li>Recruit heroes and soldiers in <b>Army</b> once the Barracks is up. Heroes level up from nearby kills and unlock a third ability at level 3.</li>
 <li>At levels 3, 6 and 9 a hero can learn a <b>talent</b>: tap the portrait with the gold <b>!</b> and pick one of two (tap twice). Talents last for the battle.</li>
 <li>Drag the <b>banner</b> to march your whole army together. The <b>stance</b> button sets how they fight: Hold waits in formation, Defend fights as a group around the banner, Charge hunts anywhere.</li>
+<li>Bosses drop <b>gear</b> the first time you beat them. Equip it in the <b>Armory</b> (battle list or briefing): one item per hero.</li>
 <li>Tap the ground to move your hero. Tap an enemy to focus it. <b>Target</b> switches between nearest, weakest and strongest for everyone.</li>
 <li>Upgrade gear at the <b>Forge</b>. Upgrade the Town Center to a Keep for elite units and higher forge levels.</li>
 <li>Each battle ends with a boss. Clearing a wave pays out; calling the next one early pays extra gold.</li><li>Your battle saves after every cleared wave. Continue from the title screen or the battle list.</li><li>Tap a built Watch Tower to turn it into a Frost Tower (slows) or a Ballista (ignores armor). Both need a Forge.</li><li>Earn up to three stars per battle. Stars unlock harder tiers and give Crowns for permanent upgrades in the War council.</li></ul>
@@ -2537,6 +2610,10 @@ const HOWTO=`<h2>How to play</h2><ul>
 $('#menuBtn').onclick=()=>{ if(mode!=='play') return; paused=true; sfx('click');
  showModal(`<h2>Paused</h2><div class="row"><button class="mbtn pri" data-m="resume">Resume</button><button class="mbtn" data-m="howto">How to play</button><button class="mbtn" data-m="music">Music: ${musicOn?'on':'off'}</button><button class="mbtn" data-m="sound">Sound effects: ${sfxOn?'on':'off'}</button><button class="mbtn" data-m="retry">Restart run</button><button class="mbtn" data-m="maps">Quit to battle select</button></div>`);};
 $('#modal').addEventListener('click',e=>{
+ const ab=e.target.closest('[data-arm]');
+ if(ab){ const [k,v]=ab.dataset.arm.split(':');
+  if(k==='slot') armSel=v; else if(k==='item'){ const cur=PROG.gear.equipped[armSel]; equipGear(armSel,cur===v?null:v); toastAny(cur===v?'Removed':`${GEAR[v].name} equipped`); } else if(k==='clear') equipGear(armSel,null);
+  sfx('click'); showArmory(); return; }
  const b=e.target.closest('[data-m]'); if(!b) return; const m=b.dataset.m;
  if(m==='resume'){hideModal();paused=false;}
  else if(m==='howto'){showModal(HOWTO);}
@@ -2544,6 +2621,8 @@ $('#modal').addEventListener('click',e=>{
  else if(m==='music'){setMusic(!musicOn); b.textContent=`Music: ${musicOn?'on':'off'}`;}
  else if(m==='retry'){startMap(mapIdx);}
  else if(m==='march'){startMap(+b.dataset.i);}
+ else if(m==='armory'){ showArmory(b.dataset.i!=null?+b.dataset.i:null); }
+ else if(m==='armDone'){ if(armBack!=null) briefing(armBack); else { hideModal(); showMaps(); } }
  else if(m==='story'){ const i=+b.dataset.i; showStory(storyOf(MAPS[i].id,'intro'),null,{map:i}); }
  else if(m==='continue'){ const sv=store.get('save',null); if(sv) restoreRun(sv); }
  else if(m==='maps'){hideModal();paused=false;showMaps();}
@@ -2563,7 +2642,7 @@ function frame(now){
 new ResizeObserver(()=>resize()).observe(stage);
 resize(); newGame(chosenRace);
 requestAnimationFrame(frame);
-if(/[?&]debug/.test(location.search)) window.__IC={saveRun,restoreRun,specTower,snapshot,clearW:()=>{for(const k in WCACHE) delete WCACHE[k];},trainUnit,trainWorker,forgeUp,upgradeKeep,setJob,setStance,foodCap,foodUsed,waveDef,genWave,MAPS,PROG_SET:p=>{PROG=normProg(p);},startMap,showMaps,get PROG(){return PROG;},tick:n=>{for(let i=0;i<n;i++)update(.05);},get S(){return S;},startWave,tryBuild,recruitHero,assignWorker,setMode:m=>mode=m,talentPending,pickTalent,TALENTS,grantXP};
+if(/[?&]debug/.test(location.search)) window.__IC={saveRun,restoreRun,specTower,snapshot,clearW:()=>{for(const k in WCACHE) delete WCACHE[k];},trainUnit,trainWorker,forgeUp,upgradeKeep,setJob,setStance,foodCap,foodUsed,waveDef,genWave,MAPS,PROG_SET:p=>{PROG=normProg(p);},startMap,showMaps,get PROG(){return PROG;},tick:n=>{for(let i=0;i<n;i++)update(.05);},get S(){return S;},startWave,tryBuild,recruitHero,assignWorker,setMode:m=>mode=m,talentPending,pickTalent,TALENTS,grantXP,GEAR,equipGear,showArmory};
 })();
 </script>
 <script>
