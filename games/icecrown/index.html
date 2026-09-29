@@ -321,6 +321,14 @@ button{font:inherit;color:inherit;touch-action:manipulation;cursor:pointer;borde
 .agear i{font-style:normal;font-size:12px;font-weight:800;color:var(--accent)}
 .agear.lock b{color:var(--muted)}
 .mhead .crownb{padding:6px 8px}
+.mtool{width:100%;height:42px;border-radius:12px;background:rgba(255,255,255,.09);color:#EEF5FB;font-weight:800;font-size:15px;border:1.5px solid rgba(255,211,106,.45);margin:0 0 12px;display:flex;align-items:center;justify-content:center;gap:8px}
+.mtool svg{width:19px;height:19px;color:#FFD36A}
+.mtool small{font-weight:700;color:#9FB6CB;font-size:13px}
+.chrmap{font-family:Cinzel,serif;font-weight:800;margin:14px 2px 6px;font-size:15px}
+.chr{display:block;width:100%;text-align:left;background:var(--panel2);border-radius:12px;padding:9px 11px;margin-bottom:6px}
+.chr small{display:block;font-weight:800;font-size:11.5px;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:2px}
+.chr span{font-size:14.5px;line-height:1.38}
+.chr.lock span{color:var(--muted);letter-spacing:.2em;font-weight:800}
 @media (prefers-reduced-motion:reduce){.pulse,#banner.show,.res.bump{animation:none}#banner.show{opacity:1}#story,.stPanel,#say{transition:none}}
 </style>
 </head>
@@ -381,6 +389,7 @@ button{font:inherit;color:inherit;touch-action:manipulation;cursor:pointer;borde
 
  <div id="maps" class="ov" hidden>
   <div class="mhead"><button class="mback" id="mapsBack" aria-label="Back">‹</button><h2>Choose your battle</h2><button class="crownb" id="armBtn" aria-label="Armory"><svg viewBox="0 0 24 24" fill="#FFD36A" stroke="#8A6212" stroke-width="1.2"><path d="M12 2l8 3v6.5c0 5-3.4 8.6-8 10.5-4.6-1.9-8-5.5-8-10.5V5z"/><path d="M12 6v12M7.5 10.5h9" stroke="#8A6212" stroke-width="1.8" fill="none"/></svg></button><button class="crownb" id="upBtn"><svg viewBox="0 0 24 24" fill="#FFD36A" stroke="#8A6212" stroke-width="1.2"><path d="M3 18l2-10 4 4 3-7 3 7 4-4 2 10z"/></svg><b id="crownN">0</b></button></div>
+  <button class="mtool" id="chronBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5C4 4.7 4.7 4 5.5 4H11v16H5.5c-.8 0-1.5-.7-1.5-1.5zM20 5.5c0-.8-.7-1.5-1.5-1.5H13v16h5.5c.8 0 1.5-.7 1.5-1.5z"/><path d="M7 8h2M7 11h2M15 8h2M15 11h2"/></svg>Chronicle <small id="chronN"></small></button>
   <div class="mlist" id="mapList"></div>
  </div>
  <div id="intro" class="ov" aria-label="Zetato Studios">
@@ -572,28 +581,28 @@ const waveDmgMul=n=>1+0.03*(n-1);
 /* ---------- CAMPAIGN: maps, tiers, stories ---------- */
 const TIERS={Iron:'#8A9097',Bronze:'#B8793A',Silver:'#AEB9C6',Gold:'#E3B341'};
 const MAPS=[
- {id:'frostmere',tier:'Iron',name:'Frostmere Crossing',need:0,waves:12,hp:.85,dmg:.85,mod:null,mineGold:0,seed:1,b0:4.5,bg:.34,gm:7,hm:1.75,lateK:.9,themes:['pack','horde','mixed','dead'],unlock:{gobArcher:2,skeleton:4,troll:7,shaman:6,knight:99},bosses:{12:'trollKing'},
+ {id:'frostmere',tier:'Iron',name:'Frostmere Crossing',need:0,waves:12,hp:.85,dmg:.85,mod:null,mineGold:0,seed:1,b0:4.5,bg:.34,gm:7.5,hm:2.1,lateK:.9,themes:['pack','horde','mixed','dead'],unlock:{gobArcher:2,skeleton:4,troll:7,shaman:6,knight:99},bosses:{12:'trollKing'},
   story:'The rift tore open above the frozen ford of Frostmere. The ferry village is all that stands between the raiders and the southern farms. Hold for twelve nights, until the thaw road opens.',
   twist:'A gentle start. The mine never runs dry.',
   portal:{x:210,y:64},tc:{x:210,y:478},mine:{x:48,y:458},woods:{x0:352,x1:412,y0:408,y1:554,n:11},rally:{x:210,y:322},
   plots:[{x:106,y:386},{x:316,y:386},{x:126,y:534},{x:290,y:536},{x:56,y:318},{x:366,y:318},{x:120,y:290},{x:300,y:290}],
   road:[[210,64],[224,150],[198,250],[222,350],[210,440]],
   list:[[['wolf',4],['goblin',2]],[['goblin',6],['gobArcher',2]],[['wolf',6],['goblin',3],['gobArcher',2]],[['skeleton',4],['goblin',4],['gobArcher',2]],[['wolf',8],['skeleton',4]],[['wolf',4],['goblin',4],['trollKing',1]]]},
- {id:'hollow',tier:'Bronze',name:'Hollow Pass',need:2,waves:16,hp:1,dmg:1,mod:'finite',mineGold:9000,seed:2,b0:5,bg:.36,gm:6,hm:1.6,lateK:1.1,themes:['horde','dead','pack','heavy','mixed'],unlock:{gobArcher:1,skeleton:3,troll:5,shaman:4,knight:11},bosses:{8:'trollKing',16:'giant'},
+ {id:'hollow',tier:'Bronze',name:'Hollow Pass',need:2,waves:16,hp:1,dmg:1,mod:'finite',mineGold:9000,seed:2,b0:5,bg:.36,gm:7,hm:2,lateK:1.1,themes:['horde','dead','pack','heavy','mixed'],unlock:{gobArcher:1,skeleton:3,troll:5,shaman:4,knight:11},bosses:{8:'trollKing',16:'giant'},
   story:'High in the Greyspine, an old dwarf hold guards the only pass south. Its gold seam is rich but will not last. Grimhorn the Frost Giant is marching to break the gate.',
   twist:'The mine holds 9,000 gold, then it is gone. Spend it wisely.',
   portal:{x:300,y:62},tc:{x:150,y:482},mine:{x:356,y:470},woods:{x0:26,x1:80,y0:392,y1:552,n:10},rally:{x:215,y:300},
   plots:[{x:262,y:404},{x:262,y:534},{x:112,y:360},{x:196,y:374},{x:318,y:284},{x:118,y:270},{x:330,y:380}],
   road:[[300,62],[282,160],[236,250],[184,352],[152,442]],
   list:[[['goblin',6],['wolf',2]],[['gobArcher',4],['goblin',4]],[['skeleton',5],['wolf',4]],[['troll',1],['goblin',8]],[['skeleton',6],['gobArcher',4],['troll',1]],[['wolf',10],['troll',2]],[['skeleton',8],['gobArcher',6]],[['goblin',8],['skeleton',4],['giant',1]]]},
- {id:'whitefang',tier:'Silver',name:'Whitefang Wood',need:5,waves:20,hp:1.1,dmg:1.05,mod:'blizzard',mineGold:9000,seed:3,b0:5,bg:.38,gm:4.5,hm:1.5,lateK:1.2,themes:['pack','pack','horde','heavy','dead','mixed'],unlock:{gobArcher:2,skeleton:3,troll:4,shaman:5,knight:9},bosses:{10:'giant',20:'wyrm'},
+ {id:'whitefang',tier:'Silver',name:'Whitefang Wood',need:5,waves:20,hp:1.1,dmg:1.05,mod:'blizzard',mineGold:9000,seed:3,b0:5,bg:.38,gm:5.3,hm:1.95,lateK:1.25,themes:['pack','pack','horde','heavy','dead','mixed'],unlock:{gobArcher:2,skeleton:3,troll:4,shaman:5,knight:9},bosses:{10:'giant',20:'wyrm'},
   story:'The wolves of Whitefang have turned. Deep in the old forest, a woodcutters\u2019 camp sits on a poor gold vein while the sky itself fights for the frost. Vyrnax the Frost Wyrm circles above.',
   twist:'Blizzards sweep in regularly and slow everyone. Lumber is plentiful, gold is scarce.',
   portal:{x:120,y:62},tc:{x:268,y:482},mine:{x:52,y:392},woods:{x0:330,x1:410,y0:330,y1:470,n:15},rally:{x:190,y:300},
   plots:[{x:150,y:480},{x:176,y:384},{x:290,y:292},{x:84,y:492},{x:176,y:540},{x:62,y:276},{x:300,y:210},{x:100,y:330}],
   road:[[120,62],[148,168],[204,262],[248,362],[268,444]],
   list:[[['wolf',6],['goblin',2]],[['wolf',6],['gobArcher',3]],[['wolf',8],['goblin',4],['gobArcher',3]],[['skeleton',6],['gobArcher',4],['troll',1]],[['goblin',6],['skeleton',4],['giant',1]],[['wolf',12],['skeleton',6],['troll',2]],[['gobArcher',8],['skeleton',8],['troll',2]],[['wolf',14],['goblin',8],['troll',3]],[['skeleton',12],['gobArcher',8],['troll',4]],[['wolf',8],['troll',3],['wyrm',1]]]},
- {id:'icecrown',tier:'Gold',name:'The Ice Crown',need:8,waves:24,hp:1.22,dmg:1.12,mod:'night',mineGold:14000,seed:4,b0:5.5,bg:.4,gm:2.6,hm:1.35,lateK:1.3,themes:['dead','heavy','horde','pack','mixed','dead'],unlock:{gobArcher:1,skeleton:1,troll:3,shaman:3,knight:6},bosses:{8:'trollKing',14:'giant',19:'wyrm',24:'lich'},
+ {id:'icecrown',tier:'Gold',name:'The Ice Crown',need:8,waves:24,hp:1.22,dmg:1.12,mod:'night',mineGold:14000,seed:4,b0:5.5,bg:.4,gm:2.9,hm:1.75,lateK:1.3,themes:['dead','heavy','horde','pack','mixed','dead'],unlock:{gobArcher:1,skeleton:1,troll:3,shaman:3,knight:6},bosses:{8:'trollKing',14:'giant',19:'wyrm',24:'lich'},
   story:'At the roof of the world stands the throne of the frost. Hrimgar, the Pale King, has worn the Ice Crown for a thousand winters. End the endless night: break his siege, and the crown with it.',
   twist:'Eternal night: raiders move 10% faster. Every boss returns for a final stand.',
   portal:{x:210,y:60},tc:{x:210,y:492},mine:{x:46,y:470},woods:{x0:356,x1:412,y0:420,y1:552,n:10},rally:{x:210,y:330},
@@ -711,7 +720,7 @@ function newGame(race,mi){
   buildings:[],units:[],heroes:[],enemies:[],proj:[],fx:[],texts:[],
   forge:{weapons:0,armor:0,tools:0,arcana:0},keep:false,
   sel:null,mode:'nearest',quest:0,time:0,over:false,endless:false,heroMoved:false,
-  plots:PLOTS.map((p,i)=>({x:p.x,y:p.y,i,b:null})),rally:{x:RALLY.x,y:RALLY.y},stance:'defend',marchSpeed:50,marchAt:0,zoneShow:0,auto:store.get('auto',{}),selPlot:null,marker:null,shake:0,kills:0,says:[]};
+  plots:PLOTS.map((p,i)=>({x:p.x,y:p.y,i,b:null})),rally:{x:RALLY.x,y:RALLY.y},stance:'defend',marchSpeed:50,marchAt:0,zoneShow:0,auto:store.get('auto',{}),selPlot:null,marker:null,shake:0,kills:0,says:[],dmgLog:{}};
  if(typeof sayClear==='function') sayClear();
  S.path=makePath(); S.quest=mapIdx===0?0:QUESTS.length; TREES=makeTrees();
  const tc=makeBuilding('townhall',TCPOS.x,TCPOS.y,-1,true); tc.maxHp*=1+.2*upg('walls'); tc.hp=tc.maxHp; S.buildings.push(tc); S.tc=tc;
@@ -814,6 +823,7 @@ function hit(src,t,amt,opt){
  if(t.buffs.guard) a*=.7;
  if(t.kind==='h'&&opt&&(opt.proj||opt.breath)&&hasG(t,'scale')) a*=1-GEAR.scale.cut;
  if(!(opt&&opt.pure)){ const ar=(t.armor||0)+(t.buffs.ironwall?TAL.ironwall.armor:0); a*=1-(ar*.06)/(1+ar*.06); }
+ if(t.team==='e'){ const w=S.dmgLog[S.wave]||(S.dmgLog[S.wave]={h:0,t:0}), eff=Math.min(a,Math.max(0,t.hp)); w.t+=eff; if(src&&src.kind==='h') w.h+=eff; }   // hero share of effective damage (balance bot)
  t.hp-=a; t.flash=.12;
  if(t.kind==='h'&&t.hp<t.maxHp*TAL.unbreakable.at&&t.unbrW!==S.wave&&hasT(t,'unbreakable')){ t.unbrW=S.wave; t.hp=Math.max(t.hp,1); t.buffs.immune={t:TAL.unbreakable.t};
   text(t.x,t.y-44,'Unbreakable!','#FFD36A',14); ring(t.x,t.y-8,8,60,'#FFD36A',.5,4); }
@@ -907,7 +917,7 @@ const ABIL={
  warcry(h){const al=[...S.units.filter(u=>u.type!=='worker'),...S.heroes.filter(x=>!x.dead)].filter(u=>dist(u,h)<190);
   const fast=hasT(h,'warlord')?TAL.warlord.speed:0; al.forEach(u=>{u.hp=Math.min(u.maxHp,u.hp+u.maxHp*.25);u.buffs.warcry={t:6,fast};}); ring(h.x,h.y-8,10,190,'#FFD36A',.7,5); sfx('horn');},
  fireball(h){const t=pickEnemy(h,S.mode,200); if(!t){toast('No enemy in range');return false;}
-  S.proj.push({type:'fireball',x:h.x+h.face*8,y:h.y-30,t,src:h,dmg:38*pw(h),spd:260,aoe:50,team:'p',burn:hasT(h,'wildfire')?pw(h):0}); sfx('fire');},
+  S.proj.push({type:'fireball',x:h.x+h.face*8,y:h.y-30,t,src:h,dmg:38*pw(h),spd:260,aoe:50,team:'p',burn:hasT(h,'wildfire')?1:0}); sfx('fire');},
  nova(h){const R=novaR(h), es=enemiesNear(h,R); if(!es.length){toast('No enemies close enough');return false;}
   const df=hasT(h,'deepfreeze')?TAL.deepfreeze:null;
   es.forEach(e=>{hit(h,e,22*pw(h),{show:1});e.buffs.slow={t:df?df.slow:4,m:.5}; if(df&&!e.boss) e.buffs.freeze={t:df.freeze};}); ring(h.x,h.y-6,8,R,'#AEE3FF',.45,6);
@@ -1312,7 +1322,7 @@ function updateProj(dt){
    if(p.aoe){
     const pool=p.team==='p'?S.enemies:friendlies().filter(f=>f.kind!=='b'||p.type!=='shard');
     pool.forEach(o=>{if(!o.dead&&Math.hypot(o.x-p.tx,o.y-(p.ty+10))<p.aoe+(o.r||0)) hit(p.src,o,p.dmg,{show:1,proj:1});});
-    if(p.type==='fireball'&&p.burn){ const W=TAL.wildfire; S.fx.push({type:'burn',x:p.tx,y:p.ty+10,r:W.r,dps:W.dps*p.burn,src:p.src,life:W.t,max:W.t,tk:0}); }
+    if(p.type==='fireball'&&p.burn){ const W=TAL.wildfire; S.fx.push({type:'burn',x:p.tx,y:p.ty+10,r:W.r,dps:W.dps,src:p.src,life:W.t,max:W.t,tk:0}); }
     if(p.type==='fireball'){ring(p.tx,p.ty+8,6,p.aoe,'#FFB24A',.35,5); for(let i=0;i<18;i++){const a=rnd(0,TAU);part(p.tx,p.ty,Math.cos(a)*rnd(40,120),Math.sin(a)*rnd(30,80),i%2?'#FFD36A':'#FF6A2A',rnd(2,3.5),.5,60);} sfx('boom'); S.shake=4;}
     else ring(p.tx,p.ty+8,4,p.aoe,'#CFEFFF',.3,3);
    }else if(p.t&&!p.t.dead){
@@ -2518,6 +2528,7 @@ const starsOf=id=>PROG.stars[id]||[0,0,0];
 function showMaps(){
  mode='maps'; $('#title').hidden=true; $('#maps').hidden=false; hideModal();
  $('#crownN').textContent=crowns(); const ts=totalStars();
+ const allCards=Object.values(STORY).flat(); $('#chronN').textContent=`${allCards.filter(c=>seenStory(c.id)).length}/${allCards.length}`;
  $('#mapList').innerHTML=MAPS.map((M,i)=>{ const st=starsOf(M.id), lock=ts<M.need, boss=[...new Set(Object.values(M.bosses).map(b=>ENEMIES[b].name.split(' the ')[0]))].join(', ');
   return `<button class="mapc ${lock?'lock':''}" data-map="${i}" style="--t:${TIERS[M.tier]}"><img src="${mapPreview(i)}" alt=""><span class="tier">${M.tier}</span><span class="st">${st.map(v=>v?'★':'<i>★</i>').join('')}</span>${lock?`<span class="lk">Earn ${M.need} ★ to unlock (you have ${ts})</span>`:''}
    ${(()=>{const sv=store.get('save',null); return sv&&sv.map===i?`<span class="cont">Saved after wave ${sv.wave}</span>`:'';})()}<span class="mb"><b>${M.name}</b><small>${M.story.split('. ')[0]}.</small><span class="mm">${M.waves} waves, boss: ${boss}</span></span></button>`; }).join('');
@@ -2527,6 +2538,7 @@ $('#mapList').addEventListener('click',e=>{ const b=e.target.closest('.mapc'); i
 $('#mapsBack').onclick=()=>{ $('#maps').hidden=true; showTitle(); };
 $('#upBtn').onclick=()=>showUpgrades();
 $('#armBtn').onclick=()=>{ initAudio(); sfx('click'); showArmory(null); };
+$('#chronBtn').onclick=()=>{ initAudio(); sfx('click'); showChronicle(); };
 function toastAny(m){ const t=$('#toast'); t.textContent=m; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),2000); }
 function briefing(i){ const M=MAPS[i], sv=store.get('save',null), has=sv&&sv.map===i;
  showModal(`<h2>${M.name}</h2><div class="brief">${M.story}</div><div class="tw">${M.twist}</div>
@@ -2543,7 +2555,7 @@ function showUpgrades(){ const wasPlay=mode==='play';
  showModal(html); }
 function buyUpgrade(k){ const u=UPGRADES[k], lv=upg(k); if(lv>=u.max) return; const c=u.cost[lv]; if(crowns()<c){ toastAny(`Needs ${c} Crowns`); sfx('err'); return; }
  PROG.ups[k]=lv+1; PROG.spent+=c; store.set('prog',PROG); sfx('levelup'); showUpgrades(); toastAny(`${u.name} upgraded`); $('#crownN').textContent=crowns(); }
-function showModal(html){$('#mbox').innerHTML=html; $('#modal').hidden=false;}
+function showModal(html){const b=$('#mbox'), same=b.dataset.k===html.slice(0,24); b.innerHTML=html; b.dataset.k=html.slice(0,24); $('#modal').hidden=false; if(!same) b.scrollTop=0;}
 // Armory: one slot per hero class. Tap a slot, then an owned item. Equipping is free and reversible.
 let armSel='warrior', armBack=null;
 function showArmory(back){ if(back!==undefined) armBack=back; const G=PROG.gear, N=RACES[chosenRace].heroNames, bossShort=b=>ENEMIES[b].name.split(' the ')[0];
@@ -2557,6 +2569,13 @@ function showArmory(back){ if(back!==undefined) armBack=back; const G=PROG.gear,
    const by=Object.keys(G.equipped).find(c=>G.equipped[c]===id);
    return `<button class="agear ${cur===id?'on':''}" data-arm="item:${id}"><img src="${gearIcon(id)}" alt=""><span><b>${o.name}</b><small>${o.desc}</small>${by?`<i>${by===armSel?'Equipped':'Worn by '+N[by]}</i>`:''}</span></button>`; }).join('')}</div>
   <div class="row">${cur?`<button class="mbtn" data-arm="clear">Remove ${GEAR[cur].name}</button>`:''}<button class="mbtn pri" data-m="armDone">Done</button></div>`); }
+// Chronicle: every story card the player has unlocked, in order; tap one to read it again
+const CHR_AT={intro:'Before the battle',mid:'During the battle',victory:'Victory',epilogue:'Epilogue',defeat:'Defeat'};
+function showChronicle(){
+ showModal(`<h2>Chronicle</h2><p>Maera's account of the Long Night. Tap an entry to read it again.</p>${MAPS.map((M,i)=>`<div class="chrmap">${M.name}</div>${(STORY[M.id]||[]).map((c,k)=>seenStory(c.id)
+   ?`<button class="chr" data-chr="${i}:${k}"><small>${CHR_AT[c.at]}</small><span>${storyText(c.text)}</span></button>`
+   :`<div class="chr lock"><small>${CHR_AT[c.at]}</small><span>???</span></div>`).join('')}`).join('')}
+  <div class="row"><button class="mbtn pri" data-m="maps">Done</button></div>`); }
 function equipGear(cls,id){ const E=PROG.gear.equipped; Object.keys(E).forEach(c=>{ if(E[c]===id) E[c]=null; }); E[cls]=id; store.set('prog',PROG); if(S) S.heroes.forEach(applyStats); }
 /* ---------- story cards: full screen, Maera speaks; drawn from existing art (map preview + drawFigure) ---------- */
 const RMO=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
@@ -2605,11 +2624,13 @@ const HOWTO=`<h2>How to play</h2><ul>
 <li>Bosses drop <b>gear</b> the first time you beat them. Equip it in the <b>Armory</b> (battle list or briefing): one item per hero.</li>
 <li>Tap the ground to move your hero. Tap an enemy to focus it. <b>Target</b> switches between nearest, weakest and strongest for everyone.</li>
 <li>Upgrade gear at the <b>Forge</b>. Upgrade the Town Center to a Keep for elite units and higher forge levels.</li>
+<li>Maera's story cards can be switched off in this menu (Story: on/off) and re-read in the <b>Chronicle</b> on the battle list.</li>
 <li>Each battle ends with a boss. Clearing a wave pays out; calling the next one early pays extra gold.</li><li>Your battle saves after every cleared wave. Continue from the title screen or the battle list.</li><li>Tap a built Watch Tower to turn it into a Frost Tower (slows) or a Ballista (ignores armor). Both need a Forge.</li><li>Earn up to three stars per battle. Stars unlock harder tiers and give Crowns for permanent upgrades in the War council.</li></ul>
 <div class="row"><button class="mbtn pri" data-m="resume">Got it</button></div>`;
 $('#menuBtn').onclick=()=>{ if(mode!=='play') return; paused=true; sfx('click');
- showModal(`<h2>Paused</h2><div class="row"><button class="mbtn pri" data-m="resume">Resume</button><button class="mbtn" data-m="howto">How to play</button><button class="mbtn" data-m="music">Music: ${musicOn?'on':'off'}</button><button class="mbtn" data-m="sound">Sound effects: ${sfxOn?'on':'off'}</button><button class="mbtn" data-m="retry">Restart run</button><button class="mbtn" data-m="maps">Quit to battle select</button></div>`);};
+ showModal(`<h2>Paused</h2><div class="row"><button class="mbtn pri" data-m="resume">Resume</button><button class="mbtn" data-m="howto">How to play</button><button class="mbtn" data-m="music">Music: ${musicOn?'on':'off'}</button><button class="mbtn" data-m="sound">Sound effects: ${sfxOn?'on':'off'}</button><button class="mbtn" data-m="storyOn">Story: ${PROG.storyOn?'on':'off'}</button><button class="mbtn" data-m="retry">Restart run</button><button class="mbtn" data-m="maps">Quit to battle select</button></div>`);};
 $('#modal').addEventListener('click',e=>{
+ const cb=e.target.closest('[data-chr]'); if(cb){ const [i,k]=cb.dataset.chr.split(':').map(Number); showStory([STORY[MAPS[i].id][k]],null,{map:i}); return; }
  const ab=e.target.closest('[data-arm]');
  if(ab){ const [k,v]=ab.dataset.arm.split(':');
   if(k==='slot') armSel=v; else if(k==='item'){ const cur=PROG.gear.equipped[armSel]; equipGear(armSel,cur===v?null:v); toastAny(cur===v?'Removed':`${GEAR[v].name} equipped`); } else if(k==='clear') equipGear(armSel,null);
@@ -2619,6 +2640,7 @@ $('#modal').addEventListener('click',e=>{
  else if(m==='howto'){showModal(HOWTO);}
  else if(m==='sound'){sfxOn=!sfxOn; store.set('sfx',sfxOn); b.textContent=`Sound effects: ${sfxOn?'on':'off'}`;}
  else if(m==='music'){setMusic(!musicOn); b.textContent=`Music: ${musicOn?'on':'off'}`;}
+ else if(m==='storyOn'){PROG.storyOn=!PROG.storyOn; store.set('prog',PROG); b.textContent=`Story: ${PROG.storyOn?'on':'off'}`;}
  else if(m==='retry'){startMap(mapIdx);}
  else if(m==='march'){startMap(+b.dataset.i);}
  else if(m==='armory'){ showArmory(b.dataset.i!=null?+b.dataset.i:null); }
@@ -2642,13 +2664,13 @@ function frame(now){
 new ResizeObserver(()=>resize()).observe(stage);
 resize(); newGame(chosenRace);
 requestAnimationFrame(frame);
-if(/[?&]debug/.test(location.search)) window.__IC={saveRun,restoreRun,specTower,snapshot,clearW:()=>{for(const k in WCACHE) delete WCACHE[k];},trainUnit,trainWorker,forgeUp,upgradeKeep,setJob,setStance,foodCap,foodUsed,waveDef,genWave,MAPS,PROG_SET:p=>{PROG=normProg(p);},startMap,showMaps,get PROG(){return PROG;},tick:n=>{for(let i=0;i<n;i++)update(.05);},get S(){return S;},startWave,tryBuild,recruitHero,assignWorker,setMode:m=>mode=m,talentPending,pickTalent,TALENTS,grantXP,GEAR,equipGear,showArmory};
+if(/[?&]debug/.test(location.search)) window.__IC={saveRun,restoreRun,specTower,snapshot,clearW:()=>{for(const k in WCACHE) delete WCACHE[k];},trainUnit,trainWorker,forgeUp,upgradeKeep,setJob,setStance,foodCap,foodUsed,waveDef,genWave,MAPS,PROG_SET:p=>{PROG=normProg(p);},startMap,showMaps,get PROG(){return PROG;},tick:n=>{for(let i=0;i<n;i++)update(.05);},get S(){return S;},startWave,tryBuild,recruitHero,assignWorker,setMode:m=>mode=m,showChronicle,talentPending,pickTalent,TALENTS,grantXP,GEAR,equipGear,showArmory};
 })();
 </script>
 <script>
 /* Ice Crown PWA: offline worker with silent updates, plus the install hint. */
 (function(){
- var VERSION='1.3.0';
+ var VERSION='1.4.0';
  var v=document.getElementById('verLbl'); if(v) v.textContent='Ice Crown v'+VERSION+' beta';
  // Silent updates: the worker fetches the newest game page whenever online, so the next open is always current.
  if('serviceWorker' in navigator && location.protocol!=='file:'){
