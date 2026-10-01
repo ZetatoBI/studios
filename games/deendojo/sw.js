@@ -1,5 +1,5 @@
 /* DeenDojo service worker. Bump CACHE whenever you upload a new index.html, so phones pick up the update. */
-const CACHE = "deendojo-v0.8";
+const CACHE = "deendojo-v0.9.4";
 const CORE = ["./", "./index.html", "./config.js", "./manifest.webmanifest",
   "./icons/icon-192.png", "./icons/icon-512.png", "./icons/icon-maskable-512.png", "./icons/apple-touch-icon.png"];
 
