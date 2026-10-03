@@ -663,7 +663,7 @@ const MAPS=[
   plots:[{x:150,y:480},{x:176,y:384},{x:290,y:292},{x:84,y:492},{x:176,y:540},{x:62,y:276},{x:300,y:210},{x:100,y:330}],
   road:[[120,62],[148,168],[204,262],[248,362],[268,444]],
   list:[[['wolf',6],['goblin',2]],[['wolf',6],['gobArcher',3]],[['wolf',8],['goblin',4],['gobArcher',3]],[['skeleton',6],['gobArcher',4],['troll',1]],[['goblin',6],['skeleton',4],['giant',1]],[['wolf',12],['skeleton',6],['troll',2]],[['gobArcher',8],['skeleton',8],['troll',2]],[['wolf',14],['goblin',8],['troll',3]],[['skeleton',12],['gobArcher',8],['troll',4]],[['wolf',8],['troll',3],['wyrm',1]]]},
- {id:'icecrown',tier:'Gold',name:'The Ice Crown',need:8,waves:24,hp:1.22,dmg:1.12,mod:'night',mineGold:14000,seed:4,b0:5.5,bg:.4,gm:3.2,hm:1.98,lateK:1.3,themes:['dead','heavy','horde','pack','mixed','dead'],unlock:{gobArcher:1,skeleton:1,troll:3,shaman:3,knight:6},bosses:{8:'trollKing',14:'giant',19:'wyrm',24:'lich'},
+ {id:'icecrown',tier:'Gold',name:'The Ice Crown',need:8,waves:24,hp:1.22,dmg:1.12,mod:'night',mineGold:14000,seed:4,b0:5.5,bg:.4,gm:3.2,hm:1.98,lateK:1.5,themes:['dead','heavy','horde','pack','mixed','dead'],unlock:{gobArcher:1,skeleton:1,troll:3,shaman:3,knight:6},bosses:{8:'trollKing',14:'giant',19:'wyrm',24:'lich'},
   story:'At the roof of the world stands the throne of the frost. Hrimgar, the Pale King, has worn the Ice Crown for a thousand winters. End the endless night: break his siege, and the crown with it.',
   twist:'Eternal night: raiders move 10% faster. Every boss returns for a final stand.',
   portal:{x:210,y:60},tc:{x:210,y:492},mine:{x:46,y:470},woods:{x0:356,x1:412,y0:420,y1:552,n:10},rally:{x:210,y:330},
@@ -671,13 +671,13 @@ const MAPS=[
   road:[[210,60],[150,150],[268,250],[160,350],[210,450]],
   list:[[['skeleton',6],['wolf',4]],[['gobArcher',6],['skeleton',4]],[['troll',2],['goblin',8]],[['trollKing',1],['wolf',6]],[['skeleton',10],['gobArcher',6]],[['troll',3],['wolf',10]],[['skeleton',12],['troll',2]],[['giant',1],['goblin',10]],[['gobArcher',10],['skeleton',10]],[['wyrm',1],['troll',3]],[['skeleton',14],['troll',4],['gobArcher',8]],[['lich',1],['skeleton',10],['troll',2]]]},
  // ---- Campaign 2: The Ember Deep (Ironhold Dwarves against the Ember Legion) ----
- {id:'emberfall',campaign:'c2',faction:'ember',tier:'Iron',name:'Emberfall Gate',need:0,waves:12,hp:.85,dmg:.85,mod:null,mineGold:0,seed:5,b0:4.5,bg:.34,gm:7.5,hm:2.1,lateK:.9,themes:['emberPack','swarm','emberMixed','ash'],unlock:{slinger:2,ashwalker:4,golem:7,flamecaller:6,obsknight:99},bosses:{12:'pyrrhus'},
+ {id:'emberfall',campaign:'c2',faction:'ember',tier:'Iron',name:'Emberfall Gate',need:0,waves:12,hp:.85,dmg:.85,mod:null,mineGold:0,seed:5,b0:4.5,bg:.34,gm:10,hm:2.3,lateK:.9,themes:['emberPack','swarm','emberMixed','ash'],unlock:{slinger:2,ashwalker:4,golem:7,flamecaller:6,obsknight:99},bosses:{12:'pyrrhus'},
   story:'Ironhold\u2019s outer gate. A river of lava crosses the valley under a single stone bridge, and the imps are pouring out of the rift.',
   twist:'A gentle start. The mine never runs dry.',
   portal:{x:210,y:62},tc:{x:210,y:480},mine:{x:48,y:458},woods:{x0:352,x1:412,y0:404,y1:552,n:11},rally:{x:210,y:330},
   plots:[{x:106,y:386},{x:316,y:386},{x:126,y:534},{x:290,y:536},{x:56,y:318},{x:366,y:318},{x:120,y:290},{x:300,y:290}],
   road:[[210,62],[200,150],[214,226],[204,320],[210,440]]},
- {id:'forges',campaign:'c2',faction:'ember',tier:'Bronze',name:'The Deep Forges',need:2,waves:16,hp:1,dmg:1,mod:null,mineGold:0,seed:6,b0:5,bg:.36,gm:9,hm:2.7,lateK:1.2,themes:['swarm','ash','emberPack','magma','emberMixed'],unlock:{slinger:1,ashwalker:3,golem:5,flamecaller:4,obsknight:11},bosses:{8:'pyrrhus',16:'gorgath'},
+ {id:'forges',campaign:'c2',faction:'ember',tier:'Bronze',name:'The Deep Forges',need:2,waves:16,hp:1,dmg:1,mod:null,mineGold:0,seed:6,b0:5,bg:.36,gm:7,hm:2.3,lateK:1.2,themes:['swarm','ash','emberPack','magma','emberMixed'],unlock:{slinger:1,ashwalker:3,golem:5,flamecaller:4,obsknight:11},bosses:{8:'pyrrhus',16:'gorgath'},
   story:'The great forge hall of Ironhold, cut into the mountain. Lava runs along both walls and the floor itself is cracking open.',
   twist:'Lumber is scarce: only a small fungus grove.',hazard:'vents',hazardShort:'Lava vents every 45s',hazardText:'Lava vents erupt every 45 seconds. When they glow, get clear.',
   vents:[{x:160,y:250},{x:262,y:250},{x:210,y:370},{x:110,y:450},{x:322,y:430}],
@@ -690,7 +690,7 @@ const MAPS=[
   portal:{x:90,y:62},tc:{x:250,y:488},mine:{x:60,y:470},woods:{x0:340,x1:410,y0:120,y1:280,n:12},rally:{x:220,y:340},
   plots:[{x:130,y:410},{x:350,y:330},{x:150,y:535},{x:345,y:525},{x:185,y:340},{x:300,y:210},{x:62,y:342},{x:212,y:410}],
   road:[[90,62],[160,140],[110,230],[230,290],[280,380],[250,446]]},
- {id:'heart',campaign:'c2',faction:'ember',tier:'Gold',name:'Heart of the Mountain',need:8,waves:24,hp:1.22,dmg:1.12,mod:null,mineGold:14000,seed:8,b0:5.5,bg:.4,gm:3.2,hm:1.98,lateK:1.3,themes:['ash','magma','swarm','emberPack','emberMixed','ash'],unlock:{slinger:1,ashwalker:1,golem:3,flamecaller:3,obsknight:6},bosses:{8:'pyrrhus',14:'gorgath',19:'ashgar',24:'kragmor'},
+ {id:'heart',campaign:'c2',faction:'ember',tier:'Gold',name:'Heart of the Mountain',need:8,waves:24,hp:1.22,dmg:1.12,mod:null,mineGold:14000,seed:8,b0:5.5,bg:.4,gm:4.8,hm:2.5,lateK:1.3,themes:['ash','magma','swarm','emberPack','emberMixed','ash'],unlock:{slinger:1,ashwalker:1,golem:3,flamecaller:3,obsknight:6},bosses:{8:'pyrrhus',14:'gorgath',19:'ashgar',24:'kragmor'},
   story:'The volcano\u2019s core, a ring of rock in a sea of lava. Kragmor waits at the heart, and the mountain answers him.',
   twist:'Every boss of the Deep returns for the last stand.',hazard:'erupt',hazardShort:'Eruptions',hazardText:'Every fifth wave, and whenever Kragmor calls it, the mountain erupts: watch for red circles.',
   portal:{x:210,y:60},tc:{x:210,y:490},mine:{x:64,y:470},woods:{x0:356,x1:412,y0:400,y1:550,n:10},rally:{x:210,y:330},
@@ -989,6 +989,7 @@ function hit(src,t,amt,opt){
  if(!t||t.dead) return 0;
  if(t.buffs.immune) return 0;
  if(t.team==='p'&&src&&src.team==='e'){ t.hitBy=src; t.hitAt=S.time; }
+ if(t.team==='p'&&t.kind!=='b'){ S.taken=(S.taken||0)+amt; if(!src) S.hazTaken=(S.hazTaken||0)+amt; }   // balance bot: share of damage taken from hazards
  let a=amt;
  if(t.buffs.mark) a*=1.4;
  if(t.buffs.guard) a*=.7;
@@ -3128,7 +3129,11 @@ const HOWTO=`<h2>How to play</h2><ul>
 <li>Workers cost no food: food is only for your army and heroes. Soldiers earn <b>ranks</b> from kills (gold chevrons: +12% health and damage each), so keep them alive.</li>
 <li>The <b>Cleric</b> or <b>Witch Doctor</b> heals the most injured ally nearby. The <b>Trebuchet</b> or <b>Catapult</b> hurls stones at dense waves from the back rows, but can't hit anything closer than 60.</li>
 <li>Maera's story cards can be switched off in this menu (Story: on/off) and re-read in the <b>Chronicle</b> on the battle list.</li>
-<li>Each battle ends with a boss. Clearing a wave pays out; calling the next one early pays extra gold.</li><li>Your battle saves after every cleared wave. Continue from the title screen or the battle list.</li><li>Tap a built Watch Tower to turn it into a Frost Tower (slows) or a Ballista (ignores armor). Both need a Forge.</li><li>Earn up to three stars per battle. Stars unlock harder tiers and give Crowns for permanent upgrades in the War council.</li></ul>
+<li>Each battle ends with a boss. Clearing a wave pays out; calling the next one early pays extra gold.</li><li>Your battle saves after every cleared wave. Continue from the title screen or the battle list.</li><li>Tap a built Watch Tower to turn it into a Frost Tower (slows) or a Ballista (ignores armor). Both need a Forge.</li><li>Earn up to three stars per battle. Stars unlock harder tiers and give Crowns for permanent upgrades in the War council.</li>
+<li><b>Campaigns:</b> Play opens the saga. Each campaign is four battles; win The Ice Crown (or earn 8 stars in Campaign 1) to open Campaign 2, The Ember Deep, where you always lead the Ironhold Dwarves.</li>
+<li><b>Carry-over:</b> within a campaign your heroes keep their level and talents from one battle to the next.</li>
+<li><b>Spoils of War:</b> after winning each of a campaign's first three battles, pick one of three boons (tap twice). Boons last for the rest of that campaign. Restart campaign on the battle list resets its heroes and boons.</li>
+<li><b>Hazards</b> (Campaign 2): lava vents glow and show a red circle a few seconds before they burst; ash storms shorten every ranged attack while they last; on Heart of the Mountain the volcano erupts. Move out of the circles.</li></ul>
 <div class="row"><button class="mbtn pri" data-m="resume">Got it</button></div>`;
 $('#menuBtn').onclick=()=>{ if(mode!=='play') return; paused=true; sfx('click');
  showModal(`<h2>Paused</h2><div class="row"><button class="mbtn pri" data-m="resume">Resume</button><button class="mbtn" data-m="howto">How to play</button><button class="mbtn" data-m="music">Music: ${musicOn?'on':'off'}</button><button class="mbtn" data-m="sound">Sound effects: ${sfxOn?'on':'off'}</button><button class="mbtn" data-m="storyOn">Story: ${PROG.storyOn?'on':'off'}</button><button class="mbtn" data-m="retry">Restart run</button><button class="mbtn" data-m="maps">Quit to battle select</button></div>${campState(S.map.campaign).boons.length?`<div class="sec">Spoils of War</div>${campState(S.map.campaign).boons.map(id=>`<div class="erow"><span class="ic stic">${svgI(BOONS[id].icon)}</span><span><b>${BOONS[id].name}</b><small>${BOONS[id].desc}</small></span></div>`).join('')}`:''}`);};
@@ -3167,13 +3172,13 @@ function frame(now){
 new ResizeObserver(()=>resize()).observe(stage);
 resize(); newGame(chosenRace);
 requestAnimationFrame(frame);
-if(/[?&]debug/.test(location.search)) window.__IC={saveRun,restoreRun,specTower,snapshot,clearW:()=>{for(const k in WCACHE) delete WCACHE[k];},trainUnit,trainWorker,forgeUp,upgradeKeep,setJob,setStance,foodCap,foodUsed,waveDef,genWave,MAPS,PROG_SET:p=>{PROG=normProg(p);},startMap,showMaps,get PROG(){return PROG;},tick:n=>{for(let i=0;i<n;i++)update(.05);},get S(){return S;},startWave,tryBuild,recruitHero,assignWorker,setMode:m=>mode=m,GEAR,THEMES,startEruption,setRace:r=>{chosenRace=r;},pickBoon,boonOffer,campState,pendingBoons,campMaps,moveArmy,refreshFormation,upgradeCastle,buyMasterwork,forgeCost,masterCost,reseed:n=>{Math.random=mulberry(n);},showChronicle,talentPending,pickTalent,TALENTS,grantXP,GEAR,equipGear,showArmory};
+if(/[?&]debug/.test(location.search)) window.__IC={saveRun,restoreRun,specTower,snapshot,clearW:()=>{for(const k in WCACHE) delete WCACHE[k];},trainUnit,trainWorker,forgeUp,upgradeKeep,setJob,setStance,foodCap,foodUsed,waveDef,genWave,MAPS,PROG_SET:p=>{PROG=normProg(p);},startMap,showMaps,get PROG(){return PROG;},tick:n=>{for(let i=0;i<n;i++)update(.05);},get S(){return S;},startWave,tryBuild,recruitHero,assignWorker,setMode:m=>mode=m,finish:w=>gameOver(w),BOONS,GEAR,THEMES,startEruption,setRace:r=>{chosenRace=r;},pickBoon,boonOffer,campState,pendingBoons,campMaps,moveArmy,refreshFormation,upgradeCastle,buyMasterwork,forgeCost,masterCost,reseed:n=>{Math.random=mulberry(n);},showChronicle,talentPending,pickTalent,TALENTS,grantXP,GEAR,equipGear,showArmory};
 })();
 </script>
 <script>
 /* Ice Crown PWA: offline worker with silent updates, plus the install hint. */
 (function(){
- var VERSION='1.5.0';
+ var VERSION='1.6.0';
  var v=document.getElementById('verLbl'); if(v) v.textContent='Ice Crown v'+VERSION+' beta';
  // Silent updates: the worker fetches the newest game page whenever online, so the next open is always current.
  if('serviceWorker' in navigator && location.protocol!=='file:'){
