@@ -182,7 +182,12 @@ button{font:inherit;color:inherit;touch-action:manipulation;cursor:pointer;borde
 #title{background:linear-gradient(180deg,rgba(8,16,26,.15) 0%,rgba(8,16,26,.35) 30%,rgba(8,16,26,.94) 62%);justify-content:flex-end;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px));color:#EEF5FB}
 #title h1{margin:0;text-align:center;font-family:Cinzel,serif;font-weight:800;font-size:clamp(44px,13vw,64px);line-height:.95;letter-spacing:.02em;color:#F4FAFF;text-shadow:0 2px 0 #0D2138,0 0 28px rgba(130,200,255,.85)}
 #title .tag{text-align:center;margin:8px 0 16px;color:#BFD6EA;font-weight:700;font-size:16px}
-.races{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.races{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:12px}
+#maps .race{padding:9px 10px}#maps .race small{font-size:12px}
+.mapc.soon{filter:grayscale(.75);opacity:.62}
+.mapc .chk{position:absolute;top:6px;right:8px;background:#3E7D3A;color:#fff;font-weight:800;border-radius:50%;width:26px;height:26px;display:grid;place-items:center;box-shadow:0 2px 6px rgba(0,0,0,.4)}
+.mapc .prog{font-size:13px;font-weight:800;color:#FFE3A0}
+.chrcamp{font-family:Cinzel,serif;font-weight:800;margin:16px 2px 2px;font-size:17px;color:var(--frost)}
 .race{background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.14);border-radius:16px;padding:12px 10px;text-align:left;color:#EEF5FB;display:flex;flex-direction:column;gap:6px}
 .race.on{border-color:#FFB070;background:rgba(255,160,90,.13)}
 .race svg{width:40px;height:44px}
@@ -197,7 +202,7 @@ button{font:inherit;color:inherit;touch-action:manipulation;cursor:pointer;borde
 #instX{width:34px;height:34px;border-radius:9px;font-size:22px;font-weight:800;color:#5B6F84;flex:none}
 .bigbtn{margin-top:14px;height:52px;border-radius:14px;background:#F0914A;color:#1C0F05;font-weight:800;font-size:18px;width:100%}
 .best{text-align:center;margin-top:10px;font-size:13px;color:#9FB6CB;font-weight:700}
-#maps{background:linear-gradient(180deg,#0E1A28,#16283B 60%,#0E1A28);color:#EEF5FB;padding:calc(10px + env(safe-area-inset-top,0px)) 12px calc(12px + env(safe-area-inset-bottom,0px));overflow-y:auto}
+#maps,#saga{background:linear-gradient(180deg,#0E1A28,#16283B 60%,#0E1A28);color:#EEF5FB;padding:calc(10px + env(safe-area-inset-top,0px)) 12px calc(12px + env(safe-area-inset-bottom,0px));overflow-y:auto}
 .mhead{display:flex;align-items:center;gap:8px;margin-bottom:10px}
 .mhead h2{flex:1;margin:0;font-family:Cinzel,serif;font-size:21px;text-align:center}
 .mback{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.1);color:#fff;font-size:26px;font-weight:800;line-height:1}
@@ -378,20 +383,26 @@ button{font:inherit;color:inherit;touch-action:manipulation;cursor:pointer;borde
   <div id="inst" hidden><div class="it"><b>Play it like an app</b><span id="instMsg"></span></div><button id="instGo" hidden>Install</button><button id="instX" aria-label="Dismiss">×</button></div>
   <h1>Ice Crown</h1>
   <div class="tag">Build your hold. Raise heroes. Break the frost.</div>
-  <div class="races">
-   <button class="race" data-race="kingdom"><svg viewBox="0 0 40 44"><path d="M20 2l17 6v12c0 11-7 18-17 22C10 38 3 31 3 20V8z" fill="#2F6FD0" stroke="#E7C66A" stroke-width="2"/><path d="M20 10l3 7h7l-5.5 4.5 2 7L20 24l-6.5 4.5 2-7L10 17h7z" fill="#F4E3A8"/></svg><b>Kingdom of Aldmere</b><small>Workers carry 15% more gold. Soldiers get +1 armor.</small></button>
-   <button class="race" data-race="horde"><svg viewBox="0 0 40 44"><path d="M20 2l17 6v12c0 11-7 18-17 22C10 38 3 31 3 20V8z" fill="#9C2F24" stroke="#D9B26A" stroke-width="2"/><path d="M13 30L27 12M27 30L13 12" stroke="#EDE3CF" stroke-width="3" stroke-linecap="round"/><path d="M24 11c3-2 6-1 7 1-2 0-4 1-5 3zM16 11c-3-2-6-1-7 1 2 0 4 1 5 3z" fill="#EDE3CF"/></svg><b>Grukash Horde</b><small>Workers carry 20% more lumber. Soldiers hit 12% harder and regenerate.</small></button>
-  </div>
-  <button class="bigbtn" id="beginBtn">Choose a battle</button>
+  <button class="bigbtn" id="beginBtn">Play</button>
   <button id="contBtn" hidden></button>
   <div class="best" id="bestLbl"></div>
   <div class="ver" id="verLbl"></div>
  </div>
 
  <div id="maps" class="ov" hidden>
-  <div class="mhead"><button class="mback" id="mapsBack" aria-label="Back">‹</button><h2>Choose your battle</h2><button class="crownb" id="armBtn" aria-label="Armory"><svg viewBox="0 0 24 24" fill="#FFD36A" stroke="#8A6212" stroke-width="1.2"><path d="M12 2l8 3v6.5c0 5-3.4 8.6-8 10.5-4.6-1.9-8-5.5-8-10.5V5z"/><path d="M12 6v12M7.5 10.5h9" stroke="#8A6212" stroke-width="1.8" fill="none"/></svg></button><button class="crownb" id="upBtn"><svg viewBox="0 0 24 24" fill="#FFD36A" stroke="#8A6212" stroke-width="1.2"><path d="M3 18l2-10 4 4 3-7 3 7 4-4 2 10z"/></svg><b id="crownN">0</b></button></div>
+  <div class="mhead"><button class="mback" id="mapsBack" aria-label="Back">‹</button><h2 id="mapsTitle">Choose your battle</h2><button class="crownb" id="armBtn" aria-label="Armory"><svg viewBox="0 0 24 24" fill="#FFD36A" stroke="#8A6212" stroke-width="1.2"><path d="M12 2l8 3v6.5c0 5-3.4 8.6-8 10.5-4.6-1.9-8-5.5-8-10.5V5z"/><path d="M12 6v12M7.5 10.5h9" stroke="#8A6212" stroke-width="1.8" fill="none"/></svg></button><button class="crownb" id="upBtn"><svg viewBox="0 0 24 24" fill="#FFD36A" stroke="#8A6212" stroke-width="1.2"><path d="M3 18l2-10 4 4 3-7 3 7 4-4 2 10z"/></svg><b id="crownN">0</b></button></div>
   <button class="mtool" id="chronBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5C4 4.7 4.7 4 5.5 4H11v16H5.5c-.8 0-1.5-.7-1.5-1.5zM20 5.5c0-.8-.7-1.5-1.5-1.5H13v16h5.5c.8 0 1.5-.7 1.5-1.5z"/><path d="M7 8h2M7 11h2M15 8h2M15 11h2"/></svg>Chronicle <small id="chronN"></small></button>
+  <div id="campTools"></div>
+  <div class="races" id="raceRow">
+   <button class="race" data-race="kingdom"><svg viewBox="0 0 40 44"><path d="M20 2l17 6v12c0 11-7 18-17 22C10 38 3 31 3 20V8z" fill="#2F6FD0" stroke="#E7C66A" stroke-width="2"/><path d="M20 10l3 7h7l-5.5 4.5 2 7L20 24l-6.5 4.5 2-7L10 17h7z" fill="#F4E3A8"/></svg><b>Kingdom of Aldmere</b><small>Workers carry 15% more gold. Soldiers get +1 armor.</small></button>
+   <button class="race" data-race="horde"><svg viewBox="0 0 40 44"><path d="M20 2l17 6v12c0 11-7 18-17 22C10 38 3 31 3 20V8z" fill="#9C2F24" stroke="#D9B26A" stroke-width="2"/><path d="M13 30L27 12M27 30L13 12" stroke="#EDE3CF" stroke-width="3" stroke-linecap="round"/><path d="M24 11c3-2 6-1 7 1-2 0-4 1-5 3zM16 11c-3-2-6-1-7 1 2 0 4 1 5 3z" fill="#EDE3CF"/></svg><b>Grukash Horde</b><small>Workers carry 20% more lumber. Soldiers hit 12% harder and regenerate.</small></button>
+  </div>
   <div class="mlist" id="mapList"></div>
+ </div>
+ <div id="saga" class="ov" hidden>
+  <div class="mhead"><button class="mback" id="sagaBack" aria-label="Back">‹</button><h2>The Shattered Crown</h2><button class="crownb" id="sagaArm" aria-label="Armory"><svg viewBox="0 0 24 24" fill="#FFD36A" stroke="#8A6212" stroke-width="1.2"><path d="M12 2l8 3v6.5c0 5-3.4 8.6-8 10.5-4.6-1.9-8-5.5-8-10.5V5z"/><path d="M12 6v12M7.5 10.5h9" stroke="#8A6212" stroke-width="1.8" fill="none"/></svg></button><button class="crownb" id="sagaUp"><svg viewBox="0 0 24 24" fill="#FFD36A" stroke="#8A6212" stroke-width="1.2"><path d="M3 18l2-10 4 4 3-7 3 7 4-4 2 10z"/></svg><b id="sagaCrowns">0</b></button></div>
+  <button class="mtool" id="sagaChron">Chronicle</button>
+  <div class="mlist" id="sagaList"></div>
  </div>
  <div id="intro" class="ov" aria-label="Zetato Studios">
   <div class="zlogo">
@@ -621,12 +632,27 @@ const MAPS=[
   road:[[210,60],[150,150],[268,250],[160,350],[210,450]],
   list:[[['skeleton',6],['wolf',4]],[['gobArcher',6],['skeleton',4]],[['troll',2],['goblin',8]],[['trollKing',1],['wolf',6]],[['skeleton',10],['gobArcher',6]],[['troll',3],['wolf',10]],[['skeleton',12],['troll',2]],[['giant',1],['goblin',10]],[['gobArcher',10],['skeleton',10]],[['wyrm',1],['troll',3]],[['skeleton',14],['troll',4],['gobArcher',8]],[['lich',1],['skeleton',10],['troll',2]]]}
 ];
+/* ---------- SAGA: The Shattered Crown (four campaigns) ---------- */
+const CAMPAIGNS=[
+ {id:'c1',n:1,name:'The Long Night',race:null,raceName:'Kingdom of Aldmere or Grukash Horde',faction:'The Frost'},
+ {id:'c2',n:2,name:'The Ember Deep',race:'dwarf',raceName:'Ironhold Dwarves',faction:'The Ember Legion',lockText:'Win The Ice Crown to unlock.'},
+ {id:'c3',n:3,name:'The Withering Wood',raceName:'Sylvan Elves',faction:'The Blight',soon:'The forest is rotting from the inside. The elves have stopped singing.'},
+ {id:'c4',n:4,name:'The Red Wastes',raceName:'Grukash Horde',faction:'The Sand-Dead',soon:'Beyond the canyons, the sand is moving on its own.'}];
+const CAMP={}; CAMPAIGNS.forEach(c=>CAMP[c.id]=c);
+const campOf=i=>(MAPS[i]&&MAPS[i].campaign)||'c1';
+const campMaps=c=>MAPS.map((M,i)=>M.campaign===c?i:-1).filter(i=>i>=0);
+const starsIn=c=>campMaps(c).reduce((a,i)=>a+starsOf(MAPS[i].id).filter(Boolean).length,0);
+const wonMap=id=>!!(PROG.stars[id]&&PROG.stars[id][0]);
+function campUnlocked(c){ if(c==='c1') return true; if(c==='c2') return wonMap('icecrown')||starsIn('c1')>=8; return false; }
+const campDone=c=>{ const L=campMaps(c); return L.length>0&&wonMap(MAPS[L[L.length-1]].id); };
+const raceFor=i=>CAMP[campOf(i)].race||chosenRace;
 const THEMES={
  frostmere:{g0:'#D3DCE6',g1:'#EEF0F3',light:'dawn',feature:'river',fires:[[266,452]],birch:0},
  hollow:{g0:'#BEC8D1',g1:'#DCE2E7',light:'day',feature:'cliffs',fires:[[212,468]],birch:0},
  whitefang:{g0:'#BACCDA',g1:'#DAE5EE',light:'fog',feature:'forest',fires:[[208,468]],birch:.35},
  icecrown:{g0:'#8E9DB5',g1:'#B3C0D0',light:'night',feature:'spires',fires:[[140,470],[282,470]],birch:0}
 };
+MAPS.forEach(M=>{ if(!M.campaign) M.campaign='c1'; });
 const theme=()=>THEMES[MAPS[mapIdx].id];
 const UPGRADES={
  stock:{name:'Stockpile',desc:'+60 gold and +40 lumber when a battle starts',max:3,cost:[1,2,3]},
@@ -643,12 +669,13 @@ const GEAR={
  scale:{name:"Vyrnax's Frost Scale",boss:'wyrm',desc:"Takes 30% less damage from projectiles and breath; can't be slowed",cut:.3},
  shard:{name:'Shard of the Pale Crown',boss:'lich',desc:'+20% ability power and -10% cooldowns',ap:.2,cd:.9}
 };
-function normProg(p){ p=p||{}; p.stars=p.stars||{}; p.ups=p.ups||{}; p.spent=p.spent||0; p.story=Array.isArray(p.story)?p.story:[]; if(typeof p.storyOn!=='boolean') p.storyOn=true;
+function normProg(p){ p=p||{}; p.stars=p.stars||{}; p.camp=p.camp&&typeof p.camp==='object'?p.camp:{}; p.ups=p.ups||{}; p.spent=p.spent||0; p.story=Array.isArray(p.story)?p.story:[]; if(typeof p.storyOn!=='boolean') p.storyOn=true;
  const g=p.gear&&typeof p.gear==='object'?p.gear:{}; g.owned=Array.isArray(g.owned)?g.owned.filter(k=>GEAR[k]):[]; g.equipped=Object.assign({warrior:null,mage:null,ranger:null},g.equipped||{}); p.gear=g;
  return p; }
 function gearOf(h){ const id=h&&h.kind==='h'?PROG.gear.equipped[h.cls]:null; return id&&PROG.gear.owned.includes(id)?id:null; }
 const hasG=(h,id)=>gearOf(h)===id;
 function loadProg(){ return normProg(store.get('prog',{})); }
+function campState(c){ const C=PROG.camp[c]||(PROG.camp[c]={}); C.heroes=C.heroes||{}; C.boons=Array.isArray(C.boons)?C.boons:[]; C.offered=C.offered||{}; return C; }
 let PROG=loadProg();
 const totalStars=()=>Object.values(PROG.stars).reduce((a,v)=>a+v.filter(Boolean).length,0);
 const crowns=()=>totalStars()-PROG.spent;
@@ -1133,7 +1160,7 @@ function updateWaves(dt){
   S.countdown-=dt; if(S.countdown<=0) startWave();
  }
 }
-function snapshot(){ return {v:3,castle:S.castle,master:S.master,map:mapIdx,race:S.race,wave:S.wave,res:{...S.res},forge:{...S.forge},keep:S.keep,mineLeft:S.mineLeft,stance:S.stance,mode:S.mode,rally:{...S.rally},heroDeaths:S.heroDeaths,kills:S.kills,
+function snapshot(){ return {v:4,camp:campOf(mapIdx),castle:S.castle,master:S.master,map:mapIdx,race:S.race,wave:S.wave,res:{...S.res},forge:{...S.forge},keep:S.keep,mineLeft:S.mineLeft,stance:S.stance,mode:S.mode,rally:{...S.rally},heroDeaths:S.heroDeaths,kills:S.kills,
  buildings:S.buildings.filter(b=>!b.dead&&b!==S.tc).map(b=>({type:b.type,plot:b.plot,built:b.built,prog:b.prog,hp:b.hp,spec:b.spec||null,queue:b.queue})),
  tc:{hp:S.tc.hp,queue:S.tc.queue,upg:S.tc.upg}, units:S.units.filter(u=>u.type!=='wolfpet').map(u=>({type:u.type,x:u.x,y:u.y,hp:u.hp,job:u.job||null,kills:u.kills||0})),
  heroes:S.heroes.map(h=>({cls:h.cls,lvl:h.lvl,xp:h.xp,hp:h.hp,dead:h.dead,revive:h.revive,x:h.x,y:h.y,follow:h.follow,tal:h.tal.slice()}))}; }
@@ -2609,18 +2636,17 @@ function mapTap(x,y){
 /* =====================================================================
    FLOW: boot → Zetato intro → title → play
    ===================================================================== */
-let chosenRace=store.get('race','kingdom');
+let chosenRace=store.get('race','kingdom'), curCamp=store.get('camp','c1'), lastScreen='saga';
+if(!CAMP[curCamp]) curCamp='c1';
 function showTitle(){
- mode='title'; newGame(chosenRace,Math.min(mapIdx,MAPS.length-1));
+ mode='title'; const ti=Math.min(mapIdx,MAPS.length-1); newGame(raceFor(ti),ti);
  S.units.forEach((w,i)=>setJob(w,i<2?'gold':'lumber'));
  $('#title').hidden=false; closeSheet();
- document.querySelectorAll('.race').forEach(b=>b.classList.toggle('on',b.dataset.race===chosenRace));
- const ts=totalStars(); $('#bestLbl').textContent=ts?`${ts} of ${MAPS.length*3} stars earned`:'';
+ const ts=totalStars(); $('#bestLbl').textContent=ts?`${ts} stars earned across the saga`:'';
  const sv=store.get('save',null), cb=$('#contBtn'); cb.hidden=!sv; if(sv) cb.textContent=`Continue: ${MAPS[sv.map].name}, wave ${sv.wave+1}`;
 }
-document.querySelectorAll('.race').forEach(b=>b.onclick=()=>{initAudio(); chosenRace=b.dataset.race; store.set('race',chosenRace); document.querySelectorAll('.race').forEach(x=>x.classList.toggle('on',x===b)); sfx('click');});
 $('#contBtn').onclick=()=>{ initAudio(); if(AC&&AC.state==='suspended') AC.resume(); const sv=store.get('save',null); if(sv) restoreRun(sv); };
-$('#beginBtn').onclick=()=>{ initAudio(); if(AC&&AC.state==='suspended') AC.resume(); sfx('click'); showMaps(); };
+$('#beginBtn').onclick=()=>{ initAudio(); if(AC&&AC.state==='suspended') AC.resume(); sfx('click'); showSaga(); };
 // Zetato Studios intro: plays once on launch (~1.5s), no tap needed; a tap just skips it
 (function(){ const intro=$('#intro'); let done=false;
  document.addEventListener('pointerdown',()=>{initAudio(); if(AC&&AC.state==='suspended') AC.resume();},{once:true,capture:true});
@@ -2634,7 +2660,7 @@ function gameOver(win){
  if(win){
   const got=[1,S.tc.hp>=S.tc.maxHp*.5?1:0,S.heroDeaths===0&&S.heroes.length>0?1:0], old=starsOf(M.id), now=old.map((v,k)=>v||got[k]);
   const gained=now.filter(Boolean).length-old.filter(Boolean).length; PROG.stars[M.id]=now; store.set('prog',PROG);
-  const next=MAPS[mapIdx+1], unlocked=next&&totalStars()>=next.need;
+  const next=MAPS[mapIdx+1]&&MAPS[mapIdx+1].campaign===M.campaign?MAPS[mapIdx+1]:null, unlocked=next&&starsIn(M.campaign)>=next.need;
   const lines=['Held every wave','Town Center above half health','No hero fell'];
   const vic=()=>showModal(`<h2>Victory</h2><p>${M.name} holds. ${S.kills} raiders defeated.</p><div class="starrow">${lines.map((t,k)=>`<div><span class="s ${got[k]?'':'off'}">★</span>${t}</div>`).join('')}</div>
    <p><b>${gained>0?`+${gained} Crown${gained>1?'s':''} earned.`:'No new stars this time.'}</b> ${crowns()} Crowns to spend.</p>
@@ -2648,16 +2674,16 @@ function gameOver(win){
 }
 /* ---------- campaign screens ---------- */
 function mapPreview(i,W,H){
- W=W||840; H=H||260; const k='map:'+i+':'+chosenRace+':'+W+'x'+H; if(THUMBMAP[k]) return THUMBMAP[k];
+ W=W||840; H=H||260; const k='map:'+i+':'+raceFor(i)+':'+W+'x'+H; if(THUMBMAP[k]) return THUMBMAP[k];
  const save={mapIdx,PORTAL,TCPOS,MINE,RALLY,PLOTS}, M=MAPS[i];
  mapIdx=i; PORTAL={...M.portal}; TCPOS={...M.tc}; MINE={...M.mine,r:28};
  const sc=H/(WH-30), c=document.createElement('canvas'); c.width=W; c.height=H; const g=c.getContext('2d');
  const ox=(W-WW*sc)/2; g.setTransform(sc,0,0,sc,ox,-20*sc);
  paintGround(g,-ox/sc,20,(W-ox)/sc,WH+10);
- const P=RACES[chosenRace].pal, items=[];
+ const rc=raceFor(i), P=RACES[rc].pal, items=[];
  const Wd=M.woods, r3=mulberry(11+i*7); for(let q=0;q<Wd.n;q++){const x=Wd.x0+r3()*(Wd.x1-Wd.x0), y=Wd.y0+r3()*(Wd.y1-Wd.y0); items.push([y,()=>drawPine(g,x,y,1,0,false)]);}
  items.push([MINE.y,()=>drawMine(g,0)]);
- items.push([M.tc.y,()=>{g.save(); g.translate(M.tc.x,M.tc.y); drawBuildingShape(g,'townhall',P,chosenRace==='horde',false,0); g.restore();}]);
+ items.push([M.tc.y,()=>{g.save(); g.translate(M.tc.x,M.tc.y); drawBuildingShape(g,'townhall',P,rc==='horde',false,0,null,rc); g.restore();}]);
  THEMES[M.id].fires.forEach(([fx,fy])=>items.push([fy,()=>drawFire(g,fx,fy,0)]));
  items.sort((a,b)=>a[0]-b[0]).forEach(a=>a[1]());
  drawPortal(g,0,true);
@@ -2670,17 +2696,48 @@ function mapPreview(i,W,H){
 }
 let THUMBMAP={};
 const starsOf=id=>PROG.stars[id]||[0,0,0];
+// a painted realm for campaigns without maps yet
+const REALMIMG={};
+function realmArt(c){ if(REALMIMG[c]) return REALMIMG[c]; const W=840,H=260, cc=document.createElement('canvas'); cc.width=W; cc.height=H; const g=cc.getContext('2d'), r=mulberry(c.length*7+c.charCodeAt(1));
+ const P={c2:['#2A1410','#6B2414','#FF7A2A'],c3:['#14261A','#2F5A34','#B8E07A'],c4:['#5A2E18','#C8783A','#FFD9A0']}[c]||['#223','#445','#889'];
+ g.fillStyle=lg(g,0,0,0,H,P[0],P[1]); g.fillRect(0,0,W,H);
+ for(let k=0;k<3;k++){ g.fillStyle=`rgba(0,0,0,${.18+k*.14})`; g.beginPath(); g.moveTo(0,H); for(let x=0;x<=W;x+=20) g.lineTo(x,H*(.45+k*.15)-Math.abs(Math.sin(x/(60+k*40)+k))*60*r()); g.lineTo(W,H); g.closePath(); g.fill(); }
+ if(c==='c3') for(let i=0;i<60;i++){ const x=r()*W, y=H*.5+r()*H*.5, h=30+r()*60; g.fillStyle='rgba(10,30,15,.8)'; g.fillRect(x-2,y-h,4,h); g.fillStyle=`rgba(${60+r()*60|0},${110+r()*60|0},50,.8)`; ell(g,x,y-h,14+r()*10,10+r()*8); }
+ if(c==='c4') for(let i=0;i<5;i++){ g.fillStyle='rgba(90,40,20,.6)'; g.fillRect(r()*W,H*.35+r()*40,40+r()*60,H); }
+ if(c==='c2') for(let i=0;i<40;i++){ g.fillStyle=`rgba(255,${120+r()*100|0},40,${.3+r()*.6})`; ell(g,r()*W,r()*H,1+r()*2.5,1+r()*2.5); }
+ g.globalCompositeOperation='lighter'; const gr=g.createRadialGradient(W/2,H*.85,0,W/2,H*.85,260); gr.addColorStop(0,P[2]+'55'); gr.addColorStop(1,P[2]+'00'); g.fillStyle=gr; g.fillRect(0,0,W,H);
+ return REALMIMG[c]=cc.toDataURL('image/jpeg',.85); }
+function showSaga(){
+ mode='maps'; lastScreen='saga'; $('#title').hidden=true; $('#maps').hidden=true; $('#saga').hidden=false; hideModal();
+ $('#sagaCrowns').textContent=crowns();
+ $('#sagaList').innerHTML=CAMPAIGNS.map(C=>{ const L=campMaps(C.id), open=!C.soon&&campUnlocked(C.id)&&L.length, st=starsIn(C.id), done=campDone(C.id);
+  const img=L.length?mapPreview(L[L.length-1]):realmArt(C.id);
+  return `<button class="mapc ${C.soon?'soon':open?'':'lock'}" data-camp="${C.id}" style="--t:#E3B341"><img src="${img}" alt=""><span class="tier">Campaign ${C.n}</span>${done?'<span class="chk">✓</span>':''}${!C.soon&&!open?`<span class="lk">${C.lockText||'Locked'}</span>`:''}
+   <span class="mb"><b>${C.name}</b><small>${C.soon?`Coming soon. ${C.soon}`:`${C.raceName} against ${C.faction}.`}</small>${C.soon?'':`<span class="prog">★ ${st} / 12${done?' · complete':''}</span>`}</span></button>`; }).join('');
+}
+$('#sagaList').addEventListener('click',e=>{ const b=e.target.closest('[data-camp]'); if(!b) return; initAudio(); const C=CAMP[b.dataset.camp];
+ if(C.soon){ toastAny(`${C.name}: coming soon`); return; } if(!campUnlocked(C.id)||!campMaps(C.id).length){ toastAny(C.lockText||'Locked'); return; }
+ sfx('click'); curCamp=C.id; store.set('camp',curCamp); showMaps(); });
+$('#sagaBack').onclick=()=>{ $('#saga').hidden=true; showTitle(); };
+$('#sagaUp').onclick=()=>showUpgrades();
+$('#sagaArm').onclick=()=>{ initAudio(); sfx('click'); showArmory(null); };
+$('#sagaChron').onclick=()=>{ initAudio(); sfx('click'); showChronicle(); };
 function showMaps(){
- mode='maps'; $('#title').hidden=true; $('#maps').hidden=false; hideModal();
- $('#crownN').textContent=crowns(); const ts=totalStars();
+ mode='maps'; lastScreen='maps'; $('#title').hidden=true; $('#saga').hidden=true; $('#maps').hidden=false; hideModal();
+ const C=CAMP[curCamp]; $('#mapsTitle').textContent=C.name;
+ $('#crownN').textContent=crowns(); const ts=starsIn(curCamp);
+ $('#raceRow').hidden=curCamp!=='c1'; document.querySelectorAll('#raceRow .race').forEach(b=>{ b.classList.toggle('on',b.dataset.race===chosenRace); b.hidden=b.dataset.race==='dwarf'&&!PROG.dwarvesC1; });
  const allCards=Object.values(STORY).flat(); $('#chronN').textContent=`${allCards.filter(c=>seenStory(c.id)).length}/${allCards.length}`;
- $('#mapList').innerHTML=MAPS.map((M,i)=>{ const st=starsOf(M.id), lock=ts<M.need, boss=[...new Set(Object.values(M.bosses).map(b=>ENEMIES[b].name.split(' the ')[0]))].join(', ');
-  return `<button class="mapc ${lock?'lock':''}" data-map="${i}" style="--t:${TIERS[M.tier]}"><img src="${mapPreview(i)}" alt=""><span class="tier">${M.tier}</span><span class="st">${st.map(v=>v?'★':'<i>★</i>').join('')}</span>${lock?`<span class="lk">Earn ${M.need} ★ to unlock (you have ${ts})</span>`:''}
+ renderCampTools();
+ $('#mapList').innerHTML=campMaps(curCamp).map(i=>{ const M=MAPS[i], st=starsOf(M.id), lock=ts<M.need, boss=[...new Set(Object.values(M.bosses).map(b=>ENEMIES[b].name.split(' the ')[0]))].join(', ');
+  return `<button class="mapc ${lock?'lock':''}" data-map="${i}" style="--t:${TIERS[M.tier]}"><img src="${mapPreview(i)}" alt=""><span class="tier">${M.tier}</span><span class="st">${st.map(v=>v?'★':'<i>★</i>').join('')}</span>${lock?`<span class="lk">Earn ${M.need} ★ in this campaign to unlock (you have ${ts})</span>`:''}
    ${(()=>{const sv=store.get('save',null); return sv&&sv.map===i?`<span class="cont">Saved after wave ${sv.wave}</span>`:'';})()}<span class="mb"><b>${M.name}</b><small>${M.story.split('. ')[0]}.</small><span class="mm">${M.waves} waves, boss: ${boss}</span></span></button>`; }).join('');
 }
+function renderCampTools(){ $('#campTools').innerHTML=''; }
 $('#mapList').addEventListener('click',e=>{ const b=e.target.closest('.mapc'); if(!b) return; initAudio(); const i=+b.dataset.map, M=MAPS[i];
- if(totalStars()<M.need){ toastAny(`Earn ${M.need} stars to unlock ${M.name}`); return; } sfx('click'); briefing(i); });
-$('#mapsBack').onclick=()=>{ $('#maps').hidden=true; showTitle(); };
+ if(starsIn(M.campaign)<M.need){ toastAny(`Earn ${M.need} stars in ${CAMP[M.campaign].name} to unlock ${M.name}`); return; } sfx('click'); briefing(i); });
+$('#mapsBack').onclick=()=>{ $('#maps').hidden=true; showSaga(); };
+document.querySelectorAll('#raceRow .race').forEach(b=>b.onclick=()=>{initAudio(); chosenRace=b.dataset.race; store.set('race',chosenRace); document.querySelectorAll('#raceRow .race').forEach(x=>x.classList.toggle('on',x===b)); sfx('click'); THUMB={}; showMaps();});
 $('#upBtn').onclick=()=>showUpgrades();
 $('#armBtn').onclick=()=>{ initAudio(); sfx('click'); showArmory(null); };
 $('#chronBtn').onclick=()=>{ initAudio(); sfx('click'); showChronicle(); };
@@ -2689,7 +2746,7 @@ function briefing(i){ const M=MAPS[i], sv=store.get('save',null), has=sv&&sv.map
  showModal(`<h2>${M.name}</h2><div class="brief">${M.story}</div><div class="tw">${M.twist}</div>
   <div class="starrow"><div><span class="s">★</span>Hold for all ${M.waves} waves</div><div><span class="s">★</span>Keep the Town Center above half health</div><div><span class="s">★</span>Don't lose a hero</div></div>
   <div class="row">${has?`<button class="mbtn pri" data-m="continue">Continue from wave ${sv.wave+1}</button><button class="mbtn" data-m="march" data-i="${i}">Start over</button>`:`<button class="mbtn pri" data-m="march" data-i="${i}">March</button>`}${(()=>{const it=storyOf(M.id,'intro'); return it.length&&seenStory(it[0].id)?`<button class="mbtn" data-m="story" data-i="${i}">Story</button>`:'';})()}<button class="mbtn" data-m="armory" data-i="${i}">Armory</button><button class="mbtn" data-m="maps">Back</button></div>`); }
-function startMap(i){ clearSave(); store.set('map',i); hideModal(); $('#maps').hidden=true; $('#title').hidden=true; newGame(chosenRace,i); mode='play'; paused=false; lastQuest=-1; uiDirty=true; closeSheet();
+function startMap(i){ clearSave(); store.set('map',i); hideModal(); $('#maps').hidden=true; $('#title').hidden=true; newGame(raceFor(i),i); mode='play'; paused=false; lastQuest=-1; uiDirty=true; closeSheet();
  const go=()=>{ paused=false; banner(MAPS[i].name,`${MAPS[i].tier} tier: hold ${MAPS[i].waves} waves`); }, intro=storyOf(MAPS[i].id,'intro');
  // intro cards the first time a map is started (replays: "Story" on the briefing); the battle waits
  if(PROG.storyOn&&intro.length&&!seenStory(intro[0].id)){ paused=true; showStory(intro,go,{map:i}); } else go(); }
@@ -2717,9 +2774,9 @@ function showArmory(back){ if(back!==undefined) armBack=back; const G=PROG.gear,
 // Chronicle: every story card the player has unlocked, in order; tap one to read it again
 const CHR_AT={intro:'Before the battle',mid:'During the battle',victory:'Victory',epilogue:'Epilogue',defeat:'Defeat'};
 function showChronicle(){
- showModal(`<h2>Chronicle</h2><p>Maera's account of the Long Night. Tap an entry to read it again.</p>${MAPS.map((M,i)=>`<div class="chrmap">${M.name}</div>${(STORY[M.id]||[]).map((c,k)=>seenStory(c.id)
+ showModal(`<h2>Chronicle</h2><p>Maera's account of the Shattered Crown. Tap an entry to read it again.</p>${CAMPAIGNS.filter(C=>campMaps(C.id).length).map(C=>`<div class="chrcamp">${C.name}</div>${(STORY[C.id]||[]).map((c,k)=>seenStory(c.id)?`<button class="chr" data-chr="${C.id}:${k}"><small>Prologue</small><span>${storyText(c.text)}</span></button>`:`<div class="chr lock"><small>Prologue</small><span>???</span></div>`).join('')}${campMaps(C.id).map(i=>{const M=MAPS[i]; return `<div class="chrmap">${M.name}</div>${(STORY[M.id]||[]).map((c,k)=>seenStory(c.id)
    ?`<button class="chr" data-chr="${i}:${k}"><small>${CHR_AT[c.at]}</small><span>${storyText(c.text)}</span></button>`
-   :`<div class="chr lock"><small>${CHR_AT[c.at]}</small><span>???</span></div>`).join('')}`).join('')}
+   :`<div class="chr lock"><small>${CHR_AT[c.at]}</small><span>???</span></div>`).join('')}`;}).join('')}`).join('')}
   <div class="row"><button class="mbtn pri" data-m="maps">Done</button></div>`); }
 function equipGear(cls,id){ const E=PROG.gear.equipped; Object.keys(E).forEach(c=>{ if(E[c]===id) E[c]=null; }); E[cls]=id; store.set('prog',PROG); if(S) S.heroes.forEach(applyStats); }
 /* ---------- story cards: full screen, Maera speaks; drawn from existing art (map preview + drawFigure) ---------- */
@@ -2777,7 +2834,7 @@ const HOWTO=`<h2>How to play</h2><ul>
 $('#menuBtn').onclick=()=>{ if(mode!=='play') return; paused=true; sfx('click');
  showModal(`<h2>Paused</h2><div class="row"><button class="mbtn pri" data-m="resume">Resume</button><button class="mbtn" data-m="howto">How to play</button><button class="mbtn" data-m="music">Music: ${musicOn?'on':'off'}</button><button class="mbtn" data-m="sound">Sound effects: ${sfxOn?'on':'off'}</button><button class="mbtn" data-m="storyOn">Story: ${PROG.storyOn?'on':'off'}</button><button class="mbtn" data-m="retry">Restart run</button><button class="mbtn" data-m="maps">Quit to battle select</button></div>`);};
 $('#modal').addEventListener('click',e=>{
- const cb=e.target.closest('[data-chr]'); if(cb){ const [i,k]=cb.dataset.chr.split(':').map(Number); showStory([STORY[MAPS[i].id][k]],null,{map:i}); return; }
+ const cb=e.target.closest('[data-chr]'); if(cb){ const [a,b]=cb.dataset.chr.split(':'); if(CAMP[a]){ const L=campMaps(a); showStory([STORY[a][+b]],null,{map:L[0]}); } else showStory([STORY[MAPS[+a].id][+b]],null,{map:+a}); return; }
  const ab=e.target.closest('[data-arm]');
  if(ab){ const [k,v]=ab.dataset.arm.split(':');
   if(k==='slot') armSel=v; else if(k==='item'){ const cur=PROG.gear.equipped[armSel]; equipGear(armSel,cur===v?null:v); toastAny(cur===v?'Removed':`${GEAR[v].name} equipped`); } else if(k==='clear') equipGear(armSel,null);
@@ -2791,10 +2848,10 @@ $('#modal').addEventListener('click',e=>{
  else if(m==='retry'){startMap(mapIdx);}
  else if(m==='march'){startMap(+b.dataset.i);}
  else if(m==='armory'){ showArmory(b.dataset.i!=null?+b.dataset.i:null); }
- else if(m==='armDone'){ if(armBack!=null) briefing(armBack); else { hideModal(); showMaps(); } }
+ else if(m==='armDone'){ if(armBack!=null) briefing(armBack); else { hideModal(); if(lastScreen==='saga') showSaga(); else showMaps(); } }
  else if(m==='story'){ const i=+b.dataset.i; showStory(storyOf(MAPS[i].id,'intro'),null,{map:i}); }
  else if(m==='continue'){ const sv=store.get('save',null); if(sv) restoreRun(sv); }
- else if(m==='maps'){hideModal();paused=false;showMaps();}
+ else if(m==='maps'){hideModal();paused=false; if(lastScreen==='saga'&&mode!=='play'&&mode!=='over') showSaga(); else showMaps();}
  else if(m==='council'){showUpgrades();}
  else if(m==='title'){hideModal();paused=false;showTitle();}
  else if(m==='endless'){hideModal();S.over=false;S.endless=true;mode='play';S.waveState='countdown';S.countdown=35;uiDirty=true;}
