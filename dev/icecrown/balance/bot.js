@@ -3,8 +3,10 @@
 // v1.4: always picks the first talent option; wears no boss gear unless the profile passes prog.gear.
 // v1.5: rebalances workers every think (60% gold while the mine lasts), uses Defend, raises the Castle after the Keep,
 // trains a healer per 6 soldiers and a siege engine per 10, buys Forge levels up to 8, then Masterwork with spare gold.
+// v1.6: opts.keepProg keeps the campaign state (campaign profile: heroes carry over, boons); opts.campaign finishes a
+// won battle properly (saves heroes, offers Spoils of War) and takes the first boon offered.
 // Runs inside the game page opened with ?debug (which exposes window.__IC).
-(opts)=>{ const I=__IC; I.PROG_SET(Object.assign({gear:{owned:[],equipped:{}}},opts.prog)); I.startMap(opts.map); I.setStance('defend'); const S=()=>I.S;
+(opts)=>{ const I=__IC; if(!opts.keepProg) I.PROG_SET(Object.assign({gear:{owned:[],equipped:{}}},opts.prog)); I.startMap(opts.map); I.setStance('defend'); const S=()=>I.S;
  const heroOrder=['warrior','mage','ranger'], buildOrder=['barracks','forge','tower','tower'];   // workers cost no food, so farms are built only when food runs short
  let tick=0, log=[], lost=0, minTC=1, prevN=0, minW=null;
  const cost=(c)=>c.gold<=S().res.gold&&(c.lumber||0)<=S().res.lumber;
@@ -37,7 +39,9 @@
   const nb=S().units.filter(u=>u.type!=='worker').length; if(nb<prevN) lost+=prevN-nb; prevN=nb; minTC=Math.min(minTC,S().tc.hp/S().tc.maxHp);
   const nw=S().units.filter(u=>u.type==='worker').length; if(minW!=null||nw>=8) minW=minW==null?nw:Math.min(minW,nw);   // lowest worker count once 8 were reached
   I.tick(1); tick++; if(S().waveState==='idle'&&S().wave===M.waves) break; }
+ const WON=S().wave===M.waves&&!S().over&&S().tc.hp>0;
+ if(opts.campaign){ const w=WON; if(w) I.finish(true); const c=M.campaign; I.pendingBoons(c).forEach(i=>I.pickBoon(c,i,I.campState(c).offered[i].ids[0])); }
  const s=S(), late=Object.entries(s.dmgLog||{}).filter(([n])=>+n>M.waves*2/3&&!M.bosses[+n]).sort((a,b)=>b[1].t-a[1].t)[0];
  if(s.over) log.push(JSON.stringify({b:s.buildings.map(b=>b.type+(b.built?'':'*')),res:[Math.round(s.res.gold),Math.round(s.res.lumber)],w:s.units.filter(u=>u.type==='worker').map(u=>u.job).join(','),h:s.heroes.length,mine:s.mineLeft}));
- return {log,map:M.id,wave:s.wave,of:M.waves,won:s.wave===M.waves&&!s.over&&s.tc.hp>0,tc:Math.round(s.tc.hp/s.tc.maxHp*100),army:s.units.filter(u=>u.type!=='worker').length,heroes:s.heroes.map(h=>h.lvl).join('/'),deaths:s.heroDeaths,lost,minTC:Math.round(minTC*100),min:Math.round(tick*0.05/60),share:late?Math.round(late[1].h/late[1].t*100):null,shareWave:late?+late[0]:null,stuck:s.antiStuck||0,minW,master:s.master||0,castle:!!s.castle};
+ return {log,map:M.id,wave:s.wave,of:M.waves,won:WON,tc:Math.round(s.tc.hp/s.tc.maxHp*100),army:s.units.filter(u=>u.type!=='worker').length,heroes:s.heroes.map(h=>h.lvl).join('/'),deaths:s.heroDeaths,lost,minTC:Math.round(minTC*100),min:Math.round(tick*0.05/60),share:late?Math.round(late[1].h/late[1].t*100):null,shareWave:late?+late[0]:null,stuck:s.antiStuck||0,minW,master:s.master||0,castle:!!s.castle,haz:s.taken?Math.round((s.hazTaken||0)/s.taken*100):0,heroLv:s.heroes.map(h=>h.lvl).join('/')};
 }
