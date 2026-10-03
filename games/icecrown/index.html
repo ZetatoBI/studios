@@ -399,6 +399,7 @@ button{font:inherit;color:inherit;touch-action:manipulation;cursor:pointer;borde
   <div class="races" id="raceRow">
    <button class="race" data-race="kingdom"><svg viewBox="0 0 40 44"><path d="M20 2l17 6v12c0 11-7 18-17 22C10 38 3 31 3 20V8z" fill="#2F6FD0" stroke="#E7C66A" stroke-width="2"/><path d="M20 10l3 7h7l-5.5 4.5 2 7L20 24l-6.5 4.5 2-7L10 17h7z" fill="#F4E3A8"/></svg><b>Kingdom of Aldmere</b><small>Workers carry 15% more gold. Soldiers get +1 armor.</small></button>
    <button class="race" data-race="horde"><svg viewBox="0 0 40 44"><path d="M20 2l17 6v12c0 11-7 18-17 22C10 38 3 31 3 20V8z" fill="#9C2F24" stroke="#D9B26A" stroke-width="2"/><path d="M13 30L27 12M27 30L13 12" stroke="#EDE3CF" stroke-width="3" stroke-linecap="round"/><path d="M24 11c3-2 6-1 7 1-2 0-4 1-5 3zM16 11c-3-2-6-1-7 1 2 0 4 1 5 3z" fill="#EDE3CF"/></svg><b>Grukash Horde</b><small>Workers carry 20% more lumber. Soldiers hit 12% harder and regenerate.</small></button>
+   <button class="race" data-race="dwarf" hidden><svg viewBox="0 0 40 44"><path d="M20 2l17 6v12c0 11-7 18-17 22C10 38 3 31 3 20V8z" fill="#5E6670" stroke="#E3B341" stroke-width="2"/><path d="M11 15h18v5H11zM18 20h4v12h-4z" fill="#E3B341"/><path d="M12 27h16" stroke="#6FF0FF" stroke-width="1.5"/></svg><b>Ironhold Dwarves</b><small>Buildings +25% health, towers +15% range. Soldiers +2 armor, 10% slower.</small></button>
   </div>
   <div class="mlist" id="mapList"></div>
  </div>
@@ -454,7 +455,12 @@ const RACES={
   perks:{goldMul:1,lumberMul:1.2,armor:0,dmgMul:1.12,regen:1.2},
   pal:{wall:'#8A6A48',wallD:'#5C4330',roof:'#8E3B2A',roofD:'#62271C',trim:'#D9B26A',banner:'#B8322A',body:'#9C3A2C',bodyD:'#63231A',skin:'#7FA35A',hood:'#5B3A2A'},
   names:{worker:'Peon',melee:'Grunt',ranged:'Axe Thrower',heavy:'Raider',healer:'Witch Doctor',siege:'Catapult'},
-  heroNames:{warrior:'Thrakk',mage:'Mogra',ranger:'Vashka'}}
+  heroNames:{warrior:'Thrakk',mage:'Mogra',ranger:'Vashka'}},
+ dwarf:{id:'dwarf',name:'Ironhold Dwarves',dwarf:true,shot:'shot',
+  perks:{goldMul:1.1,lumberMul:1,armor:2,dmgMul:1,regen:0,bldHp:1.25,towerRange:1.15,speedMul:.9},
+  pal:{wall:'#5E6670',wallD:'#3B4048',roof:'#B8743A',roofD:'#8A5426',trim:'#E3B341',banner:'#B8322A',body:'#7A6A55',bodyD:'#4A3E32',skin:'#E8B894',hood:'#5A4A3A',rune:'#6FF0FF'},
+  names:{worker:'Miner',melee:'Shieldbearer',ranged:'Thunderer',heavy:'Ironclad',healer:'Runepriest',siege:'Bombard'},
+  heroNames:{warrior:'Thane Borin',mage:'Runesmith Hilda',ranger:'Kara Ironshot'}}
 };
 
 const BUILDINGS={
@@ -789,8 +795,8 @@ function newGame(race,mi){
 }
 
 function makeBuilding(type,x,y,plot,built){
- const d=BUILDINGS[type];
- return {id:uid++,kind:'b',type,x,y,plot,r:d.r,h:d.h,team:'p',hp:built?d.hp:d.hp*.2,maxHp:d.hp,armor:d.armor,
+ const d=BUILDINGS[type], bm=(S&&S.R&&S.R.perks.bldHp)||1;
+ return {id:uid++,kind:'b',type,x,y,plot,r:d.r,h:d.h,team:'p',hp:(built?d.hp:d.hp*.2)*bm,maxHp:d.hp*bm,armor:d.armor,
   built,prog:built?1:0,time:d.time||1,queue:[],atkT:rnd(0,1),buffs:{},flash:0,upg:null,smokeT:0,dead:false};
 }
 function makeUnit(type,x,y){
@@ -798,6 +804,7 @@ function makeUnit(type,x,y){
  const u={id:uid++,kind:'u',type,x,y,r:d.r,s:d.s,team:'p',range:d.range,cd:d.cd,atkT:rnd(0,.5),speed:d.speed,food:d.food,
   buffs:{},walk:rnd(0,6),face:1,atk:0,flash:0,target:null,retarget:0,anchor:null,hp:0,maxHp:0,dead:false,moving:false};
  if(type==='worker'){u.job='idle';u.st='idle';u.carry=0;u.carryType=null;u.wt=0;u.tree=null;u.hidden=false;u.idleSpot={x:TCPOS.x+rnd(-50,50),y:TCPOS.y+rnd(14,30)};}
+ if(type!=='worker') u.speed*=S.R.perks.speedMul||1;
  applyStats(u); u.hp=u.maxHp; return u;
 }
 function makeHero(cls,x,y){
@@ -933,8 +940,8 @@ function grantXP(h,xp){
  }
 }
 function projKind(a){
- if(a.kind==='u'){ const p=UNITS[a.type].proj; return p?(typeof p==='string'?p:(S.race==='horde'?'axe':'arrow')):null; }
- if(a.kind==='h') return HEROES[a.cls].proj||null;
+ if(a.kind==='u'){ const p=UNITS[a.type].proj; return p?(typeof p==='string'?p:(S.R.shot||(S.race==='horde'?'axe':'arrow'))):null; }
+ if(a.kind==='h') return a.cls==='ranger'&&S.R.shot?S.R.shot:HEROES[a.cls].proj||null;
  if(a.kind==='e') return a.proj||null;
  return 'arrow';
 }
@@ -944,8 +951,9 @@ function attack(a,t){
  if(pk){
   const hy=(a.kind==='b'?a.h*.7:(a.fly?40:14*(a.s||1)));
   const sg=pk==='stone';
-  S.proj.push({type:pk,x:a.x+(a.face||1)*6,y:a.y-hy,t,src:a,dmg:dmgOf(a),spd:pk==='bolt'?300:pk==='shard'?260:sg?210:360,aoe:pk==='shard'?30:sg?UNITS.siege.aoe:0,team:a.team,arc:sg?1:0,sx:a.x,sy:a.y-hy});
-  sfx(pk==='bolt'?'bolt':pk==='shard'?'frost':'arrow');
+  if(pk==='shot'||(sg&&S.race==='dwarf'&&a.kind==='u')){ const mx=a.x+(a.face||1)*(sg?20:16), my=a.y-hy-(sg?6:1); for(let i=0;i<5;i++) part(mx,my,(a.face||1)*rnd(20,70),rnd(-20,20),i%2?'#FFE08A':'#FF9A3A',rnd(1.5,2.6),.18,0); smoke(mx,my-2,rnd(3,5)); }
+  S.proj.push({type:pk,x:a.x+(a.face||1)*6,y:a.y-hy,t,src:a,dmg:dmgOf(a),spd:pk==='bolt'?300:pk==='shard'?260:sg?210:pk==='shot'?620:360,aoe:pk==='shard'?30:sg?UNITS.siege.aoe:0,team:a.team,arc:sg?1:0,sx:a.x,sy:a.y-hy});
+  sfx(pk==='bolt'?'bolt':pk==='shard'?'frost':pk==='shot'?'crack':sg&&S.race==='dwarf'?'boom':'arrow');
  }else{
   hit(a,t,dmgOf(a));
   const hx=(a.x+t.x)/2, hy=(a.y+t.y)/2-10;
@@ -1240,10 +1248,10 @@ function update(dt){
    else { S.keep=true; b.maxHp+=KEEP_UPGRADE.hp; b.hp+=KEEP_UPGRADE.hp; b.h=132; banner('Keep raised','Elite units, healers and forge levels 4-5 unlocked'); } }}
   if(b.queue.length){const q=b.queue[0]; q.t+=dt; if(q.t>=q.time){b.queue.shift(); spawnFrom(b,q); uiDirty=true;}}
   const sh=BUILDINGS[b.type].shoots;
-  if(sh){b.atkT-=dt; if(b.atkT<=0){const sp=b.spec&&TOWER_SPECS[b.spec], rng=(sp?sp.range:sh.range)*(b.type==='tower'&&hasBoon('eagle')?1+BOONS.eagle.range:1), t=pickEnemy(b,sp&&sp.pierce?'strongest':'nearest',rng);
+  if(sh){b.atkT-=dt; if(b.atkT<=0){const sp=b.spec&&TOWER_SPECS[b.spec], rng=(sp?sp.range:sh.range)*(b.type==='tower'&&hasBoon('eagle')?1+BOONS.eagle.range:1)*(b.type==='tower'?S.R.perks.towerRange||1:1), t=pickEnemy(b,sp&&sp.pierce?'strongest':'nearest',rng);
    if(t){ if(sp){ b.atkT=sp.cd; S.proj.push({type:sp.proj,x:b.x,y:b.y-b.h*.75,t,src:b,dmg:sp.dmg*(1+.1*S.forge.weapons),spd:sp.proj==='shard'?340:640,team:'p',slowM:sp.slow||0,pure:sp.pierce||0}); sfx(sp.slow?'frost':'snipe'); }
     else { b.atkT=sh.cd; b.dmg=b===S.tc&&S.castle?CASTLE_UPGRADE.shootDmg:(b===S.tc&&S.keep)?KEEP_UPGRADE.shootDmg:sh.dmg; if(b===S.tc&&hasBoon('walls')) b.dmg*=1+BOONS.walls.dmg; b.face=1; attack(b,t);} } else b.atkT=.3;}}
-  if(b.type==='forge'){b.smokeT-=dt; if(b.smokeT<=0){b.smokeT=.35; smoke(b.x+13,b.y-58,rnd(4,6));}}
+  if(b.type==='forge'){b.smokeT-=dt; if(b.smokeT<=0){b.smokeT=.35; smoke(b.x+13,b.y-58,rnd(4,6)); if(S.race==='dwarf') for(let q=0;q<3;q++) part(b.x+13+rnd(-3,3),b.y-60,rnd(-12,12),rnd(-60,-30),Math.random()<.5?'#FFB24A':'#FF6A2A',rnd(1.2,2),.8,-8);}}
   if(b.hp<b.maxHp*.5&&Math.random()<dt*2) smoke(b.x+rnd(-b.r*.6,b.r*.6),b.y-b.h*.5,rnd(5,9));
  }
  // units
@@ -1824,6 +1832,8 @@ function drawBuildingShape(c,type,P,horde,keep,t,spec){
   flag(c,0,-80,P.banner,t); }
  }
 }
+function runeLines(c,type,P,t){ if(!P.rune) return; const W={townhall:40,farm:16,barracks:34,forge:24,tower:10}[type]||20, y={townhall:-12,farm:-4,barracks:-8,forge:-8,tower:-24}[type]||-6, a=.55+Math.sin((t||0)*2+W)*.25;
+ c.save(); c.lineCap='round'; c.strokeStyle=`rgba(111,240,255,${a*.35})`; c.lineWidth=3.4; const path=()=>{ c.beginPath(); c.moveTo(-W,y); c.lineTo(W,y); for(let k=-W+5;k<W-4;k+=9){ c.moveTo(k,y); c.lineTo(k+2.5,y-3.5); c.lineTo(k+5,y); } }; path(); c.stroke(); c.strokeStyle=`rgba(190,250,255,${a})`; c.lineWidth=1.1; path(); c.stroke(); c.restore(); }
 function drawBuilding(c,b){
  const P=S.R.pal, horde=S.race==='horde', t=S.time, keep=b===S.tc?(S.castle?2:S.keep?1:0):0;
  c.save(); c.translate(b.x,b.y);
@@ -1833,7 +1843,7 @@ function drawBuilding(c,b){
   drawBuildingShape(c,b.type,P,horde,false,t,b.spec); c.restore();
   c.strokeStyle='#8B6A45'; c.lineWidth=1.6; c.beginPath();
   const w=b.r*.9, hh=b.h*.9; c.moveTo(-w,0); c.lineTo(-w,-hh); c.moveTo(w,0); c.lineTo(w,-hh); c.moveTo(-w,-hh*.5); c.lineTo(w,-hh*.5); c.moveTo(-w,-hh); c.lineTo(w,-hh*.5); c.stroke();
- }else drawBuildingShape(c,b.type,P,horde,keep,t,b.spec);
+ }else { drawBuildingShape(c,b.type,P,horde,keep,t,b.spec); runeLines(c,b.type,P,t); }
  if(b.flash>0){c.globalAlpha=b.flash*3; c.fillStyle='rgba(255,255,255,.35)'; ell(c,0,-b.h*.35,b.r,b.h*.35); c.globalAlpha=1;}
  c.restore();
 }
@@ -1858,7 +1868,7 @@ function drawFigure(c,o){
  const s=o.s||1, w=o.walk||0, mv=o.moving, atk=o.atk||0;
  c.save(); c.translate(o.x,o.y);
  c.fillStyle='rgba(20,40,70,.25)'; ell(c,0,0,7*s,2.6*s);
- c.scale(o.face||1,1);
+ c.scale(o.face||1,1); if(o.dwarf) c.scale(1.15,.9);   // dwarves: shorter and stockier
  const stride=mv?Math.sin(w)*3*s:0, bob=mv?Math.abs(Math.cos(w))*1.2*s:0;
  if(!o.robe){c.strokeStyle=o.leg||'#3a2d22'; c.lineWidth=2.4*s; c.lineCap='round'; c.beginPath(); c.moveTo(-2*s,-6*s-bob); c.lineTo(-2*s+stride,0); c.moveTo(2*s,-6*s-bob); c.lineTo(2*s-stride,0); c.stroke();}
  c.translate(0,-bob);
@@ -1889,12 +1899,21 @@ function drawFigure(c,o){
   case 'bare': c.fillStyle='#2A1E15'; c.beginPath(); c.arc(hx-.8*s,hy-1*s,hr*.95,Math.PI*.9,Math.PI*1.8); c.fill(); break;
  }
  if(o.head!=='skull'){c.fillStyle=o.eye||'#1b1410'; c.fillRect(hx+2*s,hy-.8*s,1.1*s,1.3*s);}
+ if(o.horns2){ c.fillStyle='#EDE3CF'; poly(c,[[hx-3.6*s,hy-2.4*s],[hx-6.4*s,hy-6.6*s],[hx-2.2*s,hy-3.8*s]]); c.fill(); poly(c,[[hx+3.8*s,hy-2.4*s],[hx+6*s,hy-7*s],[hx+2*s,hy-3.8*s]]); c.fill(); }
+ if(o.crest){ c.fillStyle=o.crest; c.fillRect(hx-.8*s,hy-8*s,1.8*s,4.6*s); }
+ if(o.beard){ c.fillStyle=o.beard; c.beginPath(); c.moveTo(hx-2.4*s,hy+.6*s); c.lineTo(hx+4.6*s,hy+.6*s); c.lineTo(hx+3.2*s,hy+6.5*s); c.lineTo(hx+1.4*s,hy+10.5*s); c.lineTo(hx-.4*s,hy+6.4*s); c.closePath(); c.fill();
+  c.fillStyle='rgba(255,215,130,.85)'; c.fillRect(hx+.6*s,hy+6.4*s,1.8*s,.9*s); c.fillRect(hx+.9*s,hy+8.4*s,1.3*s,.8*s); }
+ if(o.braids){ c.fillStyle=o.braids; c.fillRect(hx-3.4*s,hy-1*s,1.6*s,8*s); c.fillRect(hx+3.6*s,hy-1*s,1.6*s,7*s); }
  // weapon arm
  if(o.weapon==='bow'){
   const pull=atk>0?atk*3*s:0;
   c.strokeStyle='#6B4A2B'; c.lineWidth=1.6*s; c.beginPath(); c.arc(4*s,-13*s,7*s,-1.2,1.2); c.stroke();
   c.strokeStyle='rgba(240,240,240,.8)'; c.lineWidth=.6*s; c.beginPath(); c.moveTo(4*s+Math.cos(-1.2)*7*s,-13*s+Math.sin(-1.2)*7*s); c.lineTo(4*s-pull,-13*s); c.lineTo(4*s+Math.cos(1.2)*7*s,-13*s+Math.sin(1.2)*7*s); c.stroke();
   c.strokeStyle=o.skin; c.lineWidth=2.2*s; c.beginPath(); c.moveTo(2*s,-13*s); c.lineTo(9*s,-13*s); c.stroke();
+ }else if(o.weapon==='gun'){ // long dwarven handgun
+  c.strokeStyle='#5A3E27'; c.lineWidth=2.6*s; c.lineCap='round'; c.beginPath(); c.moveTo(-2*s,-11*s); c.lineTo(4*s,-13*s); c.stroke();
+  c.strokeStyle='#8A929C'; c.lineWidth=1.7*s; c.beginPath(); c.moveTo(4*s,-13.4*s); c.lineTo(17*s-atk*2*s,-14.6*s); c.stroke(); c.fillStyle='#C8923A'; c.fillRect(6*s,-14.6*s,1.4*s,2.2*s);
+  c.strokeStyle=o.skin; c.lineWidth=2.2*s; c.beginPath(); c.moveTo(1*s,-12*s); c.lineTo(7*s,-13*s); c.stroke();
  }else if(o.weapon==='staff'){
   c.strokeStyle='#5A3E27'; c.lineWidth=1.8*s; c.beginPath(); c.moveTo(6*s,1*s); c.lineTo(6*s,-27*s); c.stroke();
   const gl=.6+atk*.4+Math.sin(S.time*5)*.1; const gr=c.createRadialGradient(6*s,-29*s,0,6*s,-29*s,6*s);
@@ -1910,7 +1929,17 @@ function drawFigure(c,o){
  if(o.flash>0){c.globalAlpha=Math.min(1,o.flash*5)*.6; c.fillStyle='#fff'; ell(c,0,-12*s,6*s,11*s); c.globalAlpha=1;}
  c.restore();
 }
-function unitLook(u){
+const BEARDS=['#7A4A22','#B5482A','#9AA0A6'];
+function dwarfLook(o,type,id){ o.dwarf=true; o.beard=BEARDS[(id||0)%3]; const P=RACES.dwarf.pal;
+ switch(type){
+  case 'worker': return {...o,head:'cap',hood:'#8A6A3A',body:'#6B5A48'};
+  case 'melee': return {...o,head:'helm',helm:'#C8923A',horns2:true,weapon:'axe',shield:P.banner};
+  case 'ranged': return {...o,head:'helm',helm:'#9AA3AD',crest:'#B8322A',body:'#5E6670',weapon:'gun'};
+  case 'heavy': return {...o,head:'helm',helm:'#B7BCC4',horns2:true,weapon:'great',shield:null,cape:P.banner,pads:true,padCol:'#C8923A'};
+  case 'healer': return {...o,head:'hood',hood:'#3E4A5A',body:'#4A5868',bodyD:'#344050',robe:true,weapon:'staff',orb:'#9FF6FF',orbFade:'rgba(110,240,255,0)',beard:'#C9CED4',cape:'#2E3A48'};
+ } return o; }
+function unitLook(u){ const o=unitLook0(u); return S.race==='dwarf'?dwarfLook(o,u.type,u.id):o; }
+function unitLook0(u){
  const P=S.R.pal, horde=S.race==='horde', F=S.forge, metal=METALS[F.weapons], armorMetal=METALS[F.armor];
  const base={x:u.x,y:u.y,face:u.face,walk:u.walk,moving:u.moving,atk:u.atk,skin:P.skin,body:P.body,trim:P.trim,flash:u.flash,metal,s:u.s};
  switch(u.type){
@@ -1925,6 +1954,10 @@ function unitLook(u){
 function heroLook(h,o){
  const P=S.R.pal, horde=S.race==='horde', metal=METALS[S.forge.weapons];
  const base={x:h.x,y:h.y,face:h.face,walk:h.walk,moving:h.moving,atk:h.atk,skin:P.skin,trim:'#E7C66A',flash:h.flash,s:HEROES[h.cls].s,metal,...(o||{})};
+ if(S.race==='dwarf'){ const D={...base,dwarf:true};
+  if(h.cls==='warrior') return {...D,body:'#7A3A2A',head:'helm',helm:'#E3B341',horns2:true,beard:'#B5482A',weapon:'great',shield:'#5E6670',cape:'#B8322A',pads:true,padCol:'#E3B341'};
+  if(h.cls==='mage') return {...D,body:'#3E4A5A',bodyD:'#2A3442',head:'hood',hood:'#6B4A2B',braids:'#C8783A',robe:true,weapon:'staff',orb:'#9FF6FF',orbFade:'rgba(110,240,255,0)',cape:'#2E5A6B'};
+  return {...D,body:'#5A4A3A',head:'helm',helm:'#9AA3AD',braids:'#3A2A1E',weapon:'gun',cape:'#4A5A3A'}; }
  if(h.cls==='warrior') return {...base,body:horde?'#7A2A20':'#2E5AA8',head:horde?'horns':'helm',helm:'#DDE3EA',weapon:'great',shield:horde?null:'#E7C66A',cape:P.banner,pads:true,padCol:'#E7C66A'};
  if(h.cls==='mage') return {...base,body:horde?'#4A3A2A':'#4A3D9A',bodyD:horde?'#33281C':'#2F2770',head:horde?'hood':'hat',hood:'#3A2A1E',hat:'#2F2770',robe:true,weapon:'staff',orb:'#FFE0A8',cape:horde?'#6B2A20':'#6A5BC8'};
  return {...base,body:'#3E6B45',head:'hood',hood:horde?'#4A3A22':'#2F5A3A',weapon:'bow',cape:'#2E4A33'};
@@ -1945,8 +1978,14 @@ function enemyLook(e){
 }
 const WOLF_PAL={leg:'#8A99A8',tail:'#DCE6EE',body:'#E4ECF2',back:'#A9B8C6',eye:'#4FB8FF'};
 const PET_PAL={leg:'#5E5044',tail:'#A08C74',body:'#8F7C66',back:'#6B5B49',eye:'#1E1A16',collar:'#2F7FD6'};   // Pack Leader wolves: grey-brown, blue collar
-function drawSiege(c,o,horde){ // Trebuchet (Kingdom) / Catapult (Horde): a wooden engine whose arm flings on attack
+function drawSiege(c,o,horde){ // Trebuchet (Kingdom) / Catapult (Horde): a wooden engine whose arm flings on attack; Bombard (Dwarves): a cannon
  const s=o.s||1, a=o.atk||0; c.save(); c.translate(o.x,o.y); c.fillStyle='rgba(20,40,70,.25)'; ell(c,0,0,16*s,4*s); c.scale(o.face||1,1);
+ if(S&&S.race==='dwarf'){ const rc=-a*3*s; c.fillStyle='#6B4A2B'; poly(c,[[-14*s,-4*s],[8*s,-4*s],[4*s,-11*s],[-10*s,-11*s]]); c.fill(); c.fillStyle='#8A6A45'; c.fillRect(-14*s,-5*s,22*s,1.5*s);
+  [-8,4].forEach(wx=>{ c.fillStyle='#3A2A1E'; ell(c,wx*s,-2*s,4.4*s,4.4*s); c.fillStyle='#9A7A55'; ell(c,wx*s,-2*s,1.5*s,1.5*s); });
+  c.save(); c.translate(rc,-13*s); c.rotate(-.22); c.fillStyle=lg(c,0,-5*s,0,5*s,'#E8B860','#9A6A26'); rr(c,-8*s,-4.6*s,26*s,9.2*s,4*s); c.fill();
+  c.fillStyle='#7A5420'; c.fillRect(-4*s,-5*s,2*s,10*s); c.fillRect(8*s,-5*s,2*s,10*s); c.fillStyle='#C8923A'; ell(c,18*s,0,2.8*s,5.4*s); c.fillStyle='#1E1A16'; ell(c,18.6*s,0,1.5*s,3*s); c.restore();
+  if(o.flash>0){c.globalAlpha=Math.min(1,o.flash*5)*.5; c.fillStyle='#fff'; ell(c,0,-10*s,15*s,10*s); c.globalAlpha=1;}
+  c.restore(); return; }
  c.fillStyle='#6B4A2B'; rr(c,-15*s,-8*s,30*s,6*s,2*s); c.fill(); c.fillStyle='#8A6A45'; c.fillRect(-15*s,-8*s,30*s,1.6*s);
  [-10,10].forEach(wx=>{ c.fillStyle='#3A2A1E'; ell(c,wx*s,-1.5*s,3.6*s,3.6*s); c.fillStyle='#9A7A55'; ell(c,wx*s,-1.5*s,1.3*s,1.3*s); });
  if(!horde){ c.strokeStyle='#7A5634'; c.lineWidth=2.4*s; c.beginPath(); c.moveTo(-9*s,-8*s); c.lineTo(0,-27*s); c.lineTo(9*s,-8*s); c.stroke();
@@ -2075,6 +2114,7 @@ function draw(){
   else if(p.type==='axe'){c.rotate(t*18); c.fillStyle='#6B4A2B'; c.fillRect(-4,-.8,8,1.6); c.fillStyle='#C8CFD8'; poly(c,[[2,-1],[5,-4],[6,1]]); c.fill();}
   else if(p.type==='bolt'){const g=c.createRadialGradient(0,0,0,0,0,7); g.addColorStop(0,'#FFFFFF'); g.addColorStop(.4,'#B9A4FF'); g.addColorStop(1,'rgba(150,120,255,0)'); c.fillStyle=g; ell(c,0,0,7,7);}
   else if(p.type==='fireball'){const g=c.createRadialGradient(0,0,0,0,0,11); g.addColorStop(0,'#FFF4C0'); g.addColorStop(.35,'#FFB24A'); g.addColorStop(1,'rgba(255,90,30,0)'); c.fillStyle=g; ell(c,0,0,11,11);}
+  else if(p.type==='shot'){c.strokeStyle='rgba(255,224,138,.85)'; c.lineWidth=1.6; c.beginPath(); c.moveTo(-9,0); c.lineTo(2,0); c.stroke(); c.fillStyle='#3A3A3A'; ell(c,2,0,1.4,1.4);}
   else if(p.type==='shard'){c.fillStyle='#DDF4FF'; poly(c,[[-7,-2],[7,0],[-7,2]]); c.fill();}
   else if(p.type==='stone'){ c.rotate(-(p.ang||0)); const D=Math.hypot((p.tx||p.x)-p.sx,(p.ty||p.y)-p.sy)+Math.hypot(p.x-p.sx,p.y-p.sy)||1, k=clamp(Math.hypot(p.x-p.sx,p.y-p.sy)/D,0,1), lift=Math.sin(k*Math.PI)*Math.min(70,D*.35);
    c.fillStyle='rgba(20,40,70,.2)'; ell(c,0,lift*.1+2,4,1.6); c.fillStyle='#8A929C'; ell(c,0,-lift,4.4,4); c.fillStyle='#B7BEC6'; ell(c,-1.2,-lift-1.2,1.8,1.6); }
@@ -2224,6 +2264,7 @@ function sfx(n){
   case 'mark': tone(880,.12,'square',.03); tone(1318,.12,'square',.03,.08); break;
   case 'volley': for(let i=0;i<5;i++) nz(.1,.04,2400,i*.05,2,900); break;
   case 'thud': nz(.05,.05,400,0,1); break;
+  case 'crack': nz(.05,.16,2600,0,1.2,600); tone(220,.08,'square',.04,0,.4); break;
   case 'snipe': nz(.08,.1,3000,0,3); tone(1400,.2,'sine',.05,0,.4); break;
   case 'slam': tone(55,.5,'sine',.2,0,.5); nz(.4,.2,200,0,.8,60); break;
   case 'breath': nz(.9,.14,3000,0,.8,600); break;
@@ -2718,7 +2759,7 @@ function mapPreview(i,W,H){
  const rc=raceFor(i), P=RACES[rc].pal, items=[];
  const Wd=M.woods, r3=mulberry(11+i*7); for(let q=0;q<Wd.n;q++){const x=Wd.x0+r3()*(Wd.x1-Wd.x0), y=Wd.y0+r3()*(Wd.y1-Wd.y0); items.push([y,()=>drawPine(g,x,y,1,0,false)]);}
  items.push([MINE.y,()=>drawMine(g,0)]);
- items.push([M.tc.y,()=>{g.save(); g.translate(M.tc.x,M.tc.y); drawBuildingShape(g,'townhall',P,rc==='horde',false,0,null,rc); g.restore();}]);
+ items.push([M.tc.y,()=>{g.save(); g.translate(M.tc.x,M.tc.y); drawBuildingShape(g,'townhall',P,rc==='horde',false,0,null); runeLines(g,'townhall',P,0); g.restore();}]);
  THEMES[M.id].fires.forEach(([fx,fy])=>items.push([fy,()=>drawFire(g,fx,fy,0)]));
  items.sort((a,b)=>a[0]-b[0]).forEach(a=>a[1]());
  drawPortal(g,0,true);
@@ -2906,7 +2947,7 @@ function frame(now){
 new ResizeObserver(()=>resize()).observe(stage);
 resize(); newGame(chosenRace);
 requestAnimationFrame(frame);
-if(/[?&]debug/.test(location.search)) window.__IC={saveRun,restoreRun,specTower,snapshot,clearW:()=>{for(const k in WCACHE) delete WCACHE[k];},trainUnit,trainWorker,forgeUp,upgradeKeep,setJob,setStance,foodCap,foodUsed,waveDef,genWave,MAPS,PROG_SET:p=>{PROG=normProg(p);},startMap,showMaps,get PROG(){return PROG;},tick:n=>{for(let i=0;i<n;i++)update(.05);},get S(){return S;},startWave,tryBuild,recruitHero,assignWorker,setMode:m=>mode=m,pickBoon,boonOffer,campState,pendingBoons,campMaps,moveArmy,refreshFormation,upgradeCastle,buyMasterwork,forgeCost,masterCost,reseed:n=>{Math.random=mulberry(n);},showChronicle,talentPending,pickTalent,TALENTS,grantXP,GEAR,equipGear,showArmory};
+if(/[?&]debug/.test(location.search)) window.__IC={saveRun,restoreRun,specTower,snapshot,clearW:()=>{for(const k in WCACHE) delete WCACHE[k];},trainUnit,trainWorker,forgeUp,upgradeKeep,setJob,setStance,foodCap,foodUsed,waveDef,genWave,MAPS,PROG_SET:p=>{PROG=normProg(p);},startMap,showMaps,get PROG(){return PROG;},tick:n=>{for(let i=0;i<n;i++)update(.05);},get S(){return S;},startWave,tryBuild,recruitHero,assignWorker,setMode:m=>mode=m,setRace:r=>{chosenRace=r;},pickBoon,boonOffer,campState,pendingBoons,campMaps,moveArmy,refreshFormation,upgradeCastle,buyMasterwork,forgeCost,masterCost,reseed:n=>{Math.random=mulberry(n);},showChronicle,talentPending,pickTalent,TALENTS,grantXP,GEAR,equipGear,showArmory};
 })();
 </script>
 <script>
