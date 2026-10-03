@@ -669,7 +669,33 @@ const MAPS=[
   portal:{x:210,y:60},tc:{x:210,y:492},mine:{x:46,y:470},woods:{x0:356,x1:412,y0:420,y1:552,n:10},rally:{x:210,y:330},
   plots:[{x:104,y:398},{x:316,y:398},{x:122,y:540},{x:298,y:542},{x:54,y:318},{x:366,y:318},{x:120,y:296},{x:300,y:296}],
   road:[[210,60],[150,150],[268,250],[160,350],[210,450]],
-  list:[[['skeleton',6],['wolf',4]],[['gobArcher',6],['skeleton',4]],[['troll',2],['goblin',8]],[['trollKing',1],['wolf',6]],[['skeleton',10],['gobArcher',6]],[['troll',3],['wolf',10]],[['skeleton',12],['troll',2]],[['giant',1],['goblin',10]],[['gobArcher',10],['skeleton',10]],[['wyrm',1],['troll',3]],[['skeleton',14],['troll',4],['gobArcher',8]],[['lich',1],['skeleton',10],['troll',2]]]}
+  list:[[['skeleton',6],['wolf',4]],[['gobArcher',6],['skeleton',4]],[['troll',2],['goblin',8]],[['trollKing',1],['wolf',6]],[['skeleton',10],['gobArcher',6]],[['troll',3],['wolf',10]],[['skeleton',12],['troll',2]],[['giant',1],['goblin',10]],[['gobArcher',10],['skeleton',10]],[['wyrm',1],['troll',3]],[['skeleton',14],['troll',4],['gobArcher',8]],[['lich',1],['skeleton',10],['troll',2]]]},
+ // ---- Campaign 2: The Ember Deep (Ironhold Dwarves against the Ember Legion) ----
+ {id:'emberfall',campaign:'c2',faction:'ember',tier:'Iron',name:'Emberfall Gate',need:0,waves:12,hp:.85,dmg:.85,mod:null,mineGold:0,seed:5,b0:4.5,bg:.34,gm:7.5,hm:2.1,lateK:.9,themes:['emberPack','swarm','emberMixed','ash'],unlock:{slinger:2,ashwalker:4,golem:7,flamecaller:6,obsknight:99},bosses:{12:'pyrrhus'},
+  story:'Ironhold\u2019s outer gate. A river of lava crosses the valley under a single stone bridge, and the imps are pouring out of the rift.',
+  twist:'A gentle start. The mine never runs dry.',
+  portal:{x:210,y:62},tc:{x:210,y:480},mine:{x:48,y:458},woods:{x0:352,x1:412,y0:404,y1:552,n:11},rally:{x:210,y:330},
+  plots:[{x:106,y:386},{x:316,y:386},{x:126,y:534},{x:290,y:536},{x:56,y:318},{x:366,y:318},{x:120,y:290},{x:300,y:290}],
+  road:[[210,62],[200,150],[214,226],[204,320],[210,440]]},
+ {id:'forges',campaign:'c2',faction:'ember',tier:'Bronze',name:'The Deep Forges',need:2,waves:16,hp:1,dmg:1,mod:null,mineGold:0,seed:6,b0:5,bg:.36,gm:9,hm:2.7,lateK:1.2,themes:['swarm','ash','emberPack','magma','emberMixed'],unlock:{slinger:1,ashwalker:3,golem:5,flamecaller:4,obsknight:11},bosses:{8:'pyrrhus',16:'gorgath'},
+  story:'The great forge hall of Ironhold, cut into the mountain. Lava runs along both walls and the floor itself is cracking open.',
+  twist:'Lumber is scarce: only a small fungus grove.',hazard:'vents',hazardShort:'Lava vents every 45s',hazardText:'Lava vents erupt every 45 seconds. When they glow, get clear.',
+  vents:[{x:160,y:250},{x:262,y:250},{x:210,y:370},{x:110,y:450},{x:322,y:430}],
+  portal:{x:210,y:60},tc:{x:210,y:488},mine:{x:356,y:472},woods:{x0:34,x1:80,y0:470,y1:548,n:5},rally:{x:210,y:320},
+  plots:[{x:128,y:392},{x:292,y:392},{x:118,y:536},{x:290,y:540},{x:112,y:304},{x:308,y:300},{x:150,y:190},{x:270,y:190}],
+  road:[[210,60],[230,150],[190,250],[226,350],[210,446]]},
+ {id:'ashen',campaign:'c2',faction:'ember',tier:'Silver',name:'The Ashen Halls',need:5,waves:20,hp:1.1,dmg:1.05,mod:null,mineGold:7000,seed:7,b0:5,bg:.38,gm:6.8,hm:2.7,lateK:1.4,themes:['emberPack','swarm','magma','ash','emberMixed'],unlock:{slinger:2,ashwalker:3,golem:4,flamecaller:5,obsknight:9},bosses:{10:'gorgath',20:'ashgar'},
+  story:'Long halls under the mountain, lit only by lava. The road winds between pillars of black glass, and the air is thick with ash.',
+  twist:'Gold is scarce: the seam holds 7,000.',hazard:'ash',hazardShort:'Ash storms',hazardText:'Ash storms roll through every minute: ranged units and towers see 25% less far.',
+  portal:{x:90,y:62},tc:{x:250,y:488},mine:{x:60,y:470},woods:{x0:340,x1:410,y0:120,y1:280,n:12},rally:{x:220,y:340},
+  plots:[{x:130,y:410},{x:350,y:330},{x:150,y:535},{x:345,y:525},{x:185,y:340},{x:300,y:210},{x:62,y:342},{x:212,y:410}],
+  road:[[90,62],[160,140],[110,230],[230,290],[280,380],[250,446]]},
+ {id:'heart',campaign:'c2',faction:'ember',tier:'Gold',name:'Heart of the Mountain',need:8,waves:24,hp:1.22,dmg:1.12,mod:null,mineGold:14000,seed:8,b0:5.5,bg:.4,gm:3.2,hm:1.98,lateK:1.3,themes:['ash','magma','swarm','emberPack','emberMixed','ash'],unlock:{slinger:1,ashwalker:1,golem:3,flamecaller:3,obsknight:6},bosses:{8:'pyrrhus',14:'gorgath',19:'ashgar',24:'kragmor'},
+  story:'The volcano\u2019s core, a ring of rock in a sea of lava. Kragmor waits at the heart, and the mountain answers him.',
+  twist:'Every boss of the Deep returns for the last stand.',hazard:'erupt',hazardShort:'Eruptions',hazardText:'Every fifth wave, and whenever Kragmor calls it, the mountain erupts: watch for red circles.',
+  portal:{x:210,y:60},tc:{x:210,y:490},mine:{x:64,y:470},woods:{x0:356,x1:412,y0:400,y1:550,n:10},rally:{x:210,y:330},
+  plots:[{x:104,y:398},{x:316,y:398},{x:122,y:540},{x:298,y:542},{x:60,y:318},{x:362,y:318},{x:120,y:296},{x:300,y:296}],
+  road:[[210,60],[150,150],[268,250],[160,350],[210,450]]}
 ];
 /* ---------- SAGA: The Shattered Crown (four campaigns) ---------- */
 const CAMPAIGNS=[
@@ -693,8 +719,8 @@ const THEMES={
  // Campaign 2: the volcanic look (lava rivers are polylines in world units)
  emberfall:{g0:'#3A3532',g1:'#4E4742',light:'day',volcanic:true,fires:[[264,460]],lava:[[[-20,226],[90,214],[180,232],[260,220],[340,236],[440,222]]],bridge:1},
  forges:{g0:'#34302E',g1:'#48403C',light:'day',volcanic:true,fires:[[150,470],[270,470]],lava:[[[-20,150],[60,170],[90,240],[60,320],[-20,350]],[[440,140],[372,180],[360,260],[392,330],[440,350]]]},
- ashen:{g0:'#2E2B2A',g1:'#3E3936',light:'night',volcanic:true,fires:[[200,470],[320,470]],lava:[[[440,60],[380,120],[400,200],[440,240]],[[-20,420],[30,440],[40,520],[-20,580]]]},
- heart:{g0:'#2A2422',g1:'#3A302C',light:'night',volcanic:true,fires:[[140,476],[282,476]],lava:[[[-20,90],[60,110],[40,220],[-20,260]],[[440,100],[360,130],[380,240],[440,270]],[[-20,560],[120,548],[300,552],[440,560]]]}
+ ashen:{g0:'#2E2B2A',g1:'#3E3936',light:'night',volcanic:true,fires:[[196,474],[312,474]],lava:[[[-20,120],[30,160],[22,260],[-20,300]],[[440,420],[400,460],[404,540],[440,580]]]},
+ heart:{g0:'#2A2422',g1:'#3A302C',light:'night',volcanic:true,fires:[[140,476],[282,476]],lava:[[[-20,90],[60,110],[40,220],[-20,260]],[[440,100],[360,130],[380,240],[440,270]],[[-20,578],[120,570],[300,574],[440,578]]]}
 };
 MAPS.forEach(M=>{ if(!M.campaign) M.campaign='c1'; });
 const theme=()=>THEMES[MAPS[mapIdx].id];
@@ -704,14 +730,22 @@ const UPGRADES={
  walls:{name:'Stone walls',desc:'Town Center +20% health',max:3,cost:[1,2,2]},
  veterans:{name:'Veteran heroes',desc:'Heroes get +10% health and damage',max:3,cost:[2,2,3]},
  granary:{name:'Granary',desc:'+4 food cap',max:2,cost:[1,2]},
- forgemaster:{name:'Forgemaster',desc:'Forge upgrades cost 10% less',max:2,cost:[2,3]}
+ forgemaster:{name:'Forgemaster',desc:'Forge upgrades cost 10% less',max:2,cost:[2,3]},
+ // unlocked once Campaign 2 has been opened (Crowns are one shared pool)
+ runic:{name:'Runic Wards',desc:'Towers deal 15% more damage',max:3,cost:[1,2,3],req:'c2'},
+ veins:{name:'Deep Veins',desc:'Mines hold 20% more gold',max:2,cost:[2,2],req:'c2'},
+ hymns:{name:'Battle Hymns',desc:'Soldiers rank up 25% faster',max:2,cost:[2,3],req:'c2'}
 };
 // Boss gear: dropped the first time a boss is defeated (any map, win or lose). One item per hero class.
 const GEAR={
  tusk:{name:"Skarn's Tusk Charm",boss:'trollKing',desc:'Regenerates 1% of max health per second',regen:.01},
  stone:{name:"Grimhorn's Stoneheart",boss:'giant',desc:'+20% health and +2 armor',hp:.2,armor:2},
  scale:{name:"Vyrnax's Frost Scale",boss:'wyrm',desc:"Takes 30% less damage from projectiles and breath; can't be slowed",cut:.3},
- shard:{name:'Shard of the Pale Crown',boss:'lich',desc:'+20% ability power and -10% cooldowns',ap:.2,cd:.9}
+ shard:{name:'Shard of the Pale Crown',boss:'lich',desc:'+20% ability power and -10% cooldowns',ap:.2,cd:.9},
+ ember:{name:"Imp King's Ember",boss:'pyrrhus',desc:'Basic attacks set enemies burning (5 damage/s for 3s)',dps:5,t:3},
+ plate:{name:'Colossus Plate',boss:'gorgath',desc:'+25% health; takes 20% less damage from bosses',hp:.25,cut:.2},
+ mantle:{name:'Drakescale Mantle',boss:'ashgar',desc:'Immune to burning ground and lava; +10% move speed',speed:.1},
+ heartk:{name:'Heart of Kragmor',boss:'kragmor',desc:'+15% damage and +15% ability power',dmg:.15,ap:.15}
 };
 function normProg(p){ p=p||{}; p.stars=p.stars||{}; p.camp=p.camp&&typeof p.camp==='object'?p.camp:{}; p.ups=p.ups||{}; p.spent=p.spent||0; p.story=Array.isArray(p.story)?p.story:[]; if(typeof p.storyOn!=='boolean') p.storyOn=true;
  const g=p.gear&&typeof p.gear==='object'?p.gear:{}; g.owned=Array.isArray(g.owned)?g.owned.filter(k=>GEAR[k]):[]; g.equipped=Object.assign({warrior:null,mage:null,ranger:null},g.equipped||{}); p.gear=g;
@@ -782,10 +816,40 @@ const STORY={
   {id:'icecrown.epilogue',at:'epilogue',text:'Not every rift has closed, Warden. I can feel them, out past the edges of the map. Rest while you can.'},
   {id:'icecrown.defeat',at:'defeat',text:'The night held, this time. The Crown is patient. So are we.'}]
 };
+// Campaign 2: The Ember Deep. Saga prologue is keyed by the campaign id.
+STORY.c2=[{id:'c2.prologue',at:'prologue',text:"When the Ice Crown broke, it didn't just shatter, Warden. Four shards flew south like falling stars. One fell into the Ember Deep, and the dwarves of Ironhold have stopped answering our letters."}];
+STORY.emberfall=[
+ {id:'emberfall.intro1',at:'intro',text:"Ironhold sits on top of a sleeping volcano. Sleeping, the dwarves always said. It isn't sleeping anymore."},
+ {id:'emberfall.intro2',at:'intro',text:"The dwarves will fight under your banner. They're slow, stubborn and harder than the rock they live in. Hold the gate for twelve waves."},
+ {id:'emberfall.victory',at:'victory',text:"Pyrrhus burned out like a candle. But the imps were never the real threat. Something is waking under the mountain, and it's calling them."},
+ {id:'emberfall.defeat',at:'defeat',text:"The gate glows red tonight. Dwarves don't give up a gate twice."}];
+STORY.forges=[
+ {id:'forges.intro1',at:'intro',text:"The great forges of Ironhold. Timber is scarce down here; the dwarves grow their fuel as giant fungus. Burn it wisely."},
+ {id:'forges.intro2',at:'intro',text:"Watch the vents in the floor. When they glow, get out of the way. The mountain doesn't care whose side you're on."},
+ {id:'forges.mid',at:'mid',when:{boss:'pyrrhus'},text:"Pyrrhus again? The shards hold on to their servants. We learned that the hard way."},
+ {id:'forges.victory',at:'victory',text:"Gorgath was carved, not born: a statue the dwarves made to guard these halls, and the shard brought it to life. Now we know what the shard does. It wakes things that should stay asleep."},
+ {id:'forges.defeat',at:'defeat',text:"The forges have gone cold. We'll light them again."}];
+STORY.ashen=[
+ {id:'ashen.intro1',at:'intro',text:"No sun down here, only lava light and ash. When the ash storms roll through the halls, your archers won't see as far."},
+ {id:'ashen.intro2',at:'intro',text:"Ashgar nests in these halls. A drake, Warden. A young one. Young ones are the worst."},
+ {id:'ashen.mid',at:'mid',when:{boss:'gorgath'},text:"Gorgath again, cracked and glowing. Break him properly this time."},
+ {id:'ashen.victory',at:'victory',text:"Ashgar is gone, and the heat is rising from below. The shard is at the Heart of the Mountain. So is whatever it woke."},
+ {id:'ashen.defeat',at:'defeat',text:"The halls are full of ash. We'll clear them, hall by hall."}];
+STORY.heart=[
+ {id:'heart.intro1',at:'intro',text:"This is the Heart. Kragmor, the mountain's titan, is the shard's last servant here, and the mountain itself answers him. Expect the ceiling to fall."},
+ {id:'heart.intro2',at:'intro',text:"Twenty-four waves. When the mountain erupts, stones will rain. Keep moving, Warden."},
+ {id:'heart.mid',at:'mid',when:{clear:12},text:"Halfway. The dwarves are singing. That's either very good or very bad."},
+ {id:'heart.victory',at:'victory',text:"The Ember Shard is ours. ...Warden, someone else is here. A woman made of frost light lifted the shard out of the ashes and smiled at me. She said her name was Vael. She said, 'Two more to go.'"},
+ {id:'heart.epilogue',at:'epilogue',text:"The dwarves call her the Shard-Witch now. She went west, towards the Withering Wood. We'll follow her when we're ready."},
+ {id:'heart.defeat',at:'defeat',text:"The Heart still beats. So do ours."}];
 const BOSS_LINES={
  trollKing:{arrive:'Little fire-keepers. Skarn will eat your ferry, and your fire.',ret:'Skarn is BACK, fire-keeper.',enrage:'SKARN DOES NOT FALL!',death:'The Crown... promised... no spring...'},
  giant:{arrive:'I held this gate for three hundred years. Now I hold it for him.',ret:'Again, Warden. Always again.',enrage:'The mountain is MINE!',death:'Free... at last. Tell the dwarves... I\'m sorry.'},
  wyrm:{arrive:'Your fires are small. Let me show you true cold.',ret:'The storm returns.',enrage:'Burn in the frost!',death:'The sky... is yours. For now.'},
+ pyrrhus:{arrive:'Fresh meat for the furnace!',ret:'Pyrrhus never stays dead, stumpy!',enrage:'BURN! BURN IT ALL!',death:'The fire... goes... out...'},
+ gorgath:{arrive:'I was carved to guard. Now I destroy.',ret:'Again. The hammer falls.',enrage:'THE FORGE BURNS!',death:'Rest at last. Stone to stone.'},
+ ashgar:{arrive:"Little dwarves in little halls. I'll roast you in your armor.",ret:'The ashes remember you.',enrage:'Choke on the smoke!',death:'Ash... to ash...'},
+ kragmor:{arrive:'I AM THE MOUNTAIN. YOU ARE PEBBLES.',enrage:'THE MOUNTAIN ERUPTS!',death:'The heart... goes... quiet.'},
  lich:{arrive:'A thousand winters I have waited. You are one small candle.',enrage:'Kneel, and be frozen forever!',death:'The crown... cracks... The night... ends...'}
 };
 const storyOf=(mid,at)=>(STORY[mid]||[]).filter(c=>c.at===at);
@@ -822,7 +886,7 @@ function newGame(race,mi){
   sel:null,mode:'nearest',quest:0,time:0,over:false,endless:false,heroMoved:false,
   plots:PLOTS.map((p,i)=>({x:p.x,y:p.y,i,b:null})),rally:{x:RALLY.x,y:RALLY.y},stance:'defend',marchSpeed:50,marchAt:0,zoneShow:0,auto:store.get('auto',{}),selPlot:null,marker:null,shake:0,kills:0,says:[],dmgLog:{},antiStuck:0,hz:[],ventT:null,ashNext:null,ashT:0};
  if(typeof sayClear==='function') sayClear();
- if(hasBoon('quartermaster')) S.res.gold+=BOONS.quartermaster.gold; if(hasBoon('seams')&&S.mineLeft) S.mineLeft*=1+BOONS.seams.mine;
+ if(hasBoon('quartermaster')) S.res.gold+=BOONS.quartermaster.gold; if(hasBoon('seams')&&S.mineLeft) S.mineLeft*=1+BOONS.seams.mine; if(S.mineLeft) S.mineLeft*=1+.2*upg('veins');
  S.path=makePath(); S.quest=mapIdx===0?0:QUESTS.length; TREES=makeTrees();
  const tc=makeBuilding('townhall',TCPOS.x,TCPOS.y,-1,true); tc.maxHp*=(1+.2*upg('walls'))*(hasBoon('walls')?1+BOONS.walls.hp:1); tc.hp=tc.maxHp; S.buildings.push(tc); S.tc=tc;
  for(let i=0;i<4;i++){const w=makeUnit('worker',TCPOS.x-30+i*20,TCPOS.y+18); S.units.push(w);}
@@ -855,7 +919,7 @@ function makeHero(cls,x,y){
 function applyStats(u){
  const P=S.R.perks, F=S.forge, ratio=u.maxHp?u.hp/u.maxHp:1;
  if(u.kind==='h'){const d=HEROES[u.cls],L=u.lvl-1, ch=hasT(u,'champion'), st=hasG(u,'stone');
-  const V=(1+.1*upg('veterans'))*(1+MASTERWORK.hp*S.master); u.maxHp=(hasBoon('oath')?1+BOONS.oath.hp:1)*d.hp*(1+.12*L)*(1+.08*F.armor)*V*(ch?1+TAL.champion.hp:1)*(st?1+GEAR.stone.hp:1); u.dmg=d.dmg*(1+.08*L)*(1+.12*F.weapons)*P.dmgMul*V*(ch?1+TAL.champion.dmg:1); u.armor=d.armor+F.armor+P.armor+Math.floor(L/3)+(st?GEAR.stone.armor:0);
+  const V=(1+.1*upg('veterans'))*(1+MASTERWORK.hp*S.master); u.maxHp=(hasBoon('oath')?1+BOONS.oath.hp:1)*d.hp*(1+.12*L)*(1+.08*F.armor)*V*(ch?1+TAL.champion.hp:1)*(st?1+GEAR.stone.hp:1)*(hasG(u,'plate')?1+GEAR.plate.hp:1); u.dmg=(hasG(u,'heartk')?1+GEAR.heartk.dmg:1)*d.dmg*(1+.08*L)*(1+.12*F.weapons)*P.dmgMul*V*(ch?1+TAL.champion.dmg:1); u.armor=d.armor+F.armor+P.armor+Math.floor(L/3)+(st?GEAR.stone.armor:0);
   u.cd=d.cd/(hasT(u,'quickdraw')?TAL.quickdraw.as:1); u.range=d.range+(hasT(u,'eagle')?TAL.eagle.range:0);
  }else{const d=UNITS[u.type], mil=u.type!=='worker', vet=mil?(1+VETERANCY.bonus*(u.rank||0))*(1+MASTERWORK.hp*S.master):1;
   u.maxHp=d.hp*(mil?(1+.08*F.armor)*(hasBoon('hides')?1+BOONS.hides.hp:1):1)*vet; u.dmg=d.dmg*(mil?(1+.12*F.weapons)*P.dmgMul*(hasBoon('sharpened')?1+BOONS.sharpened.dmg:1):1)*vet; u.armor=d.armor+(mil?F.armor+P.armor:0);}
@@ -898,7 +962,7 @@ function clusterCenter(from,range,R,excl){
  for(const e of S.enemies){ if(e.dead||dist(e,from)>range||out(e)) continue; let n=0; for(const o of S.enemies) if(!o.dead&&!out(o)&&dist(o,e)<R) n+=o.boss?3:1; if(n>bn){bn=n;best=e;} }
  return best?{x:best.x,y:best.y}:null;
 }
-const pw=h=>(1+.1*(h.lvl-1))*(1+.12*S.forge.arcana)*(hasBoon('oath')?1+BOONS.oath.ap:1)*(hasG(h,'shard')?1+GEAR.shard.ap:1);
+const pw=h=>(hasG(h,'heartk')?1+GEAR.heartk.ap:1)*(1+.1*(h.lvl-1))*(1+.12*S.forge.arcana)*(hasBoon('oath')?1+BOONS.oath.ap:1)*(hasG(h,'shard')?1+GEAR.shard.ap:1);
 const cdMul=()=>1-.06*S.forge.arcana;
 const rankOf=k=>VETERANCY.ranks.filter(n=>k>=n).length;
 const fireProof=u=>u.kind==='h'&&typeof hasG==='function'&&GEAR.mantle&&hasG(u,'mantle');
@@ -929,6 +993,8 @@ function hit(src,t,amt,opt){
  if(t.buffs.mark) a*=1.4;
  if(t.buffs.guard) a*=.7;
  if(t.kind==='h'&&opt&&(opt.proj||opt.breath)&&hasG(t,'scale')) a*=1-GEAR.scale.cut;
+ if(t.kind==='h'&&src&&src.boss&&hasG(t,'plate')) a*=1-GEAR.plate.cut;
+ if(t.team==='e'&&src&&src.kind==='h'&&opt&&opt.basic&&hasG(src,'ember')) t.buffs.burnDot={t:GEAR.ember.t,dps:GEAR.ember.dps,src};
  if(!(opt&&opt.pure)){ const ar=(t.armor||0)+(t.buffs.ironwall?TAL.ironwall.armor:0); a*=1-(ar*.06)/(1+ar*.06); }
  if(t.team==='e'){ const w=S.dmgLog[S.wave]||(S.dmgLog[S.wave]={h:0,t:0}), eff=Math.min(a,Math.max(0,t.hp)); w.t+=eff; if(src&&src.kind==='h') w.h+=eff; }   // hero share of effective damage (balance bot)
  t.hp-=a; t.flash=.12;
@@ -944,7 +1010,7 @@ function kill(t,src){
  t.dead=true; t.hp=0;
  if(t.team==='e'){
   const d=ENEMIES[t.type]; S.res.gold+=d.gold*(hasBoon('bounty')?1+BOONS.bounty.gold:1); S.kills++;
-  if(src&&src.kind==='u'&&src.type!=='worker'&&!src.dead){ src.kills=(src.kills||0)+1; const rk=rankOf(src.kills);
+  if(src&&src.kind==='u'&&src.type!=='worker'&&!src.dead){ src.kills=(src.kills||0)+1+.25*upg('hymns'); const rk=rankOf(src.kills);
    if(rk>(src.rank||0)){ src.rank=rk; applyStats(src); text(src.x,src.y-34,`Rank ${rk}`,'#FFD36A',12); for(let i=0;i<8;i++) part(src.x,src.y-20,rnd(-30,30),rnd(-60,-20),'#FFD36A',1.6,.5,60); } }
   text(t.x,t.y-20,'+'+d.gold,'#FFD36A',13); bump('rGold');
   for(let i=0;i<(t.boss?40:8);i++) part(t.x,t.y-10*t.s,rnd(-70,70),rnd(-110,-20),t.boss?'#BFE6FF':'#DDEFFF',rnd(1.5,3),.7,160);
@@ -993,7 +1059,7 @@ function attack(a,t){
   S.proj.push({type:pk,x:a.x+(a.face||1)*6,y:a.y-hy,t,src:a,dmg:dmgOf(a),spd:pk==='bolt'||pk==='firebolt'?280:pk==='shard'?260:sg?210:pk==='shot'?620:360,aoe:pk==='shard'?30:pk==='firebolt'?(ENEMIES[a.type]&&ENEMIES[a.type].splash)||24:sg?UNITS.siege.aoe:0,team:a.team,arc:sg?1:0,sx:a.x,sy:a.y-hy});
   sfx(pk==='firebolt'?'fire':pk==='bolt'?'bolt':pk==='shard'?'frost':pk==='shot'?'crack':sg&&S.race==='dwarf'?'boom':'arrow');
  }else{
-  hit(a,t,dmgOf(a));
+  hit(a,t,dmgOf(a),{basic:a.kind==='h'});
   const hx=(a.x+t.x)/2, hy=(a.y+t.y)/2-10;
   for(let i=0;i<3;i++) part(hx,hy,rnd(-50,50),rnd(-60,0),'#FFF1C4',1.3,.25,80);
   sfx(a.type==='wolf'?'bite':'clang');
@@ -1003,7 +1069,7 @@ function step(a,x,y,dt,tol,seek){
  const dx=x-a.x, dy=y-a.y, d=Math.hypot(dx,dy);
  if(d<=(tol||2)){a.moving=false;return true;}
  const ns=a.kind==='h'&&hasG(a,'scale'), slow=(a.buffs.slow&&!ns?1-a.buffs.slow.m:1)*(S.blizT>0&&!ns?.7:1)*(a.buffs.fury?1+ENEMIES.flamecaller.fury.m:1)*(a.buffs.warcry&&a.buffs.warcry.fast?1+a.buffs.warcry.fast:1);
- const v=a.speed*slow*dt*(a.team==='p'&&a.type!=='worker'&&a.kind!=='b'&&hasBoon('drums')?1+BOONS.drums.speed:1); let ux=dx/d, uy=dy/d;
+ const v=a.speed*slow*dt*(a.kind==='h'&&hasG(a,'mantle')?1+GEAR.mantle.speed:1)*(a.team==='p'&&a.type!=='worker'&&a.kind!=='b'&&hasBoon('drums')?1+BOONS.drums.speed:1); let ux=dx/d, uy=dy/d;
  // steer around buildings and the mine that sit on the straight path (never around the destination itself)
  if(a.type!=='worker'&&!(a.ghostT>0)){ let sx=0, sy=0;
   const avoid=(ox,oy,orr)=>{ const rx=ox-a.x, ry=oy-a.y, along=rx*ux+ry*uy; if(along<=0||along>d) return;
@@ -1305,8 +1371,8 @@ function update(dt){
   if(b.queue.length){const q=b.queue[0]; q.t+=dt; if(q.t>=q.time){b.queue.shift(); spawnFrom(b,q); uiDirty=true;}}
   const sh=BUILDINGS[b.type].shoots;
   if(sh){b.atkT-=dt; if(b.atkT<=0){const sp=b.spec&&TOWER_SPECS[b.spec], rng=(sp?sp.range:sh.range)*(b.type==='tower'&&hasBoon('eagle')?1+BOONS.eagle.range:1)*(b.type==='tower'?S.R.perks.towerRange||1:1)*(S.ashT>0&&b.type==='tower'?HAZ.ash.range:1), t=pickEnemy(b,sp&&sp.pierce?'strongest':'nearest',rng);
-   if(t){ if(sp){ b.atkT=sp.cd; S.proj.push({type:sp.proj,x:b.x,y:b.y-b.h*.75,t,src:b,dmg:sp.dmg*(1+.1*S.forge.weapons),spd:sp.proj==='shard'?340:640,team:'p',slowM:sp.slow||0,pure:sp.pierce||0}); sfx(sp.slow?'frost':'snipe'); }
-    else { b.atkT=sh.cd; b.dmg=b===S.tc&&S.castle?CASTLE_UPGRADE.shootDmg:(b===S.tc&&S.keep)?KEEP_UPGRADE.shootDmg:sh.dmg; if(b===S.tc&&hasBoon('walls')) b.dmg*=1+BOONS.walls.dmg; b.face=1; attack(b,t);} } else b.atkT=.3;}}
+   if(t){ if(sp){ b.atkT=sp.cd; S.proj.push({type:sp.proj,x:b.x,y:b.y-b.h*.75,t,src:b,dmg:sp.dmg*(1+.1*S.forge.weapons)*(1+.15*upg('runic')),spd:sp.proj==='shard'?340:640,team:'p',slowM:sp.slow||0,pure:sp.pierce||0}); sfx(sp.slow?'frost':'snipe'); }
+    else { b.atkT=sh.cd; b.dmg=b===S.tc&&S.castle?CASTLE_UPGRADE.shootDmg:(b===S.tc&&S.keep)?KEEP_UPGRADE.shootDmg:sh.dmg; if(b===S.tc&&hasBoon('walls')) b.dmg*=1+BOONS.walls.dmg; if(b.type==='tower') b.dmg*=1+.15*upg('runic'); b.face=1; attack(b,t);} } else b.atkT=.3;}}
   if(b.type==='forge'){b.smokeT-=dt; if(b.smokeT<=0){b.smokeT=.35; smoke(b.x+13,b.y-58,rnd(4,6)); if(S.race==='dwarf') for(let q=0;q<3;q++) part(b.x+13+rnd(-3,3),b.y-60,rnd(-12,12),rnd(-60,-30),Math.random()<.5?'#FFB24A':'#FF6A2A',rnd(1.2,2),.8,-8);}}
   if(b.hp<b.maxHp*.5&&Math.random()<dt*2) smoke(b.x+rnd(-b.r*.6,b.r*.6),b.y-b.h*.5,rnd(5,9));
  }
@@ -1319,7 +1385,7 @@ function update(dt){
   if(u.type==='worker') workerAI(u,dt); else { if(regen) u.hp=Math.min(u.maxHp,u.hp+regen*dt); if(u.type==='healer') healTick(u,dt); if(u.type==='siege') siegeAI(u,dt); else soldierAI(u,dt); }
  }
  for(const h of S.heroes) heroAI(h,dt);
- for(const e of S.enemies){ if(e.dead) continue; tickBuffs(e,dt); e.atkT-=dt; e.atk=Math.max(0,e.atk-dt*4); e.flash=Math.max(0,e.flash-dt); enemyAI(e,dt); }
+ for(const e of S.enemies){ if(e.dead) continue; if(e.buffs.burnDot){ e.bdT=(e.bdT||0)-dt; if(e.bdT<=0){ e.bdT=.5; hit(e.buffs.burnDot.src,e,e.buffs.burnDot.dps*.5,{pure:1}); if(Math.random()<.5) part(e.x,e.y-12,rnd(-8,8),rnd(-30,-10),'#FF8A3A',1.6,.4,0); } } tickBuffs(e,dt); e.atkT-=dt; e.atk=Math.max(0,e.atk-dt*4); e.flash=Math.max(0,e.flash-dt); enemyAI(e,dt); }
  updateProj(dt); updateFx(dt);
  separate();
  S.units=S.units.filter(u=>!u.dead);
@@ -1537,7 +1603,7 @@ function updateProj(dt){
     else ring(p.tx,p.ty+8,4,p.aoe,'#CFEFFF',.3,3);
    }else if(p.t&&!p.t.dead){
     if(p.mark) p.t.buffs.mark={t:p.mark};
-    hit(p.src,p.t,p.dmg,p.type==='snipe'?{show:1,crit:1,pure:p.pure}:{proj:1});
+    hit(p.src,p.t,p.dmg,p.type==='snipe'?{show:1,crit:1,pure:p.pure}:{proj:1,basic:p.src&&p.src.kind==='h'});
     if(p.type==='bolt'&&!p.chain&&p.src&&p.src.kind==='h'&&hasT(p.src,'chain')){ let o=null,bd=TAL.chain.r; S.enemies.forEach(e=>{ if(e.dead||e===p.t) return; const d=dist(e,p.t); if(d<bd){bd=d;o=e;} });
      if(o) S.proj.push({type:'bolt',x:p.tx,y:p.ty,t:o,src:p.src,dmg:p.dmg*TAL.chain.mul,spd:320,team:'p',chain:1}); }
     if(p.slowM) p.t.buffs.slow={t:2.5,m:p.slowM};
@@ -2481,6 +2547,12 @@ function gearIcon(id,locked){ const k=id+(locked?':l':''); if(GEARIMG[k]) return
  else if(id==='scale'){ g.fillStyle=lg(g,10,6,38,42,'#EAF8FF','#7FB9E6'); g.beginPath(); g.moveTo(24,5); g.quadraticCurveTo(43,14,38,30); g.quadraticCurveTo(33,42,24,44); g.quadraticCurveTo(15,42,10,30); g.quadraticCurveTo(5,14,24,5); g.fill();
   g.strokeStyle='#5E8EB8'; g.lineWidth=1.2; g.stroke(); g.strokeStyle='rgba(94,142,184,.7)'; g.beginPath(); g.moveTo(24,9); g.lineTo(24,40); g.moveTo(16,16); g.quadraticCurveTo(24,24,32,16); g.moveTo(14,26); g.quadraticCurveTo(24,34,34,26); g.stroke();
   g.fillStyle='rgba(255,255,255,.7)'; ell(g,18,13,2.2,3.4); }
+ else if(id==='ember'){ const gr=g.createRadialGradient(24,26,2,24,26,18); gr.addColorStop(0,'#FFF0B0'); gr.addColorStop(.5,'#FF7A2A'); gr.addColorStop(1,'rgba(160,40,10,0)'); g.fillStyle=gr; g.fillRect(4,6,40,40);
+  g.fillStyle='#3A1A10'; poly(g,[[14,32],[18,18],[28,14],[36,24],[32,36],[20,38]]); g.fill(); g.strokeStyle='#FFB24A'; g.lineWidth=1.4; g.beginPath(); g.moveTo(18,24); g.lineTo(26,22); g.lineTo(30,30); g.moveTo(22,32); g.lineTo(26,26); g.stroke(); }
+ else if(id==='plate'){ g.fillStyle=lg(g,0,8,0,42,'#8A8580','#4A4440'); g.beginPath(); g.moveTo(10,10); g.lineTo(38,10); g.lineTo(36,30); g.quadraticCurveTo(24,44,12,30); g.closePath(); g.fill(); g.strokeStyle='#2A2624'; g.lineWidth=1.2; g.stroke();
+  g.strokeStyle='#FF7A2A'; g.lineWidth=1.6; g.beginPath(); g.moveTo(18,14); g.lineTo(22,24); g.lineTo(18,32); g.moveTo(30,14); g.lineTo(27,26); g.stroke(); }
+ else if(id==='mantle'){ for(let k=0;k<4;k++) for(let q=0;q<3;q++){ g.fillStyle=(k+q)%2?'#B8452A':'#8A2A18'; g.beginPath(); g.ellipse(14+q*10,12+k*8,6,5,0,0,Math.PI); g.fill(); } g.strokeStyle='#FFB24A'; g.lineWidth=1; g.strokeRect(9,8,30,34); }
+ else if(id==='heartk'){ const gr=g.createRadialGradient(24,24,2,24,24,16); gr.addColorStop(0,'#FFE08A'); gr.addColorStop(.6,'#FF5A1A'); gr.addColorStop(1,'#5A1A0A'); g.fillStyle=gr; g.beginPath(); g.moveTo(24,40); g.bezierCurveTo(6,28,8,10,18,11); g.bezierCurveTo(22,11,24,15,24,17); g.bezierCurveTo(24,15,27,11,31,11); g.bezierCurveTo(41,10,42,28,24,40); g.fill(); g.strokeStyle='#2A1410'; g.lineWidth=1.2; g.stroke(); }
  else { g.fillStyle=lg(g,14,4,34,44,'#FFFFFF','#9FD8FF'); poly(g,[[22,3],[31,17],[27,27],[33,44],[17,40],[14,24],[18,14]]); g.fill(); g.strokeStyle='#6FA8D8'; g.lineWidth=1.2; g.stroke();
   g.strokeStyle='rgba(111,168,216,.7)'; g.beginPath(); g.moveTo(22,3); g.lineTo(23,24); g.lineTo(33,44); g.moveTo(14,24); g.lineTo(23,24); g.stroke();
   g.fillStyle='#E3B341'; poly(g,[[12,34],[20,31],[21,36],[13,39]]); g.fill(); g.fillStyle='#FF5C6A'; ell(g,16.5,35.2,1.4,1.4); }
@@ -2886,7 +2958,8 @@ function gameOver(win){
   const vic=()=>showModal(`<h2>Victory</h2><p>${M.name} holds. ${S.kills} raiders defeated.</p><div class="starrow">${lines.map((t,k)=>`<div><span class="s ${got[k]?'':'off'}">★</span>${t}</div>`).join('')}</div>
    <p><b>${gained>0?`+${gained} Crown${gained>1?'s':''} earned.`:'No new stars this time.'}</b> ${crowns()} Crowns to spend.</p>${bi>=0&&bi<3?`<div id="boonBox">${boonChooserHtml(cid,bi)}</div>`:''}
    <div class="row">${unlocked?`<button class="mbtn pri" data-m="march" data-i="${mapIdx+1}">Next: ${next.name}</button>`:''}<button class="mbtn ${unlocked?'':'pri'}" data-m="council">War council</button><button class="mbtn" data-m="maps">Choose a battle</button><button class="mbtn" data-m="endless">Keep defending (endless)</button></div>`);
-  const cards=PROG.storyOn?storyOf(M.id,'victory').concat(storyOf(M.id,'epilogue').filter(c=>!seenStory(c.id))):[];
+  let cards=PROG.storyOn?storyOf(M.id,'victory').concat(storyOf(M.id,'epilogue').filter(c=>!seenStory(c.id))):[];
+  if(M.id==='heart'&&!PROG.dwarvesC1){ PROG.dwarvesC1=true; store.set('prog',PROG); cards=cards.concat([{id:'c2.reward',text:'The Ember Deep is safe. The dwarves of Ironhold will march with you anywhere.'}]); }   // campaign reward
   showStory(cards,vic,{map:mapIdx});
  }else{
   const dl=storyOf(M.id,'defeat')[0]; if(dl) markStory(dl.id);
@@ -2908,7 +2981,8 @@ function mapPreview(i,W,H){
  THEMES[M.id].fires.forEach(([fx,fy])=>items.push([fy,()=>drawFire(g,fx,fy,0)]));
  items.sort((a,b)=>a[0]-b[0]).forEach(a=>a[1]());
  drawPortal(g,0,true);
- if(THEMES[M.id].light==='night'){ g.setTransform(1,0,0,1,0,0); g.fillStyle='rgba(8,14,38,.45)'; g.fillRect(0,0,W,H);
+ if(THEMES[M.id].light==='night'&&THEMES[M.id].volcanic){ g.setTransform(1,0,0,1,0,0); g.fillStyle='rgba(20,8,4,.4)'; g.fillRect(0,0,W,H); }
+ else if(THEMES[M.id].light==='night'){ g.setTransform(1,0,0,1,0,0); g.fillStyle='rgba(8,14,38,.45)'; g.fillRect(0,0,W,H);
   g.globalCompositeOperation='lighter'; for(let a=0;a<3;a++){ g.strokeStyle=['rgba(90,255,190,.14)','rgba(120,200,255,.14)','rgba(190,140,255,.14)'][a]; g.lineWidth=20-a*5; g.beginPath(); for(let x=0;x<=W;x+=10){const y=30+a*14+Math.sin(x/80+a*1.7)*12; x?g.lineTo(x,y):g.moveTo(x,y);} g.stroke(); }
   const gr=g.createRadialGradient(W/2,H*.85,0,W/2,H*.85,120); gr.addColorStop(0,'rgba(255,160,70,.3)'); gr.addColorStop(1,'rgba(255,160,70,0)'); g.fillStyle=gr; g.fillRect(0,0,W,H); g.globalCompositeOperation='source-over'; }
  if(THEMES[M.id].light==='dawn'){ g.setTransform(1,0,0,1,0,0); const gr=g.createLinearGradient(0,0,0,H*.6); gr.addColorStop(0,'rgba(255,170,120,.3)'); gr.addColorStop(1,'rgba(255,170,120,0)'); g.fillStyle=gr; g.fillRect(0,0,W,H); }
@@ -2938,7 +3012,8 @@ function showSaga(){
 }
 $('#sagaList').addEventListener('click',e=>{ const b=e.target.closest('[data-camp]'); if(!b) return; initAudio(); const C=CAMP[b.dataset.camp];
  if(C.soon){ toastAny(`${C.name}: coming soon`); return; } if(!campUnlocked(C.id)||!campMaps(C.id).length){ toastAny(C.lockText||'Locked'); return; }
- sfx('click'); curCamp=C.id; store.set('camp',curCamp); showMaps(); });
+ sfx('click'); curCamp=C.id; store.set('camp',curCamp); if(C.id==='c2'&&!PROG.c2open){ PROG.c2open=true; store.set('prog',PROG); }
+ const pro=(STORY[C.id]||[]).filter(c=>c.at==='prologue'&&!seenStory(c.id)); if(pro.length) showStory(pro,showMaps,{map:campMaps(C.id)[0]}); else showMaps(); });
 $('#sagaBack').onclick=()=>{ $('#saga').hidden=true; showTitle(); };
 $('#sagaUp').onclick=()=>showUpgrades();
 $('#sagaArm').onclick=()=>{ initAudio(); sfx('click'); showArmory(null); };
@@ -2975,7 +3050,7 @@ function startMap(i){ clearSave(); store.set('map',i); hideModal(); $('#maps').h
  // intro cards the first time a map is started (replays: "Story" on the briefing); the battle waits
  if(PROG.storyOn&&intro.length&&!seenStory(intro[0].id)){ paused=true; showStory(intro,go,{map:i}); } else go(); }
 function showUpgrades(){ const wasPlay=mode==='play';
- const html=`<h2>War council</h2><p>Spend Crowns on permanent upgrades. You earn one Crown for each new star.</p><p><b>${crowns()} Crowns available</b></p><div class="upl">${Object.entries(UPGRADES).map(([k,u])=>{const lv=upg(k), max=lv>=u.max, c=u.cost[lv];
+ const html=`<h2>War council</h2><p>Spend Crowns on permanent upgrades. You earn one Crown for each new star.</p><p><b>${crowns()} Crowns available</b></p><div class="upl">${Object.entries(UPGRADES).filter(([k,u])=>!u.req||PROG.c2open).map(([k,u])=>{const lv=upg(k), max=lv>=u.max, c=u.cost[lv];
   return `<button class="upi ${max||crowns()<c?'dis':''}" ${max?'':`data-hold="up:${k}"`}><span class="ut"><b>${u.name} ${'●'.repeat(lv)}${'○'.repeat(u.max-lv)}</b><small>${u.desc}</small></span><span class="uc">${max?'Maxed':`${c} ♛`}</span></button>`;}).join('')}</div>
   <p class="hint" style="margin-top:8px">Tap twice to buy.</p><div class="row"><button class="mbtn pri" data-m="${wasPlay?'resume':'maps'}">Done</button></div>`;
  showModal(html); }
@@ -2984,7 +3059,7 @@ function buyUpgrade(k){ const u=UPGRADES[k], lv=upg(k); if(lv>=u.max) return; co
 function showModal(html){const b=$('#mbox'), same=b.dataset.k===html.slice(0,24); b.innerHTML=html; b.dataset.k=html.slice(0,24); $('#modal').hidden=false; if(!same) b.scrollTop=0;}
 // Armory: one slot per hero class. Tap a slot, then an owned item. Equipping is free and reversible.
 let armSel='warrior', armBack=null;
-function showArmory(back){ if(back!==undefined) armBack=back; const G=PROG.gear, N=RACES[chosenRace].heroNames, bossShort=b=>ENEMIES[b].name.split(' the ')[0];
+function showArmory(back){ if(back!==undefined) armBack=back; const G=PROG.gear, N=RACES[chosenRace].heroNames, bossShort=b=>shortName(b);
  const cur=G.equipped[armSel];
  showModal(`<h2>Armory</h2><p>Bosses drop gear the first time you beat them. Each hero wears one item. Equipping is free; change it any time.</p>
   <div class="aslots">${Object.keys(HEROES).map(c=>{ const id=G.owned.includes(G.equipped[c])?G.equipped[c]:null;
@@ -2996,7 +3071,7 @@ function showArmory(back){ if(back!==undefined) armBack=back; const G=PROG.gear,
    return `<button class="agear ${cur===id?'on':''}" data-arm="item:${id}"><img src="${gearIcon(id)}" alt=""><span><b>${o.name}</b><small>${o.desc}</small>${by?`<i>${by===armSel?'Equipped':'Worn by '+N[by]}</i>`:''}</span></button>`; }).join('')}</div>
   <div class="row">${cur?`<button class="mbtn" data-arm="clear">Remove ${GEAR[cur].name}</button>`:''}<button class="mbtn pri" data-m="armDone">Done</button></div>`); }
 // Chronicle: every story card the player has unlocked, in order; tap one to read it again
-const CHR_AT={intro:'Before the battle',mid:'During the battle',victory:'Victory',epilogue:'Epilogue',defeat:'Defeat'};
+const CHR_AT={prologue:'Prologue',intro:'Before the battle',mid:'During the battle',victory:'Victory',epilogue:'Epilogue',defeat:'Defeat'};
 function showChronicle(){
  showModal(`<h2>Chronicle</h2><p>Maera's account of the Shattered Crown. Tap an entry to read it again.</p>${CAMPAIGNS.filter(C=>campMaps(C.id).length).map(C=>`<div class="chrcamp">${C.name}</div>${(STORY[C.id]||[]).map((c,k)=>seenStory(c.id)?`<button class="chr" data-chr="${C.id}:${k}"><small>Prologue</small><span>${storyText(c.text)}</span></button>`:`<div class="chr lock"><small>Prologue</small><span>???</span></div>`).join('')}${campMaps(C.id).map(i=>{const M=MAPS[i]; return `<div class="chrmap">${M.name}</div>${(STORY[M.id]||[]).map((c,k)=>seenStory(c.id)
    ?`<button class="chr" data-chr="${i}:${k}"><small>${CHR_AT[c.at]}</small><span>${storyText(c.text)}</span></button>`
@@ -3092,7 +3167,7 @@ function frame(now){
 new ResizeObserver(()=>resize()).observe(stage);
 resize(); newGame(chosenRace);
 requestAnimationFrame(frame);
-if(/[?&]debug/.test(location.search)) window.__IC={saveRun,restoreRun,specTower,snapshot,clearW:()=>{for(const k in WCACHE) delete WCACHE[k];},trainUnit,trainWorker,forgeUp,upgradeKeep,setJob,setStance,foodCap,foodUsed,waveDef,genWave,MAPS,PROG_SET:p=>{PROG=normProg(p);},startMap,showMaps,get PROG(){return PROG;},tick:n=>{for(let i=0;i<n;i++)update(.05);},get S(){return S;},startWave,tryBuild,recruitHero,assignWorker,setMode:m=>mode=m,THEMES,startEruption,setRace:r=>{chosenRace=r;},pickBoon,boonOffer,campState,pendingBoons,campMaps,moveArmy,refreshFormation,upgradeCastle,buyMasterwork,forgeCost,masterCost,reseed:n=>{Math.random=mulberry(n);},showChronicle,talentPending,pickTalent,TALENTS,grantXP,GEAR,equipGear,showArmory};
+if(/[?&]debug/.test(location.search)) window.__IC={saveRun,restoreRun,specTower,snapshot,clearW:()=>{for(const k in WCACHE) delete WCACHE[k];},trainUnit,trainWorker,forgeUp,upgradeKeep,setJob,setStance,foodCap,foodUsed,waveDef,genWave,MAPS,PROG_SET:p=>{PROG=normProg(p);},startMap,showMaps,get PROG(){return PROG;},tick:n=>{for(let i=0;i<n;i++)update(.05);},get S(){return S;},startWave,tryBuild,recruitHero,assignWorker,setMode:m=>mode=m,GEAR,THEMES,startEruption,setRace:r=>{chosenRace=r;},pickBoon,boonOffer,campState,pendingBoons,campMaps,moveArmy,refreshFormation,upgradeCastle,buyMasterwork,forgeCost,masterCost,reseed:n=>{Math.random=mulberry(n);},showChronicle,talentPending,pickTalent,TALENTS,grantXP,GEAR,equipGear,showArmory};
 })();
 </script>
 <script>
