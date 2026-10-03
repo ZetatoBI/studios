@@ -4,6 +4,8 @@
 //   node dev/icecrown/balance/run-balance.mjs            -> all maps
 //   node dev/icecrown/balance/run-balance.mjs 0,1 3      -> maps 0 and 1, 3 runs each
 //   node dev/icecrown/balance/run-balance.mjs --seed 7   -> run i uses seed 7+i (default base 1), so results are reproducible
+//   node dev/icecrown/balance/run-balance.mjs --campaign c2 2 -> campaign profile: plays the campaign's battles in order,
+//       carrying heroes and taking the first boon, with the "no upgrades" and "some upgrades" profiles
 // Serves the repo on a local port, opens games/icecrown/?debug headless, and plays each map with the bot,
 // with and without Crown upgrades, and with upgrades plus boss gear. Compare the output with the targets in
 // dev/icecrown/DESIGN.md. heroShare = heroes' share of effective damage in the biggest non-boss wave of the last third.
@@ -15,6 +17,7 @@ import path from 'node:path';
 const ROOT = process.cwd();
 const argv = process.argv.slice(2), si = argv.indexOf('--seed');
 const SEED = si >= 0 ? Number(argv[si + 1]) : 1; if (si >= 0) argv.splice(si, 2);
+const ci = argv.indexOf('--campaign'), CAMPS = ci >= 0 ? argv[ci + 1].split(',') : null; if (ci >= 0) argv.splice(ci, 2);
 const maps = (argv[0] || '0,1,2,3').split(',').map(Number);
 const runs = Number(argv[1] || 2);
 const BOT = fs.readFileSync(new URL('./bot.js', import.meta.url), 'utf8').replace(/^\s*\/\/.*$/gm, '').trim();
@@ -44,6 +47,25 @@ await page.goto(`http://localhost:${port}/games/icecrown/?debug&seed=${SEED}`);
 await page.waitForTimeout(1500);
 await page.evaluate(() => { const t = document.querySelector('#title'); if (t) t.hidden = true; });
 
+const row = (r) => `${r.won ? 'WON ' : 'LOST'} wave ${r.wave}/${r.of}  minTC ${r.minTC}%  endTC ${r.tc}%  soldiersLost ${r.lost}  heroDeaths ${r.deaths}  heroes ${r.heroLv}` +
+  (r.share != null ? `  heroShare ${r.share}%` : '') + `  hazards ${r.haz}%  antiStuck ${r.stuck}  minWorkers ${r.minW ?? '-'}  masterwork ${r.master}`;
+if (CAMPS) {
+  const runsC = Number(argv[0] || 2);
+  for (const c of CAMPS) for (const name of ['no upgrades', 'some upgrades']) for (let i = 0; i < runsC; i++) {
+    const L = await page.evaluate(c => __IC.campMaps(c), c);
+    await page.evaluate(s => __IC.reseed(s), SEED + i);
+    await page.evaluate(p => __IC.PROG_SET(Object.assign({ gear: { owned: [], equipped: {} } }, p)), PROFILES[name]);
+    console.log(`\nCampaign ${c} | ${name} | run ${i + 1} (campaign profile)`);
+    for (const m of L) {
+      const r = await page.evaluate(`(${BOT})(${JSON.stringify({ map: m, prog: PROFILES[name], workers: 12, keepAt: 5, keepProg: true, campaign: true })})`);
+      const nm = await page.evaluate(m => __IC.MAPS[m].name, m);
+      console.log(`  ${nm.padEnd(22)} ${row(r)}`);
+    }
+    console.log('  boons: ' + (await page.evaluate(c => __IC.campState(c).boons.join(', '), c)));
+  }
+  console.log(errors.length ? `\nPAGE ERRORS:\n${errors.join('\n')}` : '\nNo page errors.');
+  await browser.close(); server.close(); process.exit(0);
+}
 for (const m of maps) {
   for (const [name, prog] of Object.entries(PROFILES)) {
     const rows = [];
@@ -53,7 +75,7 @@ for (const m of maps) {
       rows.push(`${r.won ? 'WON ' : 'LOST'} wave ${r.wave}/${r.of}  minTC ${r.minTC}%  soldiersLost ${r.lost}  heroDeaths ${r.deaths}  ${r.min}min` +
         (r.share != null ? `  heroShare ${r.share}% (w${r.shareWave})` : '') + `  antiStuck ${r.stuck}  minWorkers ${r.minW ?? '-'}  masterwork ${r.master}${r.castle ? '' : '  (no castle)'}`);
     }
-    console.log(`\n${['Iron: Frostmere', 'Bronze: Hollow Pass', 'Silver: Whitefang', 'Gold: Ice Crown'][m] || 'map ' + m} | ${name}`);
+    console.log(`\n${await page.evaluate(m => __IC.MAPS[m].tier + ': ' + __IC.MAPS[m].name, m)} | ${name}`);
     rows.forEach(x => console.log('  ' + x));
   }
 }

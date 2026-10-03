@@ -12,6 +12,8 @@ Read it before changing gameplay, balance or controls.
 - `dev/icecrown/balance/`: the balance bot and runner (section 5).
 - `dev/icecrown/v1.4-SPEC.md`: the build spec for v1.4 "The Long Night" (story, talents, gear).
 - `dev/icecrown/v1.5-SPEC.md`: the build spec for v1.5 "Hold the Line" (movement, formations, late-game scaling).
+- `dev/icecrown/v1.6-SPEC.md`: the build spec for v1.6 "The Ember Deep" (saga of campaigns, carry-over, boons,
+  the Dwarves, the Ember Legion, hazards, Campaign 2).
 
 The main script is organised in banner-commented sections, in this order: DATA (all tuning, including `TALENTS`
 next to `HEROES`), CAMPAIGN (maps, themes, upgrades, `GEAR`, quests, `STORY` and `BOSS_LINES`), STATE, COMBAT, ABILITIES, ECONOMY/BUILD/TRAIN, WAVES (wave designer), UPDATE (AI),
@@ -42,6 +44,8 @@ These came from real playtests on a phone. Keep them unless the owner asks other
    running, "Later" closes it, and learning a talent is tap-twice. Equipping gear is free and reversible (plain tap).
 
 ## 3. Campaign structure
+Since v1.6 the game is a **saga** of campaigns (see "Saga and campaigns (v1.6)" below). The bullets here describe
+Campaign 1, The Long Night.
 - 4 maps, one per tier: Iron (Frostmere Crossing, 12 waves), Bronze (Hollow Pass, 16), Silver (Whitefang Wood, 20),
   Gold (The Ice Crown, 24). Each has its own layout, road, story, twist and bosses.
 - Twists: finite gold mine (Bronze), blizzards that slow everyone (Silver), night with light-based rendering and
@@ -53,7 +57,7 @@ These came from real playtests on a phone. Keep them unless the owner asks other
   Bosses telegraph big attacks (red ring for slam, blue cone for breath), summon or ice-storm at 55% HP, enrage
   below 30%.
 - Enemies follow the map's road (waypoints) until something is in reach, so tower placement matters.
-- The game autosaves after every cleared wave (`icecrown.save`, format v2). Continue from title or battle list.
+- The game autosaves after every cleared wave (`icecrown.save`, format v4 since v1.6). Continue from title or battle list.
 
 ### Story (v1.4)
 - Narrator: Maera, the frost-seer. Card and dialogue text lives in `STORY` and `BOSS_LINES` and is final: don't
@@ -124,6 +128,89 @@ unit strikes back at an attacker just outside the zone (this stops enemy archers
   18 (scales with Weapons) every 1.5s; ranged rows. Trebuchet / Catapult, `UNITS.siege`: needs the Castle; lobs a
   stone every 3.2s at the densest group between 60 and 240 (radius 55, 60 damage); back rows.
 
+### Saga and campaigns (v1.6)
+| # | Campaign | Army | Enemy | State |
+|---|---|---|---|---|
+| 1 | The Long Night | Kingdom of Aldmere or Grukash Horde (player's choice; Dwarves after Campaign 2) | The Frost | Playable |
+| 2 | The Ember Deep | Ironhold Dwarves (always) | The Ember Legion | Playable (v1.6) |
+| 3 | The Withering Wood | Sylvan Elves | The Blight | Teaser card ("coming soon") |
+| 4 | The Red Wastes | Grukash Horde | The Sand-Dead | Teaser card ("coming soon") |
+
+- **Data model:** `CAMPAIGNS` (id, number, name, race or null for player's choice, faction, `lockText`, `soon` for
+  teasers) and `CAMP` by id. Each map in `MAPS` carries `campaign` (old maps default to `c1`), plus `faction`
+  ('ember' switches the probe waves to Ember enemies) and optional `hazard`, `hazardShort`, `hazardText`.
+  Helpers: `campMaps(c)` (map indices in order), `starsIn(c)`, `campUnlocked(c)`, `campDone(c)`, `raceFor(i)`
+  (a campaign with a fixed race ignores the chosen race, so the race picked for Campaign 1 never affects Campaign 2).
+- **Unlocks:** Campaign 2 opens when The Ice Crown is won or Campaign 1 has 8 stars. Inside a campaign the tier
+  unlocks are as before (2, 5 and 8 stars **of that campaign**). Stars and Crowns are one shared pool.
+- **Flow:** title, Play, saga screen (`#saga`: one card per campaign with stars, lock text or teaser), then the
+  campaign's battle list (`showMaps` for `curCamp`, remembered in `icecrown.camp`). The race picker sits on the
+  Campaign 1 battle list. Back and Done return to the screen you came from (`lastScreen`).
+- **Carry-over:** `PROG.camp[c].heroes[cls] = {lvl, xp, tal}` is saved when a battle of that campaign is won
+  (`saveCampHeroes` in `gameOver`), and `makeHero` restores it at the start of the next battle in the campaign.
+  Heroes never carry between campaigns.
+- **Spoils of War (boons):** after winning each of a campaign's first three battles the Victory modal offers three
+  of the 12 `BOONS` (seeded per campaign and battle with `mulberry`, so a reload shows the same offer); one pick,
+  tap-twice, kept in `PROG.camp[c].boons` for the rest of that campaign. An unpicked offer can be chosen later from
+  the battle list. Owned boons show on the battle list and in the pause menu. "Restart campaign" (tap-twice) clears
+  the campaign's heroes, boons and offers, not its stars.
+  Boons: Quartermaster (+150 starting gold), Stonemasons (build 40% faster), Sharpened Steel (soldiers +10% damage),
+  Thick Hides (soldiers +12% health), Eagle Towers (towers +20% range), Field Medics (1% max health per second),
+  Veteran Recruits (new soldiers start at rank 1), Rich Seams (mines +25%, carry +10%), War Drums (army +15% speed),
+  Hero's Oath (heroes +10% health and ability power), Iron Walls (Town Center +30% health, arrows +50% damage),
+  Bounty Hunters (+30% kill gold).
+
+### The Ironhold Dwarves (v1.6)
+- `RACES.dwarf`: gold +10%, armor +2, buildings +25% health, towers +15% range, army 10% slower. Units: Miner,
+  Shieldbearer, Thunderer (firearm), Ironclad, Runepriest, Bombard. Heroes: Thane Borin, Runesmith Hilda,
+  Kara Ironshot.
+- Look: `drawFigure` with `o.dwarf` (shorter and wider), beards and braids, horned or crested helms, guns with a
+  muzzle flash and smoke (`shot` projectile, `crack` sound), stone halls with glowing runes (`runeLines`) and forge
+  embers, a bronze cannon for siege.
+- Always the army in Campaign 2. Selectable in Campaign 1 once Heart of the Mountain is won (`PROG.dwarvesC1`).
+
+### The Ember Legion, hazards and Campaign 2 (v1.6)
+- Enemies: Magma Hound (fast, leaves a short burning trail), Fire Imp (swarm), Imp Slinger (firebolts that splash),
+  Ash Walker (armored), Flamecaller (rouses nearby enemies), Magma Golem (splits into two Ember Blobs), Obsidian
+  Knight (heavy armor). Wave themes `emberPack`, `swarm`, `ash`, `magma`, `emberMixed`.
+- Bosses: Pyrrhus the Imp King (calls six imps), Gorgath the Molten Colossus (slam leaves a lava pool), Ashgar the
+  Cinder Drake (flies; fire breath leaves burning ground), Kragmor, the Mountain's Heart (final; slams, raises two
+  golems, makes the mountain erupt).
+- Burning ground is team-aware (`team:'e'` hurts only the player's side). The Drakescale Mantle ignores it, lava
+  pools and vents.
+- Hazards (`HAZ`): **lava vents** (Deep Forges): every 45 s while a wave is live, two vents glow with a red circle
+  for 3 s, then burst (80 damage in radius 50). **Ash storms** (Ashen Halls): every 60 s for 12 s, every ranged
+  attack (both sides, and towers) reaches 25% less far. **Eruptions** (Heart of the Mountain): every fifth wave
+  and on Kragmor's signal, 10 marked spots (1.5 s warning, 60 damage, half to buildings). Warnings appear on the
+  map preview and briefing. The bot does not dodge; hazards were tuned to be survivable without micro.
+- Maps (`campaign:'c2'`, volcanic themes, warm night lighting, rising embers instead of snow):
+  Iron **Emberfall Gate** (12 waves, Pyrrhus), Bronze **The Deep Forges** (16, vents, Pyrrhus and Gorgath),
+  Silver **The Ashen Halls** (20, ash storms, finite mine 7000, Gorgath and Ashgar), Gold **Heart of the Mountain**
+  (24, eruptions, Pyrrhus, Gorgath, Ashgar and Kragmor).
+- Story: Campaign 2 has a prologue (shown the first time the campaign is opened) and intro, victory and defeat
+  text per map in `STORY.c2`, `STORY.emberfall`, and so on; boss lines in `BOSS_LINES`. Final text: don't rewrite.
+  The Chronicle is grouped by campaign.
+- Gear: Imp King's Ember (basic attacks burn), Colossus Plate (+25% health, -20% boss damage), Drakescale Mantle
+  (fire and lava immunity, +10% speed), Heart of Kragmor (+15% damage and ability power).
+- Rewards: first win on Heart of the Mountain shows the celebration card and makes the Dwarves selectable in
+  Campaign 1. War council upgrades unlocked once Campaign 2 is opened (`req:'c2'`): Runic Wards, Deep Veins,
+  Battle Hymns.
+- Music: Campaign 2 has its own calm, battle and boss tracks (lower, with an anvil beat).
+
+### How to add a campaign
+1. Add an entry to `CAMPAIGNS` (drop `soon`; set `race` if the army is fixed, and `lockText`), and make
+   `campUnlocked` open it.
+2. Add its race to `RACES` if new (perks, palette, unit and hero names) plus any look switches in `drawFigure`,
+   building and siege drawing.
+3. Add enemies and bosses to `ENEMIES` (with `ENEMY_TRAITS` text and `ECOST`), wave themes to `WTHEMES`, and a
+   `faction` value so `genWave` uses them for the probe waves.
+4. Add four `MAPS` entries with `campaign:'cN'`, tiers Iron to Gold, layout, road, `bosses`, `unlock`, optional
+   `hazard` fields, and knobs copied from the matching tier of the newest campaign as a starting point.
+5. Add `THEMES` for the ground painter (palette, scenery, `volcanic`-style flags), a `realmArt` case for the saga
+   card, and music tracks if wanted.
+6. Add `STORY` entries (prologue `cN` plus each map), `BOSS_LINES`, `CHR_AT` order, boss `GEAR`, and the reward.
+7. Run the bot (fresh-start and `--campaign cN`) and add the targets to section 4.
+
 ## 4. Balance: targets and history
 ### Targets (measured with the bot, section 5)
 | Map | No upgrades | Some upgrades | Upgrades + gear (v1.4) |
@@ -135,6 +222,21 @@ unit strikes back at an attacker just outside the zone (this stops enemy archers
 
 The bot spends perfectly but never micros, so a human who uses stances, focus fire and abilities should do
 better. Intent: Iron teaches, Bronze tests, Silver punishes sloppy play, Gold requires mastery plus upgrades.
+
+### Campaign profile and Campaign 2 targets (v1.6)
+The bot's **campaign profile** (`run-balance.mjs --campaign c1,c2`) plays a campaign's four battles in order,
+carrying heroes and taking the first boon offered after each win; a lost battle is not replayed (the next one
+starts with the heroes from the last win). Measured with "some upgrades":
+
+| Battle | Target |
+|---|---|
+| Emberfall Gate | Wins, 5 to 15 soldiers lost |
+| The Deep Forges | Wins, 20 to 35 lost |
+| The Ashen Halls | Wins but costly (35 to 55 lost), or loses in its last 3 waves |
+| Heart of the Mountain | Wins in at most 1 of 2 runs; without upgrades falls before wave 22 |
+
+Campaign 1 keeps the fresh-start targets above; with the campaign profile, The Ice Crown must end with the Town
+Center below 80%.
 
 ### Root causes already fixed (don't reintroduce)
 1. **Food cap was the real limit on army size** (about 5 soldiers). Now: Town Center 15, Farm +8 (max 5), Keep +10,
@@ -164,6 +266,13 @@ small knob change flips "wins with few losses" into "falls to the boss", so the 
 Bronze and Silver are hard to hit exactly (see the v1.5 PR for the final table). With the new army the hero
 damage share dropped to about 22 to 54%, under the 70% line for the first time.
 
+### v1.6 retune
+Campaign 2 knobs started from the Campaign 1 tier values. Three seeded rounds gave: Emberfall `gm` 7.5 -> 10,
+`hm` 2.1 -> 2.3; Deep Forges `gm` 9 -> 7, `hm` 2.7 -> 2.3; Heart `gm` 3.2 -> 4.8, `hm` 1.98 -> 2.5 (Ashen Halls
+unchanged). Hero carry-over (heroes start Gold at level 10 with three talents) let the campaign profile win The Ice
+Crown with the Town Center at 100%; zeroing every boon did not change that, so Gold `lateK` was raised 1.3 -> 1.5,
+which keeps the fresh-start Gold targets. Hazards caused under 6% of damage taken, so they were not reduced.
+
 ### Knobs
 - Per map in `MAPS`: `b0` (opening budget), `bg` (growth per wave), `gm` (extra late-game growth, ramps in over the
   map), `hm` (extra late-game enemy HP), `lateK` (last-third pressure), `hp`/`dmg` (flat multipliers), `themes`,
@@ -191,6 +300,11 @@ Since v1.5:
   buys Forge levels up to 8, then Masterwork with spare gold.
 - Each row also prints `antiStuck`, `minWorkers` (lowest worker count after reaching 8) and the Masterwork count.
   Late-game check: on Gold with "some upgrades" a winning run keeps at least 8 workers and buys Masterwork.
+Since v1.6:
+- `run-balance.mjs --campaign c1,c2 2` runs the campaign profile (section 4), 2 runs per campaign and profile.
+  Rows add `endTC`, `hazards` (share of damage taken by the player's side that came from hazards) and hero levels.
+- Map numbers are page indices (Campaign 2 is 4 to 7). `__IC.finish(true)` ends a won battle properly (saves
+  heroes, offers boons); `opts.keepProg` keeps campaign state between battles.
 
 ## 6. Releases and updates
 - **Silent updates:** the worker serves the game page network-first, so installed players get the new version on
@@ -199,17 +313,19 @@ Since v1.5:
   (shown on the title screen as "Ice Crown vX beta"). Keep the cache prefix `icecrown-`.
 - Never change `manifest.webmanifest`'s `id`, or the storage keys below, without a migration:
   `icecrown.prog` (stars, upgrades, and since v1.4 `story`: ids of cards seen, `gear`: {owned, equipped by class},
-  `storyOn`; since v1.5 `stanceHelp`; older saves load with safe defaults), `icecrown.save` (run save, `v: 2` adds
+  `storyOn`; since v1.5 `stanceHelp`; since v1.6 `camp`: per campaign {heroes, boons, offered}, `c2open`,
+  `dwarvesC1`; older saves load with safe defaults), `icecrown.save` (run save, `v: 2` adds
   each hero's talents; `v: 3` adds the Castle tier, Masterwork count and per-unit kills for veterancy, next to the
-  stance and banner position already saved; `v: 1` and `v: 2` saves still load), `icecrown.auto`, `icecrown.sfx`, `icecrown.music`,
-  `icecrown.race`, `icecrown.map`, `icecrown.installHint`.
+  stance and banner position already saved; `v: 4` adds the campaign id; `v: 1` to `v: 3` saves still load),
+  `icecrown.auto`, `icecrown.sfx`, `icecrown.music`, `icecrown.race`, `icecrown.map`, `icecrown.camp` (v1.6: last
+  campaign opened), `icecrown.installHint`.
 - Rollback is the plan instead of staging: if a release misbehaves, revert the PR.
 
 ## 7. Known limitations
 - Units move in straight lines toward targets with local steering around buildings (enemies also follow road
   waypoints); there is still no real pathfinding.
 - All art is drawn in code on a canvas; music is procedural (Web Audio), not composed tracks.
-- One large file (about 200 KB). Splitting it into modules is fine, but keep it build-free and add every new file
+- One large file (about 310 KB since v1.6). Splitting it into modules is fine, but keep it build-free and add every new file
   to the worker's cache list.
 - Name risk: "Icecrown" is a known Warcraft location. Fine for the web beta; revisit before app store submission.
 
@@ -217,6 +333,9 @@ Since v1.5:
 1. ~~**Story and heroes:** story cards before and after each map, boss intro lines, hero talents, boss gear drops.~~
    **Done in v1.4.**
    **v1.5 "Hold the Line"** (movement, formations and stances, late-game scaling, seeded balance runs): **done.**
+   **v1.6 "The Ember Deep"** (saga of campaigns, carry-over, boons, the Dwarves, Campaign 2): **done.**
+   Next: Campaign 3 "The Withering Wood" (Sylvan Elves vs. the Blight) and Campaign 4 "The Red Wastes" (Grukash Horde
+   vs. the Sand-Dead), following "How to add a campaign" in section 3.
 2. **More maps:** fill each tier to 3 maps, with new twists.
 3. **Art pass:** sprite-based units with animations, camera zoom and pan.
 4. **Two fronts:** larger maps with two rifts, squad banners plus hero-led squads, pathfinding, mini-map alerts.
