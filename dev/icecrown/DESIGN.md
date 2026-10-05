@@ -12,6 +12,7 @@ Read it before changing gameplay, balance or controls.
 - `dev/icecrown/balance/`: the balance bot and runner (section 5).
 - `dev/icecrown/v1.4-SPEC.md`: the build spec for v1.4 "The Long Night" (story, talents, gear).
 - `dev/icecrown/v1.5-SPEC.md`: the build spec for v1.5 "Hold the Line" (movement, formations, late-game scaling).
+- v1.7 was built in chat and published as finished files (no spec); its design is in section 3, "Economy, heroes and the late game".
 - `dev/icecrown/v1.6-SPEC.md`: the build spec for v1.6 "The Ember Deep" (saga of campaigns, carry-over, boons,
   the Dwarves, the Ember Legion, hazards, Campaign 2).
 
@@ -197,6 +198,42 @@ unit strikes back at an attacker just outside the zone (this stops enemy archers
   Battle Hymns.
 - Music: Campaign 2 has its own calm, battle and boss tracks (lower, with an anvil beat).
 
+### Economy, heroes and the late game (v1.7 "Lords of War")
+Built in chat and tested there (bot runs and headless checks), then published as finished files.
+- **Food is a stockpile** (`S.res.food`), shown in the top bar with **population** (helmet, `foodUsed()/foodCap()`).
+  Internally a unit's `food` field still means its population cost; `cost.food` is the food price.
+  `RK=['gold','lumber','food']` drives `pay`, `canAfford`, refunds and cost chips.
+- **Farms** (max 6) grow food: 0.7 per second each, plus 0.6 per farmer, with up to 2 farmers (`RESOURCES.food`),
+  scaled by Tools upgrades. Workers take the `food` job (`pickFarm`, `w.farm`), stand in the field and never carry.
+  Waves pay `20 + 6 x wave` food. Workers cost 50 food and no population.
+- **Population comes from the Town Center tier** (`POP`): 25, +20 with the Keep, +25 with the Castle, +4 per
+  Granary level. Farms no longer add population.
+- **Costs** (gold, lumber, food): Footman 50/0/40, Archer 40/30/30, Knight 110/40/70, Cleric 80/40/50,
+  Siege 150/180/40, heroes +100 food, Farm 30 gold and 70 lumber, Castle +300 food.
+- **Heroes unlock by tier** (`heroSlots`): one at the start, a second with the Keep, a third with the Castle.
+- **War Barracks** (`BARRACKS_UPGRADE`, needs the Castle; 400/400/200): trains 50% faster and two at a time
+  (`b.war`, two queue lanes) and is required for healers and siege (`req:'war'`). Saved in the run save.
+- **More land:** `extraPlots()` finds four free spots around the base on every map (away from the road, trees,
+  mine, fires, vents and other plots); two open with the Keep and two with the Castle (`plotOpen`).
+- **Sellswords** (`MERCS`, Town Center ring and Army tab, needs the Keep): 5 veterans (`UNITS.merc`, no
+  population) for 900 gold and 150 food, +15% per hire in a battle, at most 2 bands, serving 2 waves (`contract`),
+  then they walk off the map (`leaving`, never counted as losses).
+- **Dragon Roost and Dragonfire** (`BUILDINGS.roost`, needs the Castle; `DRAGON`): a strike costs 1,800 gold,
+  1,500 lumber and 1,200 food with a 75 s cooldown. The dragon (race colours, `drawWyrmCol`) flies from the roost up
+  the road to the rift and back; each pass hits every enemy within 72 for 45% of max health + 250 (bosses 10%),
+  and leaves burning ground. Stage button "Fire" (tap twice) or the roost's ring.
+- **Battle report** (`stAdd`, `S.st.battle` and `S.st.wave`): damage dealt and taken, healing (healers, War Cry,
+  Bloodied Blade; passive regeneration is not counted), kills and losses per hero, unit type, towers, Town Center
+  and dragon. "Stats" side button opens a non-pausing panel (tabs react on pointerdown, refresh twice a second);
+  a summary toast after each wave; a short report on the Victory and defeat screens.
+- **Audio:** combat sounds rebuilt (`metal`, `voice`, `meleeSound`: sword clash, blunt hits, bites, bowstring,
+  grunts, war horn, war cry on Charge). One music engine (`musicStep`) with three styles (`musicStyle`, menu:
+  Off, Calm, Epic, Intense, saved as `icecrown.musicStyle`) and a palette per map (`PALETTES`: key, mode, tempo,
+  colour instrument). **Sound suspends and the battle pauses when the app goes to the background**
+  (`visibilitychange`, `pagehide`).
+- **Preview mode** (`PREVIEW`): on any host other than zetatobi.com or localhost (Claude artifact links), every
+  campaign and battle is unlocked for testing. The live site is unaffected.
+
 ### How to add a campaign
 1. Add an entry to `CAMPAIGNS` (drop `soon`; set `race` if the army is fixed, and `lockText`), and make
    `campUnlocked` open it.
@@ -272,6 +309,17 @@ Campaign 2 knobs started from the Campaign 1 tier values. Three seeded rounds ga
 unchanged). Hero carry-over (heroes start Gold at level 10 with three talents) let the campaign profile win The Ice
 Crown with the Town Center at 100%; zeroing every boon did not change that, so Gold `lateK` was raised 1.3 -> 1.5,
 which keeps the fresh-start Gold targets. Hazards caused under 6% of damage taken, so they were not reduced.
+
+### v1.7 retune
+The new economy first made the game much harder for the bot (Frostmere lost 31 soldiers, Emberfall fell on wave 10).
+A trace showed the cause was the bot, not the game: on lumber-poor maps it sat on thousands of gold with no lumber.
+The bot now splits workers by scarcity, keeps 16 workers, hires sellswords and uses Dragonfire when rich. Food
+was then too plentiful, so farms were cut to 0.7 + 0.6 per farmer and wave food to 20 + 6 x wave. Hollow Pass lost
+on its final boss in every profile (the mine ran dry), so its mine is now 10,000 (was 9,000); its knobs are unchanged.
+Results (1 seeded run each; no upgrades / some upgrades): Frostmere won 7 / 1 lost; Hollow Pass won 15 / 10;
+Whitefang lost at 18 / won (82 lost); The Ice Crown fell at 21 / won; Emberfall won 19 / 21; Deep Forges won
+82 / 79; Ashen Halls fell at 17 / 18; Heart of the Mountain fell at 21 / 21. Watch: The Ice Crown with upgrades and
+the Deep Forges' high losses.
 
 ### Knobs
 - Per map in `MAPS`: `b0` (opening budget), `bg` (growth per wave), `gm` (extra late-game growth, ramps in over the
