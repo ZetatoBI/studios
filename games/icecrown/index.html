@@ -42,11 +42,13 @@ body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:'Ale
 button{font:inherit;color:inherit;touch-action:manipulation;cursor:pointer;border:0;background:none;padding:0}
 #app{height:100%;max-width:560px;margin:0 auto;display:flex;flex-direction:column;background:var(--panel);position:relative;overflow:hidden}
 #top{display:flex;align-items:center;gap:6px;padding:8px 10px;background:var(--panel);border-bottom:1px solid var(--line);flex:none}
-.res{display:flex;align-items:center;gap:4px;padding:4px 9px 4px 5px;border-radius:999px;background:var(--chip);font-weight:800;font-variant-numeric:tabular-nums;font-size:15px}
-.res svg{width:19px;height:19px;flex:none}
+.res{display:flex;align-items:center;gap:3px;padding:3px 7px 3px 4px;border-radius:999px;background:var(--chip);font-weight:800;font-variant-numeric:tabular-nums;font-size:15px}
+.res svg{width:16px;height:16px;flex:none}
+.res b{font-size:13.5px}
+#top{gap:4px!important}
 .res.bump{animation:bump .35s}
 @keyframes bump{0%{transform:scale(1.14)}100%{transform:scale(1)}}
-#waveBadge{margin-left:auto;font-family:Cinzel,serif;font-weight:800;font-size:14px;white-space:nowrap;color:var(--frost)}
+#waveBadge{margin-left:auto;font-family:Cinzel,serif;font-weight:800;font-size:12px;white-space:nowrap;color:var(--frost)}
 #menuBtn{width:36px;height:36px;border-radius:10px;background:var(--chip);display:grid;place-items:center;flex:none}
 #menuBtn svg{width:20px;height:20px}
 #stage{flex:1;position:relative;overflow:hidden;background:#C9D8E4;min-height:0}
@@ -87,7 +89,8 @@ button{font:inherit;color:inherit;touch-action:manipulation;cursor:pointer;borde
 .cost i{font-style:normal;display:flex;align-items:center;gap:3px}
 .cost i::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--gold)}
 .cost i.l::before{background:var(--lumber);border-radius:2px}
-.cost i.f::before{background:var(--food);border-radius:2px}
+.cost i.fd::before{background:var(--food);border-radius:50% 50% 50% 0}
+.cost i.f::before{background:#6F8AA6;border-radius:2px 2px 0 0}
 .cost i.no{color:var(--bad)}
 .badge{position:absolute;top:5px;right:6px;background:var(--frost);color:#fff;font-size:11px;font-weight:800;border-radius:8px;padding:1px 6px}
 .pips{display:flex;gap:3px;margin-top:3px}
@@ -121,6 +124,32 @@ button{font:inherit;color:inherit;touch-action:manipulation;cursor:pointer;borde
 .hp.add b{font-size:20px;display:block;color:var(--frost)}
 #dragGhost{position:fixed;width:44px;height:52px;margin:-60px 0 0 -22px;pointer-events:none;z-index:40;filter:drop-shadow(0 4px 8px rgba(0,0,0,.4))}
 #stageBtns{position:absolute;right:8px;top:86px;display:flex;flex-direction:column;gap:8px;z-index:3}
+#dragonBtn{position:relative;overflow:hidden;color:#B2411A!important}
+#dragonBtn svg{width:22px;height:22px}
+#dragonBtn b{font-size:10.5px;font-weight:800}
+#dragonBtn::after{content:"";position:absolute;inset:0;background:conic-gradient(rgba(10,18,30,.6) calc(var(--p,0)*1turn),transparent 0);pointer-events:none}
+#dragonBtn .cdv{position:absolute;inset:0;display:grid;place-items:center;font-style:normal;font-weight:800;color:#fff;font-size:15px;z-index:2;text-shadow:0 1px 3px #000}
+#statsBtn svg{width:19px;height:19px;color:#2F7FD6}
+#statsBtn b{font-size:10.5px;font-weight:800}
+#statsPanel{position:absolute;left:8px;right:66px;top:44px;max-height:64%;display:flex;flex-direction:column;background:rgba(12,22,34,.92);color:#EEF5FB;border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.4);z-index:6;overflow:hidden}
+#statsPanel .sh{display:flex;align-items:center;gap:6px;padding:8px 8px 4px 12px}
+#statsPanel .sh b{flex:1;font-family:Cinzel,serif;font-size:15px}
+#statsPanel .scope{display:flex;background:rgba(255,255,255,.1);border-radius:9px;padding:2px}
+#statsPanel .scope button,#statsPanel .tabs button{font-size:12px;font-weight:800;padding:4px 8px;border-radius:7px;color:#BFD6EA}
+#statsPanel .scope button.on,#statsPanel .tabs button.on{background:#F0914A;color:#1C0F05}
+#statsPanel .x{width:28px;height:28px;border-radius:8px;font-size:18px;font-weight:800;color:#BFD6EA}
+#statsPanel .tabs{display:flex;gap:3px;padding:2px 8px 6px;overflow-x:auto;scrollbar-width:none}
+#statsPanel .rows{overflow-y:auto;padding:0 10px 6px}
+#statsPanel .sr{display:grid;grid-template-columns:26px 1fr auto;align-items:center;gap:6px;padding:3px 0}
+#statsPanel .sr img,#statsPanel .sr .si{width:26px;height:22px;object-fit:contain;border-radius:5px;background:rgba(255,255,255,.08);display:grid;place-items:center}
+#statsPanel .sr .si svg{width:16px;height:16px;color:#FFB24A}
+#statsPanel .sn{font-size:12.5px;font-weight:700;line-height:1.1;min-width:0}
+#statsPanel .sn i{display:block;height:5px;border-radius:3px;margin-top:2px;background:linear-gradient(90deg,#6FB8FF,#2F7FD6)}
+#statsPanel .sn i.hero{background:linear-gradient(90deg,#FFD36A,#E3A13A)}
+#statsPanel .sv{font-size:12.5px;font-weight:800;font-variant-numeric:tabular-nums}
+#statsPanel .sf{font-size:11.5px;color:#9FB6CB;padding:5px 12px 8px;border-top:1px solid rgba(255,255,255,.08)}
+.rep{background:var(--panel2);border-radius:12px;padding:8px 10px;margin:8px 0;font-size:14px}
+.rep div{display:flex;justify-content:space-between;padding:2px 0}
 #stageBtns button{width:50px;height:50px;border-radius:14px;background:rgba(245,249,252,.94);color:#14263A;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(0,0,0,.25)}
 #targetBtn svg{width:18px;height:18px;color:#B23A30}
 #stanceBtn svg{width:19px;height:19px;color:#2F6FD0}
@@ -255,7 +284,7 @@ button{font:inherit;color:inherit;touch-action:manipulation;cursor:pointer;borde
 .rb img{width:40px;height:28px;object-fit:contain;margin-top:-2px}
 .rb svg{width:24px;height:24px}
 .rb .rc{font-size:10.5px;font-weight:800;line-height:1;display:flex;gap:3px;margin-top:1px}
-.rb .rc i{font-style:normal}.rb .rc .g{color:#9A6B00}.rb .rc .l{color:#7A4A22}.rb .rc .no{color:#C0392B}
+.rb .rc i{font-style:normal}.rb .rc .g{color:#9A6B00}.rb .rc .l{color:#7A4A22}.rb .rc .fd{color:#4E7A22}.rb .rc .no{color:#C0392B}
 .rb .rn{font-size:10.5px;font-weight:800;line-height:1.05;text-align:center;max-width:56px}
 #ring.soft .rb{animation:none}
 .rb.armed{background:#F0914A;color:#1C0F05;transform:scale(1.12);overflow:visible;box-shadow:0 0 0 3px #FFD9B8,0 6px 16px rgba(0,0,0,.4)}
@@ -347,7 +376,8 @@ button{font:inherit;color:inherit;touch-action:manipulation;cursor:pointer;borde
  <header id="top">
   <div class="res" id="rGold"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="#F2C14E" stroke="#A8761A" stroke-width="1.6"/><circle cx="12" cy="12" r="5.2" fill="none" stroke="#C4901F" stroke-width="1.5"/></svg><b>0</b></div>
   <div class="res" id="rLumber"><svg viewBox="0 0 24 24"><rect x="2.5" y="8" width="16" height="9" rx="4.5" fill="#A8723F" stroke="#6B4424" stroke-width="1.4"/><ellipse cx="18.5" cy="12.5" rx="3.2" ry="4.5" fill="#E8C48E" stroke="#6B4424" stroke-width="1.4"/><circle cx="18.5" cy="12.5" r="1.3" fill="#B8864F"/></svg><b>0</b></div>
-  <div class="res" id="rFood"><svg viewBox="0 0 24 24" fill="#8DB84A" stroke="#557A22" stroke-width="1.1"><path d="M12 22V9" fill="none" stroke-width="1.8"/><path d="M12 13c-3 0-4.5-2-4.5-4.5 3 0 4.5 2 4.5 4.5zm0 0c3 0 4.5-2 4.5-4.5-3 0-4.5 2-4.5 4.5zm0 4.5c-3 0-4.5-2-4.5-4.5 3 0 4.5 2 4.5 4.5zm0 0c3 0 4.5-2 4.5-4.5-3 0-4.5 2-4.5 4.5zM12 9c-1.6-1.2-1.6-3.6 0-5.5 1.6 1.9 1.6 4.3 0 5.5z"/></svg><b>0/10</b></div>
+  <div class="res" id="rFood" title="Food"><svg viewBox="0 0 24 24" fill="#8DB84A" stroke="#557A22" stroke-width="1.1"><path d="M12 22V9" fill="none" stroke-width="1.8"/><path d="M12 13c-3 0-4.5-2-4.5-4.5 3 0 4.5 2 4.5 4.5zm0 0c3 0 4.5-2 4.5-4.5-3 0-4.5 2-4.5 4.5zm0 4.5c-3 0-4.5-2-4.5-4.5 3 0 4.5 2 4.5 4.5zm0 0c3 0 4.5-2 4.5-4.5-3 0-4.5 2-4.5 4.5zM12 9c-1.6-1.2-1.6-3.6 0-5.5 1.6 1.9 1.6 4.3 0 5.5z"/></svg><b>0/10</b></div>
+  <div class="res" id="rPop" title="Population"><svg viewBox="0 0 24 24"><path d="M6 13a6 6 0 0 1 12 0v3H6z" fill="#8FA7BF" stroke="#4E6680" stroke-width="1.3"/><path d="M5 16h14v3H5z" fill="#6F8AA6" stroke="#4E6680" stroke-width="1.2"/><path d="M12 6v4" stroke="#4E6680" stroke-width="1.6"/></svg><b>0/25</b></div>
   <div id="waveBadge">Wave 0</div>
   <button id="menuBtn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
  </header>
@@ -360,8 +390,9 @@ button{font:inherit;color:inherit;touch-action:manipulation;cursor:pointer;borde
   <div id="say" aria-live="polite"><b id="sayWho"></b><span id="sayTxt"></span></div>
   <section id="sheet" hidden><div class="sheetHead"><h2 id="sheetTitle"></h2><button id="sheetClose" aria-label="Close">×</button></div><div id="sheetBody"></div></section>
   <div id="ring" hidden></div>
-  <div id="stageBtns"><button id="pauseBtn" aria-label="Pause"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg></button><button id="speedBtn" aria-label="Game speed"><b>1x</b></button><button id="stanceBtn" aria-label="Army stance"></button><button id="targetBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.2" fill="currentColor"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg><span>Target</span><b id="targetLbl">Nearest</b></button></div>
+  <div id="stageBtns"><button id="statsBtn" aria-label="Battle report"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 20V11M10 20V5M15 20v-7M20 20v-4"/></svg><b>Stats</b></button><button id="dragonBtn" data-hold="dragon" aria-label="Dragonfire" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15c3-1 5-4 6-8 1 3 3 4 6 4l3-3 1 4-3 3c1 2 0 4-2 5-1-2-3-3-5-3-2 2-4 2-6-2z"/><path d="M17 9l2-1"/></svg><b>Fire</b><i class="cdv"></i></button><button id="pauseBtn" aria-label="Pause"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg></button><button id="speedBtn" aria-label="Game speed"><b>1x</b></button><button id="stanceBtn" aria-label="Army stance"></button><button id="targetBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.2" fill="currentColor"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg><span>Target</span><b id="targetLbl">Nearest</b></button></div>
   <div id="jobs"></div>
+  <div id="statsPanel" hidden></div>
   <div id="talent" hidden></div>
   <button id="preview" hidden></button>
   <div id="pauseTag" hidden>Paused: give orders, then tap play</div>
@@ -443,8 +474,16 @@ let PLOTS=[{x:106,y:386},{x:316,y:386},{x:126,y:534},{x:290,y:536},{x:56,y:318},
 const RESOURCES={
  gold:  {name:'Gold',  start:250, carry:10, work:2.2},
  lumber:{name:'Lumber',start:150, carry:10, work:2.8},
- food:  {name:'Food',  baseCap:15, keepBonus:10}
+ food:  {name:'Food',  start:200, farm:.7, farmer:.6, perFarm:2}   // v1.7: food is a stockpile, grown by farms and farmers
 };
+// Population (army size) now comes from the Town Center tier, not from farms. Workers take no population.
+const POP={base:25,keep:20,castle:25};
+const BARRACKS_UPGRADE={cost:{gold:400,lumber:400,food:200},time:25,hp:400,speed:1.5,lanes:2,desc:'Trains 50% faster, two at a time. Unlocks healers and siege'};
+const RK=['gold','lumber','food'];
+// Late game: spend a big economy on power beyond the population cap.
+const MERCS={cost:{gold:900,food:150},grow:1.15,n:5,waves:2,max:2,req:'keep'};
+const DRAGON={cost:{gold:1800,lumber:1500,food:1200},cd:75,speed:170,band:72,pct:.45,flat:250,bossPct:.1,burn:{r:30,dps:30,t:4},
+ pal:{kingdom:['#8A6212','#C9A24A','#FFE08A','#8A6212','#FFF4D0','#FFE08A'],horde:['#6A1A14','#A8322A','#E85A3A','#4A1210','#FFC9A8','#FF8A5A'],dwarf:['#5A3A1E','#9A6A3A','#D9A066','#5A3A1E','#FFE3C0','#FFB070']}};
 
 const RACES={
  kingdom:{id:'kingdom',name:'Kingdom of Aldmere',
@@ -466,40 +505,41 @@ const RACES={
 
 const BUILDINGS={
  townhall:{name:'Town Center',hp:1600,r:40,h:112,armor:5,shoots:{dmg:8,range:150,cd:1.4},desc:'Trains workers. Lose it and the hold falls.'},
- farm:    {name:'Farm',       cost:{gold:60,lumber:40},  time:8, hp:350,r:24,h:34,armor:2,max:5,food:8,desc:'+8 food'},
+ farm:    {name:'Farm',       cost:{gold:30,lumber:70},  time:8, hp:350,r:24,h:34,armor:2,max:6,desc:'Grows food; tap it to add up to 2 farmers'},
  barracks:{name:'Barracks',   cost:{gold:120,lumber:60}, time:12,hp:700,r:30,h:60,armor:4,max:1,desc:'Trains soldiers, recruits heroes'},
  forge:   {name:'Forge',      cost:{gold:100,lumber:120},time:12,hp:600,r:26,h:62,armor:4,max:1,desc:'Upgrades gear for your army'},
+ roost:   {name:'Dragon Roost',cost:{gold:1500,lumber:1500,food:500},time:30,hp:1200,r:28,h:78,armor:6,max:1,req:'castle',desc:'Home of your dragon. Unlocks Dragonfire'},
  tower:   {name:'Watch Tower',cost:{gold:80,lumber:100}, time:10,hp:500,r:15,h:80,armor:4,max:3,shoots:{dmg:14,range:175,cd:1.1},desc:'Shoots at anything in range'}
 };
 const TOWER_SPECS={
  frost:{name:'Frost Tower',cost:{gold:120,lumber:80},dmg:9,cd:1,range:165,slow:.4,proj:'shard',desc:'Slows every target by 40%'},
  ballista:{name:'Ballista',cost:{gold:150,lumber:120},dmg:48,cd:2.4,range:210,pierce:1,proj:'snipe',desc:'Heavy bolts that ignore armor'}
 };
-const KEEP_UPGRADE={cost:{gold:300,lumber:200},time:20,hp:800,shootDmg:14,desc:'+800 health, +10 food, unlocks elite units, healers and forge levels 4-5'};
-const CASTLE_UPGRADE={cost:{gold:650,lumber:450},time:30,hp:1000,food:15,shootDmg:22,h:150,desc:'+1000 health, +15 food, stronger arrows. Unlocks forge levels 6-8, siege and Masterwork'};
+const KEEP_UPGRADE={cost:{gold:300,lumber:200},time:20,hp:800,shootDmg:14,desc:'+800 health, +20 population, a second hero, elite units and forge levels 4-5'};
+const CASTLE_UPGRADE={cost:{gold:650,lumber:450,food:300},time:30,hp:1000,shootDmg:22,h:150,desc:'+1000 health, +25 population, a third hero, War Barracks, forge levels 6-8 and Masterwork'};
 // Masterwork: endless research once Weapons and Armor are both 8. Veterancy: ranks from kills (final blow).
 const MASTERWORK={cost:{gold:600,lumber:400},grow:1.25,dmg:.04,hp:.04};
 const VETERANCY={ranks:[6,15,30],bonus:.12,heal:.5};
 
 const UNITS={
- worker:{hp:70, dmg:4, range:6,  cd:1.2,speed:54,armor:0,food:0,time:6, cost:{gold:50},           at:'townhall',r:7, s:.9, desc:'Gathers gold and lumber'},
- melee: {hp:200,dmg:14,range:8,  cd:1.0,speed:48,armor:2,food:2,time:8, cost:{gold:70,lumber:10}, at:'barracks',r:8, s:1,  desc:'Sturdy front-line fighter'},
- ranged:{hp:110,dmg:13,range:130,cd:1.3,speed:50,armor:0,food:2,time:9, cost:{gold:60,lumber:40}, at:'barracks',r:8, s:.95,proj:1,desc:'Shoots from the back line'},
- heavy: {hp:420,dmg:26,range:10, cd:1.2,speed:60,armor:4,food:3,time:12,cost:{gold:140,lumber:60},at:'barracks',r:10,s:1.2,req:'keep',desc:'Elite warrior (needs Keep)'},
- healer:{hp:110,dmg:5, range:100,cd:1.6,speed:48,armor:0,food:2,time:10,cost:{gold:90,lumber:60}, at:'barracks',r:8, s:.95,proj:'bolt',req:'keep',heal:{cd:1.5,r:110,amt:18},desc:'Heals the most injured ally nearby (needs Keep)'},
- siege: {hp:260,dmg:60,range:240,min:60,cd:3.2,speed:30,armor:2,food:4,time:16,cost:{gold:200,lumber:150},at:'barracks',r:13,s:1,proj:'stone',aoe:55,req:'castle',desc:'Hurls stones at dense waves, not up close (needs Castle)'}
+ worker:{hp:70, dmg:4, range:6,  cd:1.2,speed:54,armor:0,food:0,time:6, cost:{food:50},           at:'townhall',r:7, s:.9, desc:'Gathers gold, lumber and food'},
+ melee: {hp:200,dmg:14,range:8,  cd:1.0,speed:48,armor:2,food:2,time:8, cost:{gold:50,food:40}, at:'barracks',r:8, s:1,  desc:'Sturdy front-line fighter'},
+ ranged:{hp:110,dmg:13,range:130,cd:1.3,speed:50,armor:0,food:2,time:9, cost:{gold:40,lumber:30,food:30}, at:'barracks',r:8, s:.95,proj:1,desc:'Shoots from the back line'},
+ heavy: {hp:420,dmg:26,range:10, cd:1.2,speed:60,armor:4,food:3,time:12,cost:{gold:110,lumber:40,food:70},at:'barracks',r:10,s:1.2,req:'keep',desc:'Elite warrior (needs Keep)'},
+ healer:{hp:110,dmg:5, range:100,cd:1.6,speed:48,armor:0,food:2,time:10,cost:{gold:80,lumber:40,food:50}, at:'barracks',r:8, s:.95,proj:'bolt',req:'war',heal:{cd:1.5,r:110,amt:18},desc:'Heals the most injured ally nearby (needs War Barracks)'},
+ siege: {hp:260,dmg:60,range:240,min:60,cd:3.2,speed:30,armor:2,food:4,time:16,cost:{gold:150,lumber:180,food:40},at:'barracks',r:13,s:1,proj:'stone',aoe:55,req:'war',desc:'Hurls stones at dense waves, not up close (needs War Barracks)'}
 };
 
 const HEROES={
- warrior:{cls:'Warrior',role:'Tank',hp:460,dmg:24,range:10,cd:1.0,speed:58,armor:4,r:11,s:1.25,cost:{gold:150,lumber:50},food:2,time:10,
+ warrior:{cls:'Warrior',role:'Tank',hp:460,dmg:24,range:10,cd:1.0,speed:58,armor:4,r:11,s:1.25,cost:{gold:150,lumber:50,food:100},food:2,time:10,
   abil:[{id:'taunt',name:'Taunt',cd:14,lvl:1,desc:'Pull nearby enemies onto you; take 30% less damage for 3s'},
         {id:'cleave',name:'Cleave',cd:6,lvl:1,desc:'Heavy sweep that hits every enemy around you'},
         {id:'warcry',name:'War Cry',cd:24,lvl:3,desc:'Allies heal 25% and deal 30% more damage for 6s'}]},
- mage:{cls:'Mage',role:'Area damage',hp:240,dmg:15,range:150,cd:1.4,speed:52,armor:1,r:10,s:1.15,cost:{gold:170,lumber:70},food:2,time:10,proj:'bolt',
+ mage:{cls:'Mage',role:'Area damage',hp:240,dmg:15,range:150,cd:1.4,speed:52,armor:1,r:10,s:1.15,cost:{gold:170,lumber:70,food:100},food:2,time:10,proj:'bolt',
   abil:[{id:'fireball',name:'Fireball',cd:7,lvl:1,desc:'Explodes on impact, burning a group'},
         {id:'nova',name:'Frost Nova',cd:12,lvl:1,desc:'Damages and slows enemies around you'},
         {id:'meteor',name:'Meteor',cd:28,lvl:3,desc:'Calls a meteor onto the biggest crowd'}]},
- ranger:{cls:'Ranger',role:'Debuff and range',hp:280,dmg:15,range:175,cd:0.8,speed:66,armor:2,r:10,s:1.15,cost:{gold:160,lumber:60},food:2,time:10,proj:'arrow',
+ ranger:{cls:'Ranger',role:'Debuff and range',hp:280,dmg:15,range:175,cd:0.8,speed:66,armor:2,r:10,s:1.15,cost:{gold:160,lumber:60,food:100},food:2,time:10,proj:'arrow',
   abil:[{id:'mark',name:"Hunter's Mark",cd:8,lvl:1,desc:'Target takes 40% more damage from everyone'},
         {id:'volley',name:'Volley',cd:11,lvl:1,desc:'Rain arrows over a crowd'},
         {id:'snipe',name:'Snipe',cd:18,lvl:3,desc:'Huge single shot that slows'}]}
@@ -531,6 +571,7 @@ const TALENTS={
 };
 const TAL={}; Object.values(TALENTS).forEach(t=>t.forEach(p=>p.forEach(o=>TAL[o.id]=o)));
 // Pack Leader wolves: about 40% of a Footman, no food, respawn each wave
+UNITS.merc={hp:380,dmg:24,range:9,cd:1.0,speed:52,armor:5,food:0,time:0,cost:MERCS.cost,r:9,s:1.1,merc:1,desc:'Hired veterans: no population, serve for 2 waves'};
 UNITS.wolfpet={hp:UNITS.melee.hp*TAL.pack.str,dmg:UNITS.melee.dmg*TAL.pack.str,range:6,cd:.9,speed:66,armor:1,food:0,time:0,cost:{},r:8,s:.85,pet:1,desc:'Wolf companion'};
 // Collision masses: in a friendly-versus-enemy shove the lighter side moves more. Stance multipliers apply to my units.
 const MASS={enemy:1,elite:2.5,boss:12,soldier:1.5,heavy:2.5,hero:2,pet:1,siege:3,stance:{hold:3,charge:2,defend:1},idleSpread:.3};
@@ -649,9 +690,9 @@ const MAPS=[
   plots:[{x:106,y:386},{x:316,y:386},{x:126,y:534},{x:290,y:536},{x:56,y:318},{x:366,y:318},{x:120,y:290},{x:300,y:290}],
   road:[[210,64],[224,150],[198,250],[222,350],[210,440]],
   list:[[['wolf',4],['goblin',2]],[['goblin',6],['gobArcher',2]],[['wolf',6],['goblin',3],['gobArcher',2]],[['skeleton',4],['goblin',4],['gobArcher',2]],[['wolf',8],['skeleton',4]],[['wolf',4],['goblin',4],['trollKing',1]]]},
- {id:'hollow',tier:'Bronze',name:'Hollow Pass',need:2,waves:16,hp:1,dmg:1,mod:'finite',mineGold:9000,seed:2,b0:5,bg:.36,gm:9,hm:2.7,lateK:1.2,themes:['horde','dead','pack','heavy','mixed'],unlock:{gobArcher:1,skeleton:3,troll:5,shaman:4,knight:11},bosses:{8:'trollKing',16:'giant'},
+ {id:'hollow',tier:'Bronze',name:'Hollow Pass',need:2,waves:16,hp:1,dmg:1,mod:'finite',mineGold:10000,seed:2,b0:5,bg:.36,gm:7,hm:2,lateK:1.2,themes:['horde','dead','pack','heavy','mixed'],unlock:{gobArcher:1,skeleton:3,troll:5,shaman:4,knight:11},bosses:{8:'trollKing',16:'giant'},
   story:'High in the Greyspine, an old dwarf hold guards the only pass south. Its gold seam is rich but will not last. Grimhorn the Frost Giant is marching to break the gate.',
-  twist:'The mine holds 9,000 gold, then it is gone. Spend it wisely.',
+  twist:'The mine holds 10,000 gold, then it is gone. Spend it wisely.',
   portal:{x:300,y:62},tc:{x:150,y:482},mine:{x:356,y:470},woods:{x0:26,x1:80,y0:392,y1:552,n:10},rally:{x:215,y:300},
   plots:[{x:262,y:404},{x:262,y:534},{x:112,y:360},{x:196,y:374},{x:318,y:284},{x:118,y:270},{x:330,y:380}],
   road:[[300,62],[282,160],[236,250],[184,352],[152,442]],
@@ -708,7 +749,9 @@ const campOf=i=>(MAPS[i]&&MAPS[i].campaign)||'c1';
 const campMaps=c=>MAPS.map((M,i)=>M.campaign===c?i:-1).filter(i=>i>=0);
 const starsIn=c=>campMaps(c).reduce((a,i)=>a+starsOf(MAPS[i].id).filter(Boolean).length,0);
 const wonMap=id=>!!(PROG.stars[id]&&PROG.stars[id][0]);
-function campUnlocked(c){ if(c==='c1') return true; if(c==='c2') return wonMap('icecrown')||starsIn('c1')>=8; return false; }
+// Preview builds (Claude artifact links) unlock everything for testing; the real site never does.
+const PREVIEW=!/(^|\.)zetatobi\.com$|^localhost$|^127\.0\.0\.1$/.test(location.hostname);
+function campUnlocked(c){ if(c==='c1'||(PREVIEW&&CAMP[c]&&!CAMP[c].soon)) return true; if(c==='c2') return wonMap('icecrown')||starsIn('c1')>=8; return false; }
 const campDone=c=>{ const L=campMaps(c); return L.length>0&&wonMap(MAPS[L[L.length-1]].id); };
 const raceFor=i=>CAMP[campOf(i)].race||chosenRace;
 const THEMES={
@@ -725,7 +768,7 @@ const THEMES={
 MAPS.forEach(M=>{ if(!M.campaign) M.campaign='c1'; });
 const theme=()=>THEMES[MAPS[mapIdx].id];
 const UPGRADES={
- stock:{name:'Stockpile',desc:'+60 gold and +40 lumber when a battle starts',max:3,cost:[1,2,3]},
+ stock:{name:'Stockpile',desc:'+60 gold, +40 lumber and +50 food when a battle starts',max:3,cost:[1,2,3]},
  tools:{name:'Northern tools',desc:'Workers carry 8% more',max:3,cost:[1,2,3]},
  walls:{name:'Stone walls',desc:'Town Center +20% health',max:3,cost:[1,2,2]},
  veterans:{name:'Veteran heroes',desc:'Heroes get +10% health and damage',max:3,cost:[2,2,3]},
@@ -879,15 +922,16 @@ function newGame(race,mi){
  if(mi!=null) mapIdx=mi; const M=MAPS[mapIdx];
  PORTAL={...M.portal}; TCPOS={...M.tc}; MINE={...M.mine,r:28}; RALLY={...M.rally}; PLOTS=M.plots.map(p=>({...p}));
  uid=1; if(typeof closeTalent==='function') closeTalent(); if(typeof setTP==='function'){ setTP(false); setSpeed(1); prevKey='*'; } if(typeof closeRing==='function'&&ringCtx) closeRing();
- S={race,R:RACES[race],map:M,path:null,mineLeft:M.mineGold||null,blizNext:40,blizT:0,heroDeaths:0,res:{gold:RESOURCES.gold.start+60*upg('stock'),lumber:RESOURCES.lumber.start+40*upg('stock')},
+ S={race,R:RACES[race],map:M,path:null,mineLeft:M.mineGold||null,blizNext:40,blizT:0,heroDeaths:0,res:{gold:RESOURCES.gold.start+60*upg('stock'),lumber:RESOURCES.lumber.start+40*upg('stock'),food:RESOURCES.food.start+50*upg('stock')},
   wave:0,waveState:'idle',countdown:0,spawnQ:[],spawnT:0,
   buildings:[],units:[],heroes:[],enemies:[],proj:[],fx:[],texts:[],
   forge:{weapons:0,armor:0,tools:0,arcana:0},keep:false,castle:false,master:0,
   sel:null,mode:'nearest',quest:0,time:0,over:false,endless:false,heroMoved:false,
-  plots:PLOTS.map((p,i)=>({x:p.x,y:p.y,i,b:null})),rally:{x:RALLY.x,y:RALLY.y},stance:'defend',marchSpeed:50,marchAt:0,zoneShow:0,auto:store.get('auto',{}),selPlot:null,marker:null,shake:0,kills:0,says:[],dmgLog:{},antiStuck:0,hz:[],ventT:null,ashNext:null,ashT:0};
+  plots:PLOTS.map((p,i)=>({x:p.x,y:p.y,i,b:null})),rally:{x:RALLY.x,y:RALLY.y},stance:'defend',marchSpeed:50,marchAt:0,zoneShow:0,auto:store.get('auto',{}),selPlot:null,marker:null,shake:0,kills:0,says:[],dmgLog:{},antiStuck:0,st:{battle:{},wave:{}},hz:[],ventT:null,ashNext:null,ashT:0};
  if(typeof sayClear==='function') sayClear();
  if(hasBoon('quartermaster')) S.res.gold+=BOONS.quartermaster.gold; if(hasBoon('seams')&&S.mineLeft) S.mineLeft*=1+BOONS.seams.mine; if(S.mineLeft) S.mineLeft*=1+.2*upg('veins');
  S.path=makePath(); S.quest=mapIdx===0?0:QUESTS.length; TREES=makeTrees();
+ extraPlots().forEach((p,k)=>S.plots.push({x:p.x,y:p.y,i:S.plots.length,b:null,tier:k<2?'keep':'castle'}));
  const tc=makeBuilding('townhall',TCPOS.x,TCPOS.y,-1,true); tc.maxHp*=(1+.2*upg('walls'))*(hasBoon('walls')?1+BOONS.walls.hp:1); tc.hp=tc.maxHp; S.buildings.push(tc); S.tc=tc;
  for(let i=0;i<4;i++){const w=makeUnit('worker',TCPOS.x-30+i*20,TCPOS.y+18); S.units.push(w);}
  THUMB={}; if(typeof renderGround==='function'&&CW){ renderGround(); renderVignette(); }
@@ -936,16 +980,29 @@ function makeEnemy(type){
 }
 
 /* ---------- helpers ---------- */
-const foodCap=()=>Math.min(100,RESOURCES.food.baseCap+4*upg('granary')+(S.keep?RESOURCES.food.keepBonus:0)+(S.castle?CASTLE_UPGRADE.food:0)+S.buildings.filter(b=>b.type==='farm'&&b.built).length*BUILDINGS.farm.food);
+const foodCap=()=>Math.min(100,POP.base+4*upg('granary')+(S.keep?POP.keep:0)+(S.castle?POP.castle:0));
 function foodUsed(){let f=0;S.units.forEach(u=>f+=u.food);S.heroes.forEach(h=>f+=h.food);S.buildings.forEach(b=>b.queue.forEach(q=>f+=q.food));return f;}
 function queuedHero(cls){return S.buildings.some(b=>b.queue.some(q=>q.kind==='hero'&&(!cls||q.key===cls)));}
 const hasB=t=>S.buildings.some(b=>b.type===t&&b.built);
+const heroSlots=()=>1+(S.keep?1:0)+(S.castle?1:0);
+const heroesQueued=()=>S.buildings.reduce((a,b)=>a+b.queue.filter(q=>q.kind==='hero').length,0);
+const plotOpen=p=>!p.tier||(p.tier==='keep'&&S.keep)||(p.tier==='castle'&&S.castle);
+const warB=()=>{ const b=getB('barracks'); return !!(b&&b.war); };
+function extraPlots(){ // four more plots, found automatically around the base: two open with the Keep, two with the Castle
+ const M=MAPS[mapIdx], RP=roadPts(), out=[], fires=(theme()&&theme().fires)||[], vents=M.vents||[];
+ const cand=[]; for(let gy=128;gy<=546;gy+=10) for(let gx=34;gx<=386;gx+=10) cand.push({x:gx,y:gy});
+ cand.sort((a,b)=>dist(a,TCPOS)-dist(b,TCPOS));
+ const ok=p=>dist(p,TCPOS)>80&&dist(p,MINE)>64&&dist(p,PORTAL)>150&&S.plots.concat(out).every(q=>Math.hypot(q.x-p.x,(q.y-p.y)*1.4)>62)
+  &&TREES.every(t=>dist(t,p)>34)&&roadDist(p.x,p.y,RP)>38&&fires.every(([fx,fy])=>Math.hypot(fx-p.x,fy-p.y)>36)&&vents.every(v=>dist(v,p)>70);
+ for(const p of cand){ if(out.length>=4) break; if(ok(p)) out.push(p); }
+ return out;
+}
 const getB=t=>S.buildings.find(b=>b.type===t&&b.built);
-function canAfford(c){return (c.gold||0)<=S.res.gold&&(c.lumber||0)<=S.res.lumber;}
+function canAfford(c){return RK.every(k=>(c[k]||0)<=S.res[k]);}
 function pay(c){
- if(!canAfford(c)){const ng=Math.ceil((c.gold||0)-S.res.gold), nl=Math.ceil((c.lumber||0)-S.res.lumber);
-  toast(ng>0&&nl>0?`Need ${ng} gold and ${nl} lumber`:ng>0?`Need ${ng} more gold`:`Need ${nl} more lumber`); sfx('err'); return false;}
- S.res.gold-=c.gold||0; S.res.lumber-=c.lumber||0; return true;
+ if(!canAfford(c)){ const need=RK.map(k=>[k,Math.ceil((c[k]||0)-S.res[k])]).filter(x=>x[1]>0);
+  toast('Need '+need.map(([k,n])=>`${n} more ${k}`).join(' and ')); sfx('err'); return false;}
+ RK.forEach(k=>S.res[k]-=c[k]||0); return true;
 }
 function friendlies(){const a=[];S.units.forEach(u=>{if(!u.dead&&!u.hidden)a.push(u);});S.heroes.forEach(h=>{if(!h.dead)a.push(h);});S.buildings.forEach(b=>{if(!b.dead)a.push(b);});return a;}
 function edgeDist(a,t){return dist(a,t)-(t.r||0)-(a.r||0)*.5;}
@@ -985,6 +1042,10 @@ function pickTalent(h,tier,k){ if(!h||talentPending(h)!==tier) return; const T=T
 /* =====================================================================
    COMBAT
    ===================================================================== */
+/* ---------- battle stats: damage dealt and taken, healing, kills and losses per hero, unit type and source ---------- */
+function stKey(e){ if(!e) return null; if(e.kind==='h') return 'h:'+e.cls; if(e.kind==='u') return 'u:'+e.type; if(e.kind==='b') return e.type==='townhall'?'b:townhall':e.type==='tower'?'b:tower':null; if(e.kind==='dragon') return 'dragon'; return null; }
+function stAdd(e,f,v){ const k=stKey(e); if(!k||!S.st||!(v>0)) return; for(const sc of [S.st.battle,S.st.wave]){ const r=sc[k]||(sc[k]={dealt:0,taken:0,heal:0,kills:0,deaths:0}); r[f]+=v; } }
+function heal(src,u,amt){ const before=u.hp; u.hp=Math.min(u.maxHp,u.hp+amt); stAdd(src,'heal',u.hp-before); return u.hp-before; }
 function hit(src,t,amt,opt){
  if(!t||t.dead) return 0;
  if(t.buffs.immune) return 0;
@@ -997,7 +1058,8 @@ function hit(src,t,amt,opt){
  if(t.kind==='h'&&src&&src.boss&&hasG(t,'plate')) a*=1-GEAR.plate.cut;
  if(t.team==='e'&&src&&src.kind==='h'&&opt&&opt.basic&&hasG(src,'ember')) t.buffs.burnDot={t:GEAR.ember.t,dps:GEAR.ember.dps,src};
  if(!(opt&&opt.pure)){ const ar=(t.armor||0)+(t.buffs.ironwall?TAL.ironwall.armor:0); a*=1-(ar*.06)/(1+ar*.06); }
- if(t.team==='e'){ const w=S.dmgLog[S.wave]||(S.dmgLog[S.wave]={h:0,t:0}), eff=Math.min(a,Math.max(0,t.hp)); w.t+=eff; if(src&&src.kind==='h') w.h+=eff; }   // hero share of effective damage (balance bot)
+ if(t.team==='e'){ const w=S.dmgLog[S.wave]||(S.dmgLog[S.wave]={h:0,t:0}), eff=Math.min(a,Math.max(0,t.hp)); w.t+=eff; if(src&&src.kind==='h') w.h+=eff; stAdd(src,'dealt',eff); }
+ else if(t.team==='p') stAdd(t,'taken',Math.min(a,Math.max(0,t.hp)));   // hero share of effective damage (balance bot)
  t.hp-=a; t.flash=.12;
  if(t.kind==='h'&&t.hp<t.maxHp*TAL.unbreakable.at&&t.unbrW!==S.wave&&hasT(t,'unbreakable')){ t.unbrW=S.wave; t.hp=Math.max(t.hp,1); t.buffs.immune={t:TAL.unbreakable.t};
   text(t.x,t.y-44,'Unbreakable!','#FFD36A',14); ring(t.x,t.y-8,8,60,'#FFD36A',.5,4); }
@@ -1008,9 +1070,9 @@ function hit(src,t,amt,opt){
 }
 function kill(t,src){
  if(t.dead) return;
- t.dead=true; t.hp=0;
+ t.dead=true; t.hp=0; if(t.team==='p'&&t.kind!=='b') stAdd(t,'deaths',1);
  if(t.team==='e'){
-  const d=ENEMIES[t.type]; S.res.gold+=d.gold*(hasBoon('bounty')?1+BOONS.bounty.gold:1); S.kills++;
+  const d=ENEMIES[t.type]; S.res.gold+=d.gold*(hasBoon('bounty')?1+BOONS.bounty.gold:1); S.kills++; stAdd(src,'kills',1);
   if(src&&src.kind==='u'&&src.type!=='worker'&&!src.dead){ src.kills=(src.kills||0)+1+.25*upg('hymns'); const rk=rankOf(src.kills);
    if(rk>(src.rank||0)){ src.rank=rk; applyStats(src); text(src.x,src.y-34,`Rank ${rk}`,'#FFD36A',12); for(let i=0;i<8;i++) part(src.x,src.y-20,rnd(-30,30),rnd(-60,-20),'#FFD36A',1.6,.5,60); } }
   text(t.x,t.y-20,'+'+d.gold,'#FFD36A',13); bump('rGold');
@@ -1063,7 +1125,7 @@ function attack(a,t){
   hit(a,t,dmgOf(a),{basic:a.kind==='h'});
   const hx=(a.x+t.x)/2, hy=(a.y+t.y)/2-10;
   for(let i=0;i<3;i++) part(hx,hy,rnd(-50,50),rnd(-60,0),'#FFF1C4',1.3,.25,80);
-  sfx(a.type==='wolf'?'bite':'clang');
+  sfx(meleeSound(a)); if(a.kind==='e'&&t&&t.kind!=='b'&&Math.random()<.15) sfx('grunt');
  }
 }
 function step(a,x,y,dt,tol,seek){
@@ -1105,9 +1167,9 @@ const ABIL={
   ring(h.x,h.y-8,10,140,'#FF7A5A',.5,4); text(h.x,h.y-40,'Taunt!','#FFC2B0',14); sfx('taunt');},
  cleave(h){const es=enemiesNear(h,60); if(!es.length){toast('No enemies in reach');return false;}
   let dealt=0; es.forEach(e=>dealt+=hit(h,e,h.dmg*1.25*pw(h),{show:1,crit:1})); S.fx.push({type:'arc',x:h.x,y:h.y-10,r:52,life:.3,max:.3}); S.shake=3; sfx('cleave');
-  if(dealt>0&&hasT(h,'bloodied')){ const hl=dealt*TAL.bloodied.heal; h.hp=Math.min(h.maxHp,h.hp+hl); text(h.x,h.y-44,'+'+Math.round(hl),'#8BE08A',12); } },
+  if(dealt>0&&hasT(h,'bloodied')){ const hl=dealt*TAL.bloodied.heal; heal(h,h,hl); text(h.x,h.y-44,'+'+Math.round(hl),'#8BE08A',12); } },
  warcry(h){const al=[...S.units.filter(u=>u.type!=='worker'),...S.heroes.filter(x=>!x.dead)].filter(u=>dist(u,h)<190);
-  const fast=hasT(h,'warlord')?TAL.warlord.speed:0; al.forEach(u=>{u.hp=Math.min(u.maxHp,u.hp+u.maxHp*.25);u.buffs.warcry={t:6,fast};}); ring(h.x,h.y-8,10,190,'#FFD36A',.7,5); sfx('horn');},
+  const fast=hasT(h,'warlord')?TAL.warlord.speed:0; al.forEach(u=>{heal(h,u,u.maxHp*.25);u.buffs.warcry={t:6,fast};}); ring(h.x,h.y-8,10,190,'#FFD36A',.7,5); sfx('horn');},
  fireball(h){const t=pickEnemy(h,S.mode,200); if(!t){toast('No enemy in range');return false;}
   S.proj.push({type:'fireball',x:h.x+h.face*8,y:h.y-30,t,src:h,dmg:38*pw(h),spd:260,aoe:50,team:'p',burn:hasT(h,'wildfire')?1:0}); sfx('fire');},
  nova(h){const R=novaR(h), es=enemiesNear(h,R); if(!es.length){toast('No enemies close enough');return false;}
@@ -1164,29 +1226,36 @@ function cast(i){
    ===================================================================== */
 function gatherMul(type){return (1+.15*S.forge.tools)*(1+.08*upg('tools'))*(hasBoon('seams')?1+BOONS.seams.carry:1)*(type==='gold'?S.R.perks.goldMul:S.R.perks.lumberMul);}
 function pickTree(){let best=null,bv=1e9;for(const t of TREES){const v=t.n*40+dist(t,TCPOS);if(v<bv){bv=v;best=t;}}return best;}
+function pickFarm(){ let best=null,bv=1e9; for(const b of S.buildings){ if(b.type!=='farm'||!b.built||b.dead||(b.nf||0)>=RESOURCES.food.perFarm) continue; const v=(b.nf||0)*60+dist(b,TCPOS); if(v<bv){bv=v;best=b;} } return best; }
 function setJob(w,job){
  if(w.tree){w.tree.n--;w.tree=null;}
+ if(w.farm){w.farm.nf=Math.max(0,(w.farm.nf||0)-1);w.farm=null;}
+ if(job==='food'){ const f=pickFarm(); if(!f) job='idle'; else { w.farm=f; f.nf=(f.nf||0)+1; w.fspot={x:f.x+rnd(-24,6),y:f.y+rnd(-5,6)}; } }
  w.job=job; w.hidden=false;
  if(job==='lumber'){w.tree=pickTree();w.tree.n++;}
  w.st=w.carry>0?'toBase':(job==='idle'?'idle':'toNode');
 }
 function assignWorker(job){
  if(job==='gold'&&S.mineLeft===0){toast('The gold mine is exhausted');sfx('err');return;}
+ if(job==='food'&&!pickFarm()){ toast(S.buildings.some(b=>b.type==='farm'&&b.built)?'Every farm has 2 farmers. Build another Farm':'Build a Farm first'); sfx('err'); return; }
  const ws=S.units.filter(u=>u.type==='worker');
  if(!ws.length){toast('Train workers at the Town Center');return;}
  let w=ws.find(u=>u.job==='idle');
- if(!w){const other=job==='gold'?'lumber':'gold'; const pool=ws.filter(u=>u.job===other); if(pool.length) w=pool[pool.length-1];}
+ if(!w){ const counts=['gold','lumber','food'].filter(j=>j!==job).map(j=>[j,ws.filter(u=>u.job===j).length]).sort((a,b)=>b[1]-a[1]);
+  if(counts[0][1]) w=ws.filter(u=>u.job===counts[0][0]).pop(); }
  if(!w){toast(`All workers are already on ${job}`);return;}
  setJob(w,job); sfx('click');
- toast(`${S.R.names.worker} sent to ${job==='gold'?'the mine':'the woods'}`);
+ toast(`${S.R.names.worker} sent to ${job==='gold'?'the mine':job==='food'?'the fields':'the woods'}`);
  uiDirty=true;
 }
 function tryBuild(type){
  const d=BUILDINGS[type];
  const n=S.buildings.filter(b=>b.type===type).length;
  if(n>=d.max){toast(`${d.name} limit reached`);return;}
+ if(d.req==='castle'&&!S.castle){toast(`${d.name} needs a Castle`);sfx('err');return;}
  let plot=(S.selPlot!=null&&!S.plots[S.selPlot].b)?S.plots[S.selPlot]:null;
- if(!plot){const free=S.plots.filter(p=>!p.b); free.sort((a,b)=>type==='tower'?a.y-b.y:dist(a,TCPOS)-dist(b,TCPOS)); plot=free[0];}
+ if(plot&&!plotOpen(plot)) plot=null;
+ if(!plot){const free=S.plots.filter(p=>!p.b&&plotOpen(p)); free.sort((a,b)=>type==='tower'?a.y-b.y:dist(a,TCPOS)-dist(b,TCPOS)); plot=free[0];}
  if(!plot){toast('No free plots left');return;}
  if(!pay(d.cost)) return;
  const b=makeBuilding(type,plot.x,plot.y,plot.i,false); plot.b=b; S.buildings.push(b); S.selPlot=null;
@@ -1204,6 +1273,41 @@ function buyMasterwork(){
  sfx('anvil'); toast(`Masterwork ${S.master}: +4% damage and health`); uiDirty=true;
 }
 const masterCost=()=>{ const m=Math.pow(MASTERWORK.grow,S.master), r=v=>Math.round(v*m/5)*5; return {gold:r(MASTERWORK.cost.gold),lumber:r(MASTERWORK.cost.lumber)}; };
+const mercCost=()=>{ const m=Math.pow(MERCS.grow,S.mercHires||0), r=v=>Math.round(v*m/10)*10; return {gold:r(MERCS.cost.gold),food:r(MERCS.cost.food)}; };
+const mercBands=()=>new Set(S.units.filter(u=>u.type==='merc'&&!u.leaving).map(u=>u.band)).size;
+function hireMercs(){
+ if(!S.keep){ toast('Sellswords will only work for a Keep'); sfx('err'); return; }
+ if(mercBands()>=MERCS.max){ toast('Two bands of sellswords at most'); sfx('err'); return; }
+ if(!pay(mercCost())) return; S.mercHires=(S.mercHires||0)+1; const band=uid++, w=S.waveState==='countdown'||S.waveState==='idle'?MERCS.waves:MERCS.waves+1;
+ for(let k=0;k<MERCS.n;k++){ const u=makeUnit('merc',clamp(TCPOS.x-40+k*20,14,WW-14),WH-6); u.band=band; u.contract=w; u.march=true; S.units.push(u); }
+ S.units.forEach(u=>{ if(u.type!=='worker') u.anchor=null; }); sfx('march'); toast(`Sellswords hired for ${MERCS.waves} waves`); uiDirty=true; }
+function mercsWaveDone(){ let left=0; S.units.forEach(u=>{ if(u.type==='merc'&&!u.leaving){ u.contract--; if(u.contract<=0){ u.leaving=true; left++; } } }); if(left) toast('A band of sellswords has taken its pay and left'); }
+function callDragon(){
+ const roost=getB('roost'); if(!roost){ toast('Build a Dragon Roost first (needs a Castle)'); sfx('err'); return; }
+ if(S.dragon){ toast('Your dragon is already in the air'); return; }
+ if(S.dragonCd>0){ toast(`Dragonfire ready in ${Math.ceil(S.dragonCd)}s`); sfx('err'); return; }
+ if(!pay(DRAGON.cost)) return;
+ const there=[{x:roost.x,y:roost.y},...S.path.slice().reverse().map(p=>({x:p.x,y:p.y}))], back=S.path.map(p=>({x:p.x,y:p.y}));
+ S.dragon={pts:[...there,...back],i:0,x:roost.x,y:roost.y,face:1,hit:new Set(),turn:there.length-1,fireT:0,kind:'dragon',team:'p',type:'dragon'};
+ S.dragonCd=DRAGON.cd; S.shake=6; sfx('roar'); sfx('breath'); banner('Dragonfire',''); uiDirty=true; }
+function dragonTick(dt){
+ if(S.dragonCd>0) S.dragonCd-=dt;
+ const D=S.dragon; if(!D) return;
+ let move=DRAGON.speed*dt;
+ while(move>0&&D.i<D.pts.length-1){ const a=D.pts[D.i+1], dx=a.x-D.x, dy=a.y-D.y, d=Math.hypot(dx,dy);
+  if(Math.abs(dx)>.5) D.face=dx>0?1:-1;
+  if(d<=move){ D.x=a.x; D.y=a.y; D.i++; move-=d; if(D.i===D.turn) D.hit=new Set(); } else { D.x+=dx/d*move; D.y+=dy/d*move; move=0; } }
+ if(D.i>=D.pts.length-1){ S.dragon=null; return; }
+ const breathing=D.i>=1;
+ if(breathing){ S.enemies.forEach(e=>{ if(e.dead||D.hit.has(e.id)||Math.hypot(e.x-D.x,e.y-D.y)>DRAGON.band+e.r) return; D.hit.add(e.id);
+   const amt=e.boss?e.maxHp*DRAGON.bossPct:e.maxHp*DRAGON.pct+DRAGON.flat; hit(D,e,amt,{pure:1,show:1}); });
+  D.fireT-=dt; if(D.fireT<=0){ D.fireT=.12; S.fx.push({type:'burn',x:D.x+rnd(-20,20),y:D.y+rnd(-14,14),r:DRAGON.burn.r,dps:DRAGON.burn.dps,src:D,life:DRAGON.burn.t,max:DRAGON.burn.t,tk:0});
+   for(let q=0;q<10;q++) part(D.x+rnd(-8,8),D.y-38,rnd(-60,60),rnd(10,90),q%2?'#FFB24A':'#FF6A2A',rnd(2,4),.5,60); } } }
+function drawDragon(c){ const D=S.dragon; if(!D) return; drawWyrmCol(c,{x:D.x,y:D.y,s:1.9,face:D.face,flash:0,type:'dragon'},DRAGON.pal[S.race]||DRAGON.pal.kingdom);
+ const g=c.createRadialGradient(D.x,D.y-20,4,D.x,D.y-20,70); g.addColorStop(0,'rgba(255,150,60,.35)'); g.addColorStop(1,'rgba(255,150,60,0)'); c.fillStyle=g; c.fillRect(D.x-70,D.y-90,140,140); }
+function upgradeBarracks(b){ b=b||getB('barracks'); if(!b||b.war||b.upg) return;
+ if(!S.castle){ toast('War Barracks needs a Castle'); sfx('err'); return; }
+ if(!pay(BARRACKS_UPGRADE.cost)) return; b.upg={t:0,time:BARRACKS_UPGRADE.time,to:'war'}; sfx('build'); toast('Building the War Barracks'); uiDirty=true; }
 function upgradeKeep(){
  const tc=S.tc; if(S.keep||tc.upg){return;}
  if(!pay(KEEP_UPGRADE.cost)) return;
@@ -1211,7 +1315,7 @@ function upgradeKeep(){
 }
 function enqueue(b,item){
  if(b.queue.length>=5){toast('Queue is full');return false;}
- if(foodUsed()+item.food>foodCap()){toast('Not enough food: build a Farm');sfx('err');return false;}
+ if(foodUsed()+item.food>foodCap()){toast(S.castle?'Population limit reached':S.keep?'Population limit reached: raise a Castle for more':'Population limit reached: raise a Keep for more');sfx('err');return false;}
  if(!pay(item.cost)) return false;
  b.queue.push(item); sfx('click'); uiDirty=true; return true;
 }
@@ -1219,12 +1323,14 @@ function trainWorker(){const d=UNITS.worker; enqueue(S.tc,{kind:'unit',key:'work
 function trainUnit(key){
  const b=getB('barracks'); if(!b){toast('Build a Barracks first');return;}
  const d=UNITS[key]; if(d.req==='keep'&&!S.keep){toast('Upgrade your Town Center to a Keep first');return;}
+ if(d.req==='war'&&!b.war){toast(S.castle?'Upgrade the Barracks to War Barracks first':'Needs War Barracks (raise a Castle first)');return;}
  if(d.req==='castle'&&!S.castle){toast('Upgrade your Keep to a Castle first');return;}
  enqueue(b,{kind:'unit',key,t:0,time:d.time,food:d.food,cost:d.cost});
 }
 function recruitHero(cls){
  const b=getB('barracks'); if(!b){toast('Build a Barracks first');return;}
  if(S.heroes.some(h=>h.cls===cls)||queuedHero(cls)) return;
+ if(S.heroes.length+heroesQueued()>=heroSlots()){ toast(heroSlots()===1?'Your second hero joins when you raise a Keep':heroSlots()===2?'Your third hero joins when you raise a Castle':'All three heroes are with you'); sfx('err'); return; }
  const d=HEROES[cls]; enqueue(b,{kind:'hero',key:cls,t:0,time:d.time,food:d.food,cost:d.cost});
 }
 function forgeUp(key){
@@ -1242,7 +1348,7 @@ function specTower(b,k){ const sp=TOWER_SPECS[k]; if(b.spec||!pay(sp.cost)) retu
  for(let i=0;i<16;i++) part(b.x+rnd(-8,8),b.y-rnd(40,80),rnd(-50,50),rnd(-90,-20),k==='frost'?'#BFEAFF':'#FFE0A0',1.8,.6,120);
  sfx('built'); toast(`${sp.name}: ${sp.desc}`); uiDirty=true; }
 function sellValue(b){const c=BUILDINGS[b.type].cost||{}, x=b.spec?TOWER_SPECS[b.spec].cost:{}, m=b.built?.5:.9; return {gold:Math.floor(((c.gold||0)+(x.gold||0))*m),lumber:Math.floor(((c.lumber||0)+(x.lumber||0))*m)};}
-function refundQueue(b){b.queue.forEach(q=>{S.res.gold+=q.cost.gold||0;S.res.lumber+=q.cost.lumber||0;}); b.queue=[];}
+function refundQueue(b){b.queue.forEach(q=>RK.forEach(k=>S.res[k]+=q.cost[k]||0)); b.queue=[];}
 function sellBuilding(b){
  if(b===S.tc||b.dead) return;
  const v=sellValue(b); S.res.gold+=v.gold; S.res.lumber+=v.lumber; refundQueue(b);
@@ -1256,11 +1362,11 @@ function dismissUnit(type){
  const u=us.find(x=>type==='worker'&&x.job==='idle')||us[us.length-1];
  if(u.tree){u.tree.n--;u.tree=null;} u.dead=true; S.units=S.units.filter(x=>x!==u);
  for(let i=0;i<8;i++) part(u.x,u.y-10,rnd(-30,30),rnd(-60,-10),'#DDEFFF',1.6,.5,60);
- toast(`${S.R.names[type]} dismissed: ${UNITS[type].food} food freed`); sfx('click'); uiDirty=true;
+ toast(`${S.R.names[type]} dismissed: ${UNITS[type].food} population freed`); sfx('click'); uiDirty=true;
 }
 function cancelQueue(b,i){
  const q=b.queue[i]; if(!q) return; b.queue.splice(i,1);
- S.res.gold+=q.cost.gold||0; S.res.lumber+=q.cost.lumber||0; bump('rGold');
+ RK.forEach(k=>S.res[k]+=q.cost[k]||0); bump('rGold');
  toast(`Cancelled ${q.kind==='hero'?S.R.heroNames[q.key]:S.R.names[q.key]}: full refund`); sfx('click'); uiDirty=true;
 }
 function unassignWorker(job){
@@ -1275,7 +1381,7 @@ function forgeCost(key){const b=FORGE[key].base, lv=S.forge[key], m=(lv<5?Math.p
 function startWave(){
  if(S.over||S.waveState==='spawning'||S.waveState==='fighting') return;
  if(S.waveState==='countdown'){const bonus=Math.floor(S.countdown); if(bonus>0){S.res.gold+=bonus; toast(`Called early: +${bonus} gold`); bump('rGold');}}
- S.wave++; const d=waveDef(S.wave), list=[]; ensurePets(); if(S.map.hazard==='erupt'&&S.wave%HAZ.erupt.everyWave===0) setTimeout(()=>{ if(S&&!S.over) startEruption(); },2500);
+ S.wave++; S.st=S.st||{battle:{},wave:{}}; S.st.wave={}; const d=waveDef(S.wave), list=[]; ensurePets(); if(S.map.hazard==='erupt'&&S.wave%HAZ.erupt.everyWave===0) setTimeout(()=>{ if(S&&!S.over) startEruption(); },2500);
  const pool=d.groups.filter(g=>!ENEMIES[g[0]].boss).map(g=>[g[0],g[1]]);
  let left=pool.reduce((s,g)=>s+g[1],0);
  while(left>0){for(const g of pool){if(g[1]>0){list.push(g[0]);g[1]--;left--;}}}
@@ -1297,7 +1403,7 @@ function updateWaves(dt){
  }
 }
 function snapshot(){ return {v:4,camp:campOf(mapIdx),castle:S.castle,master:S.master,map:mapIdx,race:S.race,wave:S.wave,res:{...S.res},forge:{...S.forge},keep:S.keep,mineLeft:S.mineLeft,stance:S.stance,mode:S.mode,rally:{...S.rally},heroDeaths:S.heroDeaths,kills:S.kills,
- buildings:S.buildings.filter(b=>!b.dead&&b!==S.tc).map(b=>({type:b.type,plot:b.plot,built:b.built,prog:b.prog,hp:b.hp,spec:b.spec||null,queue:b.queue})),
+ buildings:S.buildings.filter(b=>!b.dead&&b!==S.tc).map(b=>({type:b.type,plot:b.plot,built:b.built,prog:b.prog,hp:b.hp,spec:b.spec||null,war:!!b.war,queue:b.queue})),
  tc:{hp:S.tc.hp,queue:S.tc.queue,upg:S.tc.upg}, units:S.units.filter(u=>u.type!=='wolfpet').map(u=>({type:u.type,x:u.x,y:u.y,hp:u.hp,job:u.job||null,kills:u.kills||0})),
  heroes:S.heroes.map(h=>({cls:h.cls,lvl:h.lvl,xp:h.xp,hp:h.hp,dead:h.dead,revive:h.revive,x:h.x,y:h.y,follow:h.follow,tal:h.tal.slice()}))}; }
 function saveRun(){ try{ store.set('save',snapshot()); }catch(e){} }
@@ -1308,7 +1414,7 @@ function restoreRun(sv){
  if(sv.keep){ S.keep=true; S.tc.maxHp+=KEEP_UPGRADE.hp; S.tc.h=132; }
  if(sv.castle){ S.castle=true; S.tc.maxHp+=CASTLE_UPGRADE.hp; S.tc.h=CASTLE_UPGRADE.h; } S.master=sv.master||0;
  S.tc.hp=Math.min(S.tc.maxHp,sv.tc.hp); S.tc.queue=sv.tc.queue||[]; S.tc.upg=sv.tc.upg||null;
- sv.buildings.forEach(o=>{ const p=S.plots[o.plot]; if(!p) return; const b=makeBuilding(o.type,p.x,p.y,o.plot,o.built); b.prog=o.prog; b.hp=o.hp; b.spec=o.spec; b.queue=o.queue||[]; if(b.spec) b.maxHp+=150; p.b=b; S.buildings.push(b); });
+ sv.buildings.forEach(o=>{ const p=S.plots[o.plot]; if(!p) return; const b=makeBuilding(o.type,p.x,p.y,o.plot,o.built); b.prog=o.prog; b.hp=o.hp; if(o.war){ b.war=true; b.maxHp+=BARRACKS_UPGRADE.hp; b.h+=10; } b.spec=o.spec; b.queue=o.queue||[]; if(b.spec) b.maxHp+=150; p.b=b; S.buildings.push(b); });
  S.units=[]; sv.units.forEach(o=>{ if(!UNITS[o.type]) return; const u=makeUnit(o.type,o.x,o.y); u.kills=o.kills||0; u.rank=rankOf(u.kills); applyStats(u); u.hp=Math.min(u.maxHp,o.hp); S.units.push(u); if(o.type==='worker') setJob(u,o.job||'idle'); });
  sv.heroes.forEach(o=>{ const h=makeHero(o.cls,o.x,o.y); h.lvl=o.lvl; h.xp=o.xp; if(Array.isArray(o.tal)) h.tal=[0,1,2].map(i=>o.tal[i]||null); applyStats(h); h.hp=Math.min(h.maxHp,o.hp); h.dead=o.dead; h.revive=o.revive; h.follow=o.follow; S.heroes.push(h); });
  [...S.units,...S.heroes].forEach(applyStats); ensurePets();
@@ -1317,13 +1423,15 @@ function restoreRun(sv){
  banner(MAPS[sv.map].name,`Continuing after wave ${sv.wave}`);
 }
 function waveCleared(){
- const g=40+S.wave*20, l=25+S.wave*12;
+ const g=40+S.wave*20, l=25+S.wave*12, fd=20+S.wave*6; S.res.food+=fd; mercsWaveDone();
  S.res.gold+=g; S.res.lumber+=l; bump('rGold'); bump('rLumber');
  const best=store.get('best',0); if(S.wave>best) store.set('best',S.wave);
  sfx('victory');
  if(!(S.wave===S.map.waves&&!S.endless)&&!S.endless) setTimeout(()=>{ if(S&&!S.over&&mode==='play') saveRun(); },50);
  if(S.wave===S.map.waves&&!S.endless){ S.waveState='idle'; setTimeout(()=>gameOver(true),1200); banner(`${S.map.name} holds`,'Victory'); return; }
- banner(`Wave ${S.wave} cleared`,`+${g} gold  +${l} lumber`); storyMid({clear:S.wave});
+ banner(`Wave ${S.wave} cleared`,`+${g} gold  +${l} lumber  +${fd} food`); storyMid({clear:S.wave});
+ { const W=S.st&&S.st.wave||{}, R=Object.entries(W), k=R.reduce((a,[,r])=>a+r.kills,0), lost=R.filter(([x])=>x.startsWith('u:')&&x!=='u:worker').reduce((a,[,r])=>a+r.deaths,0), top=R.sort((a,b)=>b[1].dealt-a[1].dealt)[0];
+  setTimeout(()=>{ if(S&&!S.over&&mode==='play') toast(`Wave ${S.wave}: ${k} kills, ${lost} lost${top?`. Top damage: ${stName(top[0])}`:''}`); },2700); }
  S.waveState='countdown'; S.countdown=30; uiDirty=true;
 }
 
@@ -1352,6 +1460,7 @@ function update(dt){
  S.time+=dt;
  if(S.shake>0) S.shake=Math.max(0,S.shake-dt*30);
  updateWaves(dt);
+ dragonTick(dt);
  if(mode==='play'&&(S.waveState==='countdown'||S.waveState==='idle')&&!S.enemies.length){ [...S.units,...S.heroes].forEach(u=>{ if(!u.dead) u.hp=Math.min(u.maxHp,u.hp+u.maxHp*.05*(1+VETERANCY.heal*(u.rank||0))*dt); }); S.buildings.forEach(b=>{ if(b.built&&!b.dead) b.hp=Math.min(b.maxHp,b.hp+b.maxHp*.006*dt); }); }
  updateHazards(dt);
  if(S.map.mod==='blizzard'&&mode==='play'){ S.blizNext-=dt; if(S.blizT>0) S.blizT-=dt; if(S.blizNext<=0){ S.blizNext=55; S.blizT=12; banner('Blizzard','Everyone moves slower'); sfx('storm'); } }
@@ -1367,9 +1476,15 @@ function update(dt){
    continue;
   }
   if(b.upg){b.upg.t+=dt; if(b.upg.t>=b.upg.time){ const to=b.upg.to; b.upg=null; sfx('built'); uiDirty=true;
-   if(to==='castle'){ S.castle=true; b.maxHp+=CASTLE_UPGRADE.hp; b.hp+=CASTLE_UPGRADE.hp; b.h=CASTLE_UPGRADE.h; banner('Castle raised','Forge levels 6-8, siege engines and Masterwork'); }
-   else { S.keep=true; b.maxHp+=KEEP_UPGRADE.hp; b.hp+=KEEP_UPGRADE.hp; b.h=132; banner('Keep raised','Elite units, healers and forge levels 4-5 unlocked'); } }}
-  if(b.queue.length){const q=b.queue[0]; q.t+=dt; if(q.t>=q.time){b.queue.shift(); spawnFrom(b,q); uiDirty=true;}}
+   if(to==='castle'){ S.castle=true; b.maxHp+=CASTLE_UPGRADE.hp; b.hp+=CASTLE_UPGRADE.hp; b.h=CASTLE_UPGRADE.h; banner('Castle raised','A third hero, War Barracks, forge 6-8 and 2 new plots'); S.plotFlash=S.time; }
+   else if(to==='war'){ b.war=true; b.maxHp+=BARRACKS_UPGRADE.hp; b.hp+=BARRACKS_UPGRADE.hp; b.h+=10; banner('War Barracks','Faster training, two at a time, healers and siege'); }
+   else { S.keep=true; b.maxHp+=KEEP_UPGRADE.hp; b.hp+=KEEP_UPGRADE.hp; b.h=132; banner('Keep raised','A second hero, elite units, forge 4-5 and 2 new plots'); S.plotFlash=S.time; } }}
+  if(b.queue.length){ const lanes=Math.min(b.war?BARRACKS_UPGRADE.lanes:1,b.queue.length), sp=b.war?BARRACKS_UPGRADE.speed:1;
+   for(let li=0;li<lanes;li++) b.queue[li].t+=dt*sp;
+   for(let li=lanes-1;li>=0;li--){ const q=b.queue[li]; if(q.t>=q.time){ b.queue.splice(li,1); spawnFrom(b,q); uiDirty=true; } } }
+  if(b.type==='farm'){ const here=S.units.filter(u=>u.type==='worker'&&u.farm===b&&u.st==='work').length, F=RESOURCES.food;
+   const rate=(F.farm+F.farmer*here)*(1+.15*S.forge.tools)*(1+.08*upg('tools')); S.res.food+=rate*dt; b.fAcc=(b.fAcc||0)+rate*dt;
+   if(b.fAcc>=10){ text(b.x+rnd(-10,10),b.y-36,'+'+Math.floor(b.fAcc),'#B5E07A',11); b.fAcc-=Math.floor(b.fAcc); } }
   const sh=BUILDINGS[b.type].shoots;
   if(sh){b.atkT-=dt; if(b.atkT<=0){const sp=b.spec&&TOWER_SPECS[b.spec], rng=(sp?sp.range:sh.range)*(b.type==='tower'&&hasBoon('eagle')?1+BOONS.eagle.range:1)*(b.type==='tower'?S.R.perks.towerRange||1:1)*(S.ashT>0&&b.type==='tower'?HAZ.ash.range:1), t=pickEnemy(b,sp&&sp.pierce?'strongest':'nearest',rng);
    if(t){ if(sp){ b.atkT=sp.cd; S.proj.push({type:sp.proj,x:b.x,y:b.y-b.h*.75,t,src:b,dmg:sp.dmg*(1+.1*S.forge.weapons)*(1+.15*upg('runic')),spd:sp.proj==='shard'?340:640,team:'p',slowM:sp.slow||0,pure:sp.pierce||0}); sfx(sp.slow?'frost':'snipe'); }
@@ -1413,6 +1528,10 @@ function workerAI(w,dt){
   return;
  }
  if(w.st==='toBase'){ if(step(w,tc.x,tc.y+6,dt,tc.r+4)){deposit(w); w.st='toNode';} return; }
+ if(w.job==='food'){ const f=w.farm; if(!f||f.dead||!S.buildings.includes(f)){ setJob(w,'idle'); return; }
+  if(w.st!=='work'){ if(step(w,w.fspot.x,w.fspot.y,dt,3)) w.st='work'; }
+  else { w.moving=false; w.wt=(w.wt||0)-dt; if(w.wt<=0){ w.wt=rnd(1,1.6); w.atk=1; w.face=Math.random()<.5?1:-1; } }
+  return; }
  if(w.job==='gold'){
   if(w.st==='toNode'){ if(step(w,MINE.x+16,MINE.y-2,dt,4)){w.st='work';w.wt=RESOURCES.gold.work;w.hidden=true;} }
   else if(w.st==='work'){ w.wt-=dt; if(w.wt<=0){ w.hidden=false; let amt=RESOURCES.gold.carry*gatherMul('gold');
@@ -1435,7 +1554,7 @@ function deposit(w){
 }
 /* ---------- formation: rows around the banner, facing up the road ---------- */
 const FORM={perRow:8,gap:18,row:16,groupGap:6,lead:8};
-const formGroup=u=>u.type==='ranged'||u.type==='healer'?1:u.type==='siege'?2:0;     // 0 front (melee, heavy, pets), 1 ranged and healers, 2 siege
+const formGroup=u=>u.type==='merc'?0:u.type==='ranged'||u.type==='healer'?1:u.type==='siege'?2:0;     // 0 front (melee, heavy, pets), 1 ranged and healers, 2 siege
 function bannerFacing(pt){ // towards the nearest upstream point of the road
  const P=S.path; let best=0,bd=1e9,bt=0;
  for(let i=0;i<P.length-1;i++){ const a=P[i], b=P[i+1], vx=b.x-a.x, vy=b.y-a.y, L=vx*vx+vy*vy||1, t=clamp(((pt.x-a.x)*vx+(pt.y-a.y)*vy)/L,0,1), d=Math.hypot(a.x+vx*t-pt.x,a.y+vy*t-pt.y); if(d<bd){bd=d;best=i;bt=t;} }
@@ -1460,6 +1579,7 @@ const STANCES={hold:{name:'Hold the line',desc:'Stay in formation. Melee guard 4
  defend:{name:'Defend',desc:'Hold formation until an enemy enters the zone around the banner, then fight freely inside it.',zone:170,heroZone:200},
  charge:{name:'Charge',desc:'Fight your way to the banner, attacking everything on the way, then hold there.',aggro:50,hold:120}};
 function soldierAI(u,dt){
+ if(u.leaving){ u.target=null; step(u,u.x,WH+40,dt,4); if(u.y>=WH-14){ u.dead=true; u.gone=true; for(let q=0;q<6;q++) part(u.x,u.y-10,rnd(-20,20),rnd(-40,-10),'#E3B341',1.5,.5,60); } return; }
  u.retarget-=dt; u.anchor=formationSpot(u);
  if(u.march){ // march together at the pace of the slowest soldier; only fight back if something is in reach
   const adj=pickEnemy(u,'nearest',u.range+u.r+10);
@@ -1485,7 +1605,7 @@ function soldierAI(u,dt){
 }
 function healTick(u,dt){ const H=UNITS.healer.heal; u.healT=(u.healT==null?rnd(0,H.cd):u.healT)-dt; if(u.healT>0) return; u.healT=H.cd;
  let best=null,bv=.999; [...S.units.filter(x=>x.type!=='worker'&&!x.dead&&x!==u),...S.heroes.filter(x=>!x.dead)].forEach(x=>{ if(dist(x,u)>H.r) return; const v=x.hp/x.maxHp; if(v<bv){bv=v;best=x;} });
- if(!best) return; const amt=H.amt*(1+.12*S.forge.weapons); best.hp=Math.min(best.maxHp,best.hp+amt); u.atk=1;
+ if(!best) return; const amt=H.amt*(1+.12*S.forge.weapons); heal(u,best,amt); u.atk=1;
  text(best.x,best.y-30,'+'+Math.round(amt),'#8BE08A',11); for(let q=0;q<5;q++) part(best.x+rnd(-5,5),best.y-12,rnd(-12,12),rnd(-40,-15),'#B8FFC4',1.6,.5,0); }
 function siegeAI(u,dt){ // stays in its slot and lobs stones at the densest group between 60 and its range
  u.retarget-=dt; u.anchor=formationSpot(u);
@@ -1980,6 +2100,22 @@ function drawBuildingShape(c,type,P,horde,keep,t,spec){
   c.strokeStyle='#C8CFD8'; c.lineWidth=1.2; c.beginPath(); c.moveTo(39,-18); c.lineTo(39,-26); c.moveTo(45,-18); c.lineTo(45,-26); c.stroke();
   c.fillStyle='#6B4A2B'; c.fillRect(-46,-14,2,14); c.fillStyle='#C9A35A'; ell(c,-45,-16,4,5); c.fillRect(-50,-14,10,2);
   if(t) drawTorch(c,-12,-2,t);
+  if(spec==='war'){ [[-40,1],[40,-1]].forEach(([tx])=>{ c.fillStyle=lg(c,tx-7,0,tx+7,0,P.wall,P.wallD); c.fillRect(tx-7,-50,14,48); wallTex(c,tx-7,-50,14,48,horde);
+    c.fillStyle=P.wallD; for(let q=0;q<3;q++) c.fillRect(tx-8+q*6,-55,4,5); c.fillStyle=P.roof; poly(c,[[tx-9,-55],[tx+9,-55],[tx,-70]]); c.fill();
+    c.strokeStyle='#3A2A1E'; c.lineWidth=1.2; c.beginPath(); c.moveTo(tx,-70); c.lineTo(tx,-84); c.stroke();
+    c.fillStyle=P.banner; c.beginPath(); c.moveTo(tx,-84); c.lineTo(tx+10,-81+Math.sin((t||0)*4+tx)*1.2); c.lineTo(tx,-77); c.closePath(); c.fill(); });
+   c.fillStyle='#E7C66A'; c.beginPath(); c.arc(0,-41,3,0,TAU); c.fill(); }
+ }else if(type==='roost'){
+  shadow(c,3,2,40,12);
+  c.fillStyle=lg(c,0,-40,0,0,P.wall,P.wallD); poly(c,[[-30,0],[30,0],[24,-36],[-24,-36]]); c.fill(); wallTex(c,-28,-36,56,36,horde);
+  c.fillStyle='#2A1C12'; c.beginPath(); c.moveTo(-9,0); c.lineTo(-9,-14); c.quadraticCurveTo(0,-24,9,-14); c.lineTo(9,0); c.closePath(); c.fill();
+  c.fillStyle=P.wallD; for(let q=0;q<6;q++) c.fillRect(-28+q*10,-42,6,6); c.fillRect(-28,-38,56,3);
+  c.fillStyle='#6B4A2B'; ell(c,0,-42,26,7); c.strokeStyle='#4A3220'; c.lineWidth=1.4; for(let q=0;q<9;q++){ c.beginPath(); c.moveTo(-24+q*6,-44); c.lineTo(-20+q*6,-39); c.stroke(); }
+  if(spec!=='away'){ const K=DRAGON.pal[(S&&S.race)||'kingdom']||DRAGON.pal.kingdom, br=Math.sin((t||0)*1.5)*1.2;
+   c.fillStyle=K[0]; poly(c,[[-6,-46],[-34,-74-br],[-14,-58],[-24,-56]]); c.fill(); poly(c,[[6,-46],[34,-74-br],[14,-58],[24,-56]]); c.fill();
+   c.fillStyle=lg(c,0,-62,0,-42,K[2],K[3]); ell(c,0,-50,12,8); c.fillStyle=K[1]; ell(c,4,-64,7,6); ell(c,10,-62,5,3.4);
+   c.fillStyle=K[4]; poly(c,[[1,-68],[-3,-76],[4,-69]]); c.fill(); poly(c,[[5,-68],[4,-77],[8,-68]]); c.fill(); c.fillStyle='#FFE08A'; ell(c,7,-65,1.4,1.1);
+   if(t){ const gl=.25+Math.sin(t*2)*.1; const g=c.createRadialGradient(10,-60,0,10,-60,16); g.addColorStop(0,`rgba(255,170,80,${gl})`); g.addColorStop(1,'rgba(255,170,80,0)'); c.fillStyle=g; c.fillRect(-6,-76,32,32); } }
  }else if(type==='forge'){
   shadow(c,3,2,34,11);
   c.fillStyle=lg(c,0,-30,0,-2,'#9AA3AD','#626C76'); c.fillRect(-24,-28,48,26); wallTex(c,-24,-28,48,26,false);
@@ -2010,10 +2146,10 @@ function drawBuilding(c,b){
  if(!b.built){
   c.fillStyle='rgba(110,95,75,.55)'; ell(c,0,0,b.r+4,b.r*.38);
   c.save(); c.globalAlpha=.9; c.beginPath(); c.rect(-80,-b.h*b.prog-2,160,b.h*b.prog+30); c.clip();
-  drawBuildingShape(c,b.type,P,horde,false,t,b.spec); c.restore();
+  drawBuildingShape(c,b.type,P,horde,false,t,b.type==='barracks'&&b.war?'war':b.spec); c.restore();
   c.strokeStyle='#8B6A45'; c.lineWidth=1.6; c.beginPath();
   const w=b.r*.9, hh=b.h*.9; c.moveTo(-w,0); c.lineTo(-w,-hh); c.moveTo(w,0); c.lineTo(w,-hh); c.moveTo(-w,-hh*.5); c.lineTo(w,-hh*.5); c.moveTo(-w,-hh); c.lineTo(w,-hh*.5); c.stroke();
- }else { drawBuildingShape(c,b.type,P,horde,keep,t,b.spec); runeLines(c,b.type,P,t); }
+ }else { drawBuildingShape(c,b.type,P,horde,keep,t,b.type==='barracks'&&b.war?'war':b.type==='roost'&&S.dragon?'away':b.spec); runeLines(c,b.type,P,t); }
  if(b.flash>0){c.globalAlpha=b.flash*3; c.fillStyle='rgba(255,255,255,.35)'; ell(c,0,-b.h*.35,b.r,b.h*.35); c.globalAlpha=1;}
  c.restore();
 }
@@ -2100,7 +2236,7 @@ function drawFigure(c,o){
  c.restore();
 }
 const BEARDS=['#7A4A22','#B5482A','#9AA0A6'];
-function dwarfLook(o,type,id){ o.dwarf=true; o.beard=BEARDS[(id||0)%3]; const P=RACES.dwarf.pal;
+function dwarfLook(o,type,id){ if(type==='merc') return o; o.dwarf=true; o.beard=BEARDS[(id||0)%3]; const P=RACES.dwarf.pal;
  switch(type){
   case 'worker': return {...o,head:'cap',hood:'#8A6A3A',body:'#6B5A48'};
   case 'melee': return {...o,head:'helm',helm:'#C8923A',horns2:true,weapon:'axe',shield:P.banner};
@@ -2117,6 +2253,7 @@ function unitLook0(u){
   case 'melee': return {...base,head:horde?'horns':'helm',helm:armorMetal,weapon:horde?'axe':'sword',shield:horde?null:P.bodyD,pads:F.armor>=2,padCol:armorMetal};
   case 'ranged': return {...base,head:'hood',hood:horde?'#5B3A2A':'#2F5A3A',body:horde?'#7A4A2E':'#3E6B45',weapon:horde?'taxe':'bow'};
   case 'heavy': return {...base,head:horde?'horns':'helm',helm:armorMetal,weapon:horde?'great':'spear',shield:P.banner,cape:P.bodyD,pads:true,padCol:armorMetal};
+  case 'merc': return {...base,body:'#6B5A3A',bodyD:'#4A3E28',trim:'#E3B341',head:'helm',helm:'#C9A24A',weapon:'great',shield:null,cape:'#A8761A',pads:true,padCol:'#E3B341'};
   case 'healer': return horde?{...base,body:'#4E6A3A',bodyD:'#34492A',trim:'#D9B26A',head:'hood',hood:'#6B4A2B',robe:true,weapon:'staff',orb:'#9FFFB0',orbFade:'rgba(120,255,160,0)',cape:'#3A2A1E'}
    :{...base,body:'#E8E2D0',bodyD:'#C9BFA4',trim:'#E7C66A',head:'hood',hood:'#F4EEDC',robe:true,weapon:'staff',orb:'#FFF2B0',orbFade:'rgba(255,230,140,0)',cape:P.banner};
  }
@@ -2252,7 +2389,7 @@ function draw(){
  const t=S.time, q=mode==='play'&&S.quest<QUESTS.length?QUESTS[S.quest].hl:null, pulse=(Math.sin(t*5)+1)/2;
  drawPortal(c,t,S.waveState==='spawning'||S.waveState==='fighting');
  // plots
- S.plots.forEach(p=>{ if(p.b) return; const hot=S.selPlot===p.i||q==='plot';
+ S.plots.forEach(p=>{ if(p.b||!plotOpen(p)) return; const hot=S.selPlot===p.i||q==='plot'||(p.tier&&S.time-(S.plotFlash||-99)<6&&Math.sin(S.time*8)>0);
   c.save(); c.setLineDash([4,4]); c.strokeStyle=hot?`rgba(255,160,80,${.6+pulse*.4})`:'rgba(60,80,100,.45)'; c.lineWidth=hot?2.2:1.4; c.beginPath(); c.ellipse(p.x,p.y,26,10,0,0,TAU); c.stroke(); c.restore();
   c.fillStyle=hot?'#FFB070':'rgba(60,80,100,.55)'; c.fillRect(p.x-5,p.y-1,10,2); c.fillRect(p.x-1,p.y-5,2,10);});
  // rally banner
@@ -2309,6 +2446,7 @@ function draw(){
  S.enemies.forEach(e=>{if(!e.fly) L.push({y:e.y,f:()=>drawEnemy(c,e)});});
  L.sort((a,b)=>a.y-b.y).forEach(o=>o.f());
  S.enemies.forEach(e=>{if(e.fly) drawEnemy(c,e);});
+ drawDragon(c);
  // projectiles
  for(const p of S.proj){
   c.save(); c.translate(p.x,p.y); c.rotate(p.ang||0);
@@ -2354,6 +2492,9 @@ function draw(){
  // worker counts over resource sources
  if(mode==='play'){ const cnt=j=>S.units.filter(u=>u.type==='worker'&&u.job===j).length;
   const woodX=TREES.reduce((a,t)=>a+t.x,0)/TREES.length, woodY=Math.min(...TREES.map(t=>t.y))-34;
+  S.buildings.forEach(b=>{ if(b.type!=='farm'||!b.built||b.dead) return; const n=S.units.filter(u=>u.type==='worker'&&u.farm===b).length, x=b.x+16, y=b.y-40;
+   c.fillStyle='rgba(12,22,34,.8)'; rr(c,x-17,y-8,36,16,8); c.fill(); c.fillStyle='#9DC85B'; c.beginPath(); c.moveTo(x-9,y+5); c.lineTo(x-9,y-5); c.stroke();
+   c.fillStyle='#B5E07A'; ell(c,x-9,y-2,3,4.4); c.fillStyle=n?'#fff':'rgba(255,255,255,.5)'; c.font='800 10px "Alegreya Sans",sans-serif'; c.textAlign='center'; c.fillText(n+'/'+RESOURCES.food.perFarm,x+5,y+3.5); });
   [[MINE.x+6,MINE.y-44,'gold',cnt('gold')],[woodX,woodY,'lumber',cnt('lumber')]].forEach(([x,y,k,n])=>{
    c.fillStyle='rgba(12,22,34,.8)'; rr(c,x-17,y-8,34,16,8); c.fill();
    if(k==='gold'){ c.fillStyle='#F2C14E'; ell(c,x-8,y,4.4,4.4); c.strokeStyle='#A8761A'; c.lineWidth=1; c.beginPath(); c.arc(x-8,y,2.4,0,TAU); c.stroke(); }
@@ -2386,7 +2527,7 @@ function draw(){
    AUDIO (synth, no files)
    ===================================================================== */
 let AC=null, master=null, noiseBuf=null; const lastPlay={};
-let verbSend=null, musicGain=null, musicOn=store.get('music',true);
+let verbSend=null, musicGain=null;
 function makeIR(sec,decay){const n=AC.sampleRate*sec, b=AC.createBuffer(2,n,AC.sampleRate); for(let c=0;c<2;c++){const d=b.getChannelData(c); for(let i=0;i<n;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/n,decay);} return b;}
 function initAudio(){ if(AC) return; try{AC=new (window.AudioContext||window.webkitAudioContext)(); master=AC.createGain(); master.gain.value=.55;
  const comp=AC.createDynamicsCompressor(); comp.threshold.value=-14; comp.ratio.value=4; master.connect(comp); comp.connect(AC.destination);
@@ -2410,64 +2551,138 @@ function mDrum(t,f0,vol,dur){ const o=AC.createOscillator(), g=AC.createGain(); 
  g.gain.setValueAtTime(vol,t); g.gain.exponentialRampToValueAtTime(.0001,t+dur); o.connect(g); g.connect(musicGain); o.start(t); o.stop(t+dur+.05); }
 function mNoise(t,dur,vol,freq,q){ const s=AC.createBufferSource(), f=AC.createBiquadFilter(), g=AC.createGain(); s.buffer=noiseBuf; f.type='bandpass'; f.frequency.value=freq; f.Q.value=q||1;
  g.gain.setValueAtTime(.0001,t); g.gain.linearRampToValueAtTime(vol,t+Math.min(.4,dur*.3)); g.gain.exponentialRampToValueAtTime(.0001,t+dur); s.connect(f); f.connect(g); g.connect(musicGain); s.start(t); s.stop(t+dur+.05); }
-// chords as MIDI roots + quality; D minor / D phrygian palettes
-const CHD={Dm:[50,53,57],Bb:[46,50,53],F:[53,57,60],C:[48,52,55],Gm:[43,46,50],A:[45,49,52],Eb:[51,55,58],Am:[45,48,52]};
-const MELODY=[[74,2],[72,1],[69,1],[67,2],[69,2],[74,2],[76,1],[77,1],[76,2],[72,2],[69,4],[0,4]];
-const MELODY2=[[69,2],[72,2],[74,3],[72,1],[69,2],[67,2],[65,2],[67,2],[69,6],[0,2]];
-const TRACKS={
- calm:{bpm:78,prog:['Dm','Bb','F','C','Dm','Gm','Bb','A'],step(i,t,e){const bar=Math.floor(i/8)%this.prog.length, ch=CHD[this.prog[bar]], k=i%8;
-  if(k===0){ ch.forEach((m,j)=>mNote(m,t,e*8.4,{type:'sawtooth',lp:620,vol:.022,att:1.2,hold:.6,det:1+(j-1)*.003})); mNote(ch[0]-12,t,e*8,{type:'sine',vol:.07,att:.2,hold:.5}); }
-  const arp=[0,1,2,1,0,2,1,2][k], oct=k>3?12:0; if([1,1,0,1,1,0,1,1][k]) mNote(ch[arp]+12+oct,t,1.4,{type:'triangle',vol:.04,att:.005,hold:.02});
-  const phrase=Math.floor(i/32)%4; if(phrase===1||phrase===3){ const mel=phrase===1?MELODY:MELODY2; let acc=0; const pos=i%32/2; for(const [m,l] of mel){ if(acc===pos&&m){ mNote(m,t,l*e*2*.95,{type:'sine',vol:.05,att:.08,hold:.6,vib:1}); mNote(m+12,t,l*e*2*.9,{type:'sine',vol:.008,att:.1,hold:.5}); } acc+=l; if(acc>pos) break; } }
-  if(i%16===0) mNoise(t,e*14,.018,380,.6); }},
- battle:{bpm:122,prog:['Dm','Dm','Bb','C','Dm','Dm','Gm','A'],step(i,t,e){const bar=Math.floor(i/8)%this.prog.length, ch=CHD[this.prog[bar]], k=i%8;
-  if([1,0,0,1,0,0,1,0][k]) mDrum(t,95,.32,.38); if(k===4) { mNoise(t,.18,.09,1800,.8); mDrum(t,170,.1,.12); } mNoise(t,.04,.012,8000,1.5);
-  const os=[0,0,7,0,12,0,7,10][k]; mNote(ch[0]-12+os,t,e*.9,{type:'sawtooth',lp:1300,vol:.03,att:.005,hold:.2});
-  if(k===0&&bar%2===0) ch.forEach(m=>mNote(m+12,t,e*3,{type:'sawtooth',lp:1900,vol:.024,att:.03,hold:.4}));
-  if(k===0) ch.forEach(m=>mNote(m,t,e*8,{type:'triangle',vol:.018,att:.3,hold:.6}));
-  if(bar%4===3&&k>=4) mNote(ch[2]+24-(7-k),t,e*.9,{type:'square',lp:2400,vol:.012}); }},
- boss:{bpm:134,prog:['Dm','Eb','Dm','Bb','Dm','Eb','C','A'],step(i,t,e){const bar=Math.floor(i/8)%this.prog.length, ch=CHD[this.prog[bar]], k=i%8;
-  if([1,1,0,1,1,0,1,0][k]) mDrum(t,k===0?70:88,k===0?.42:.26,.45); if(k===0){ mNoise(t,.7,.06,220,.5); } if(k===4) mNoise(t,.2,.1,1500,.9); mNoise(t,.03,.014,9000,2);
-  mNote(ch[0]-12+[0,12,0,1,0,12,6,1][k],t,e*.85,{type:'sawtooth',lp:900,vol:.04,att:.004,hold:.25});
-  if(k===0&&bar%2===0) ch.forEach((m,j)=>{ mNote(m+12,t,e*16,{type:'sawtooth',lp:760,bp:1,q:3,vol:.05,att:.8,hold:.7,det:1.004}); mNote(m+12,t,e*16,{type:'sawtooth',lp:1150,bp:1,q:4,vol:.03,att:.9,hold:.7,det:.996}); });
-  if(k===0) mNote(bar%2?87:86,t,2.5,{type:'triangle',vol:.03,att:.005,hold:.02}); }}
+/* Soundtrack v1.7: one engine, three styles (calm, epic, intense) and a musical palette per map.
+   State follows the fight: 'calm' between waves, 'battle' during a wave, 'boss' while a boss is alive. */
+const MODES={aeolian:[0,2,3,5,7,8,10],dorian:[0,2,3,5,7,9,10],phrygian:[0,1,3,5,7,8,10],harmonic:[0,2,3,5,7,8,11]};
+const PALETTES={
+ frostmere:{root:50,mode:'dorian',tempo:1,color:'bell'},      // D dorian: open, hopeful
+ hollow:{root:45,mode:'aeolian',tempo:.96,color:'horn'},      // A minor: stony and martial
+ whitefang:{root:52,mode:'aeolian',tempo:1.02,color:'flute'}, // E minor: deep forest
+ icecrown:{root:48,mode:'harmonic',tempo:1.04,color:'choir'}, // C harmonic minor: dark and regal
+ emberfall:{root:47,mode:'phrygian',tempo:.92,color:'anvil'}, // B phrygian: heat and iron
+ forges:{root:45,mode:'phrygian',tempo:.9,color:'anvil'},
+ ashen:{root:44,mode:'harmonic',tempo:.94,color:'choir'},
+ heart:{root:43,mode:'phrygian',tempo:.98,color:'choir'},
+ _default:{root:50,mode:'dorian',tempo:1,color:'bell'}
 };
-// Campaign 2: the same engine a fourth lower, slower, with anvil-like strikes and a deep drone
-function anvil(t){ mNote(96,t,.5,{type:'triangle',vol:.03,att:.002,hold:.02}); mNote(103,t,.35,{type:'sine',vol:.018,att:.002,hold:.02}); }
-['calm','battle','boss'].forEach(k=>{ const B=TRACKS[k]; TRACKS[k+'2']={bpm:Math.round(B.bpm*(k==='boss'?.8:.88)),prog:B.prog,step(i,t,e){ B.step.call(B,i,t,e); if(i%8===(k==='calm'?0:4)) anvil(t); if(i%32===0) mNote(26,t,e*30,{type:'sawtooth',lp:180,vol:.05,att:2,hold:.7}); }}; });
+const MSTYLES={off:'Off',calm:'Calm',epic:'Epic',intense:'Intense'};
+let musicStyle=store.get('musicStyle',null); if(!MSTYLES[musicStyle]) musicStyle=store.get('music',true)?'epic':'off';
+let musicOn=musicStyle!=='off';
+const MUS={state:null,pal:PALETTES._default,mel:null,seed:0};
+function mdeg(d,oct){ const sc=MODES[MUS.pal.mode], k=((d%7)+7)%7, o=Math.floor(d/7); return MUS.pal.root+sc[k]+12*(o+(oct||0)); }
+const mtriad=d=>[mdeg(d),mdeg(d+2),mdeg(d+4)];
+const PROGS={calm:[0,5,2,6,0,3,5,4],battle:[0,0,5,6,0,0,3,4],boss:[0,1,0,6,0,1,4,4]};
+function makeMelody(seed){ const r=mulberry(seed), out=[]; let d=4; for(let p=0;p<2;p++){ const ph=[]; for(let n=0;n<8;n++){ d=Math.max(0,Math.min(9,d+[-2,-1,-1,0,1,1,2][Math.floor(r()*7)])); ph.push([d,r()<.3?2:r()<.5?4:1]); } out.push(ph); } return out; }
+function colorHit(t,ch,strong){ const c=MUS.pal.color;
+ if(c==='bell') mNote(ch[0]+36,t,2.2,{type:'triangle',vol:strong?.03:.02,att:.003,hold:.02});
+ else if(c==='horn') mNote(ch[0]+12,t,1.6,{type:'sawtooth',lp:900,vol:strong?.03:.02,att:.12,hold:.6,vib:1});
+ else if(c==='flute') mNote(ch[2]+24,t,1.2,{type:'sine',vol:.025,att:.08,hold:.5,vib:1});
+ else if(c==='choir') ch.forEach((m,j)=>mNote(m+12,t,3.2,{type:'sawtooth',lp:760,bp:1,q:3,vol:strong?.032:.02,att:.9,hold:.7,det:1+(j-1)*.004}));
+ else if(c==='anvil'){ mNote(96-12,t,.5,{type:'triangle',vol:.028,att:.002,hold:.02}); mNote(103-12,t,.35,{type:'sine',vol:.016,att:.002,hold:.02}); } }
+function musicStep(i,t,e){
+ const st=MUS.state, sty=musicStyle, k=i%8, bar=Math.floor(i/8), ch=mtriad(PROGS[st][bar%8]);
+ const calm=sty==='calm', hot=sty==='intense';
+ if(st==='calm'){
+  if(k===0){ ch.forEach((m,j)=>mNote(m,t,e*8.4,{type:'sawtooth',lp:600,vol:.02,att:1.2,hold:.6,det:1+(j-1)*.003})); mNote(ch[0]-12,t,e*8,{type:'sine',vol:.065,att:.2,hold:.5}); if(bar%2===0) colorHit(t,ch,false); }
+  const pat=calm?[1,0,0,1,0,0,1,0]:hot?[1,1,1,1,1,1,1,1]:[1,1,0,1,1,0,1,1];
+  if(pat[k]){ const arp=[0,1,2,1,0,2,1,2][k]; mNote(ch[arp]+12+(k>3?12:0),t,1.4,{type:'triangle',vol:.036,att:.005,hold:.02}); }
+  const phr=Math.floor(bar/2)%4; if(!calm&&(phr===1||phr===3)&&k%2===0){ const n=MUS.mel[phr===1?0:1][(bar%2)*4+k/2]; if(n&&(k/2)%Math.max(1,n[1]>2?2:1)===0) mNote(mdeg(n[0],1),t,e*2*Math.min(n[1],2)*.95,{type:'sine',vol:.045,att:.08,hold:.6,vib:1}); }
+  if(i%16===0) mNoise(t,e*14,.016,380,.6);
+  if(hot&&k===0) mDrum(t,80,.12,.4);
+  return;
+ }
+ if(st==='battle'){
+  const taiko=calm?[1,0,0,0,1,0,0,0]:hot?[1,0,1,1,0,1,1,0]:[1,0,0,1,0,0,1,0];
+  if(taiko[k]) mDrum(t,k===0?92:100,calm?.2:.32,.38);
+  if(k===4&&!calm){ mNoise(t,.18,.09,1800,.8); mDrum(t,170,.1,.12); }
+  if(!calm){ mNoise(t,.04,.012,8000,1.5); if(hot) mNoise(t+e/2,.03,.01,9000,1.5); }
+  const os=[0,0,7,0,12,0,7,10][k]; if(!calm||k%2===0) mNote(ch[0]-12+os,t,e*.9,{type:'sawtooth',lp:calm?800:1300,vol:calm?.022:.03,att:.005,hold:.2});
+  if(hot) mNote(ch[0]-24,t,e*.8,{type:'sawtooth',lp:500,vol:.03,att:.004,hold:.2});
+  if(k===0&&!calm&&(hot||bar%2===0)) ch.forEach(m=>mNote(m+12,t,e*3,{type:'sawtooth',lp:1900,vol:.022,att:.03,hold:.4}));
+  if(k===0){ ch.forEach(m=>mNote(m,t,e*8,{type:'triangle',vol:.016,att:.3,hold:.6})); if(bar%4===0) colorHit(t,ch,true); }
+  if(!calm&&bar%4===3&&k>=4) mNote(ch[2]+24-(7-k),t,e*.9,{type:'square',lp:2400,vol:.011});
+  return;
+ }
+ // boss
+ const tk=calm?[1,0,0,1,0,0,1,0]:hot?[1,1,1,1,1,1,1,1]:[1,1,0,1,1,0,1,0];
+ if(tk[k]) mDrum(t,k===0?70:88,k===0?.42:.26,.45);
+ if(k===0) mNoise(t,.7,.06,220,.5); if(k===4) mNoise(t,.2,.1,1500,.9); if(!calm) mNoise(t,.03,.014,9000,2);
+ mNote(ch[0]-12+[0,12,0,1,0,12,6,1][k],t,e*.85,{type:'sawtooth',lp:900,vol:.04,att:.004,hold:.25});
+ if(k===0&&bar%2===0) ch.forEach((m,j)=>{ mNote(m+12,t,e*16,{type:'sawtooth',lp:760,bp:1,q:3,vol:.05,att:.8,hold:.7,det:1.004}); mNote(m+12,t,e*16,{type:'sawtooth',lp:1150,bp:1,q:4,vol:.03,att:.9,hold:.7,det:.996}); });
+ if(k===0) mNote(ch[0]+36+(bar%2),t,2.5,{type:'triangle',vol:.03,att:.005,hold:.02});
+ if(hot&&k%2===1) mNote(ch[0]+24,t,e*.6,{type:'sawtooth',lp:2000,vol:.014,att:.003,hold:.2});
+}
+const MBPM={calm:76,battle:118,boss:132};
 let curTrack=null, nextNoteT=0, stepI=0;
-setInterval(()=>{ if(!AC||!curTrack||!musicOn||AC.state!=='running') return; const tr=TRACKS[curTrack], e=60/tr.bpm/2;
+const curBpm=()=>MBPM[MUS.state]*MUS.pal.tempo*(musicStyle==='calm'?.9:musicStyle==='intense'?1.12:1);
+setInterval(()=>{ if(!AC||!MUS.state||!musicOn||AC.state!=='running') return; const e=60/curBpm()/2;
  if(nextNoteT<AC.currentTime) nextNoteT=AC.currentTime+.05;
- while(nextNoteT<AC.currentTime+.4){ tr.step(stepI,nextNoteT,e); stepI++; nextNoteT+=e; } },100);
-function setTrack(n){ if(!AC||curTrack===n) return; curTrack=n; stepI=0; nextNoteT=AC.currentTime+.25; musicShift=n.endsWith('2')?-5:0;
+ while(nextNoteT<AC.currentTime+.4){ musicStep(stepI,nextNoteT,e); stepI++; nextNoteT+=e; } },100);
+function setTrack(state,palKey){ const pal=PALETTES[palKey]||PALETTES._default, key=state+'|'+palKey;
+ if(!AC||curTrack===key) return; curTrack=key; MUS.state=state; if(MUS.pal!==pal||!MUS.mel){ MUS.pal=pal; MUS.mel=makeMelody(pal.root*31+pal.mode.length); }
+ stepI=0; nextNoteT=AC.currentTime+.25;
  const t=AC.currentTime; musicGain.gain.cancelScheduledValues(t); musicGain.gain.setValueAtTime(.0001,t); musicGain.gain.linearRampToValueAtTime(musicOn?.3:.0001,t+1.4); }
 function pickTrack(){ if(!AC||!S) return; let n='calm';
  if(mode==='play'&&!S.over){ if(S.enemies.some(e=>e.boss&&!e.dead)) n='boss'; else if(S.waveState==='spawning'||S.waveState==='fighting') n='battle'; }
- setTrack(S.map&&S.map.campaign==='c2'?n+'2':n); }
-function setMusic(v){ musicOn=v; store.set('music',v); if(musicGain){const t=AC.currentTime; musicGain.gain.cancelScheduledValues(t); musicGain.gain.linearRampToValueAtTime(v?.3:.0001,t+.4);} }
+ setTrack(n,S.map?S.map.id:'_default'); }
+function setMusicStyle(v){ musicStyle=v; musicOn=v!=='off'; store.set('musicStyle',v); store.set('music',musicOn); curTrack=null;
+ if(musicGain){const t=AC.currentTime; musicGain.gain.cancelScheduledValues(t); musicGain.gain.linearRampToValueAtTime(musicOn?.3:.0001,t+.4);} }
+function setMusic(v){ setMusicStyle(v?(musicStyle==='off'?'epic':musicStyle):'off'); }
+// Stop all sound when the app goes to the background (other apps do), and pause the fight.
+let wasAwayPause=false;
+document.addEventListener('visibilitychange',()=>{
+ if(document.hidden){ if(AC&&AC.state==='running') AC.suspend().catch(()=>{});
+  if(mode==='play'&&S&&!S.over&&!paused&&typeof tpause!=='undefined'&&!tpause){ setTP(true); wasAwayPause=true; } }
+ else { if(AC&&AC.state==='suspended') AC.resume().catch(()=>{}); if(wasAwayPause){ wasAwayPause=false; toast('Paused while you were away. Tap play to continue.'); } } });
+window.addEventListener('pagehide',()=>{ if(AC&&AC.state==='running') AC.suspend().catch(()=>{}); });
+// Sound helpers for weightier combat sounds
+function metal(when,vol,base){ const t=AC.currentTime+(when||0), f0=base||(1700+Math.random()*900);
+ [1,1.41,2.13,2.76,3.4].forEach((r,i)=>{ const o=AC.createOscillator(), g=AC.createGain(); o.type='sine'; o.frequency.setValueAtTime(f0*r,t);
+  const d=.32/(1+i*.6); g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(vol/(1+i*.7),t+.003); g.gain.exponentialRampToValueAtTime(.0001,t+d);
+  o.connect(g); g.connect(master); if(verbSend){const w=AC.createGain(); w.gain.value=.35; g.connect(w); w.connect(verbSend);} o.start(t); o.stop(t+d+.05); }); }
+function hp(dur,vol,freq,when){ const t=AC.currentTime+(when||0), s=AC.createBufferSource(), f=AC.createBiquadFilter(), g=AC.createGain(); s.buffer=noiseBuf; f.type='highpass'; f.frequency.value=freq;
+ g.gain.setValueAtTime(vol,t); g.gain.exponentialRampToValueAtTime(.0001,t+dur); s.connect(f); f.connect(g); g.connect(master); s.start(t); s.stop(t+dur+.05); }
+function voice(f0,dur,vol,when,f1,f2){ // a short shout or grunt: buzzy source through two formants
+ const t=AC.currentTime+(when||0), o=AC.createOscillator(), a=AC.createBiquadFilter(), b=AC.createBiquadFilter(), g=AC.createGain(), g2=AC.createGain();
+ o.type='sawtooth'; o.frequency.setValueAtTime(f0,t); o.frequency.exponentialRampToValueAtTime(f0*.78,t+dur);
+ a.type='bandpass'; a.frequency.value=f1||650; a.Q.value=5; b.type='bandpass'; b.frequency.value=f2||1150; b.Q.value=6;
+ g.gain.setValueAtTime(.0001,t); g.gain.linearRampToValueAtTime(vol,t+.04); g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+ o.connect(a); o.connect(b); a.connect(g); b.connect(g2); g2.gain.value=.7; g2.connect(g); g.connect(master); o.start(t); o.stop(t+dur+.05); }
+function meleeSound(a){ const T=a.type;
+ if(T==='wolf'||T==='magmaHound'||T==='wolfpet') return 'bite';
+ if(a.kind==='e'&&(a.boss||/troll|golem|blob|giant|colossus/i.test(T))) return 'blunt';
+ if(a.kind==='u'&&T==='worker') return 'thud';
+ return 'clang'; }
 function sfx(n){
  if(!AC||!sfxOn||mode!=='play'&&n!=='chime'&&n!=='click') return;
- const now=AC.currentTime, gap={stomp:.5,clang:.07,arrow:.08,coin:.12,chop:.18,die:.06,bite:.08,bolt:.08,thud:.05,ready:.2}[n]||.03;
+ const now=AC.currentTime, gap={stomp:.5,clang:.055,blunt:.09,arrow:.07,coin:.12,chop:.18,die:.09,grunt:.25,bite:.08,bolt:.08,thud:.05,ready:.2,warcry:1.2,march:.6}[n]||.03;
  if(lastPlay[n]&&now-lastPlay[n]<gap) return; lastPlay[n]=now;
  switch(n){
   case 'chime': [220,277.18,329.63,440].forEach((f,i)=>{tone(f,1.4-i*.08,'triangle',.11,i*.08);tone(f*2,1.1,'sine',.03,i*.08);}); [1760,2217,2637].forEach((f,i)=>tone(f,.5,'sine',.035,.5+i*.1)); break;
   case 'click': tone(660,.06,'triangle',.08); break;
   case 'err': tone(180,.14,'square',.05); break;
   case 'coin': tone(1320,.07,'square',.025); tone(1760,.09,'square',.02,.05); break;
-  case 'chop': nz(.08,.12,900,0,2); tone(140,.06,'triangle',.06); break;
-  case 'clang': tone(1200+Math.random()*400,.12,'triangle',.035); nz(.05,.06,3000,0,3); break;
-  case 'bite': nz(.07,.08,700,0,1.5); break;
-  case 'arrow': nz(.1,.05,2400,0,2,900); break;
+  case 'chop': nz(.07,.14,700,0,1.6); tone(120,.08,'sine',.08,0,.6); hp(.03,.04,3000); break;
+  case 'clang': metal(0,.05); hp(.035,.05,4200); nz(.05,.05,220,0,1); break;          // sword on steel
+  case 'blunt': tone(75,.2,'sine',.16,0,.55); nz(.14,.12,420,0,.8,160); hp(.03,.03,2500); break; // club or fist
+  case 'bite': nz(.08,.16,620,0,1.6,380); tone(110,.07,'sawtooth',.05,0,.6); break;
+  case 'arrow': tone(170+Math.random()*30,.12,'triangle',.05,0,.62); hp(.12,.035,2600); break;       // bowstring and flight
+  case 'grunt': voice(130+Math.random()*40,.22,.1,0,520,1050); break;
+  case 'warcry': [0,.06,.11,.17].forEach((w,i)=>voice(150+i*22+Math.random()*12,.85,.085,w,640+i*30,1180)); tone(98,1.1,'sawtooth',.05,.05,1.1); nz(.9,.06,900,0,.6); break;
+  case 'march': [0,.22,.44].forEach(w=>{ tone(110,.12,'sine',.12,w,.6); nz(.08,.05,1500,w,1); }); break;
   case 'bolt': tone(900,.18,'sine',.05,0,.5); break;
-  case 'die': tone(300,.14,'triangle',.04,0,.5); break;
+  case 'die': nz(.18,.06,380,0,.9,160); tone(95,.16,'sine',.06,0,.6); break;   // a body hits the ground
   case 'build': nz(.1,.1,500,0,1); tone(220,.1,'square',.03,.08); nz(.1,.1,600,.16,1); break;
   case 'built': [392,494,587].forEach((f,i)=>tone(f,.3,'triangle',.07,i*.08)); break;
   case 'ready': tone(523,.1,'triangle',.05); tone(784,.14,'triangle',.05,.08); break;
   case 'levelup': [523,659,784,1047].forEach((f,i)=>tone(f,.25,'triangle',.07,i*.07)); break;
-  case 'horn': tone(146.8,.9,'sawtooth',.06,0); tone(220,.9,'sawtooth',.04,.05); break;
+  case 'horn': { const t=AC.currentTime, f=AC.createBiquadFilter(), g=AC.createGain(); f.type='lowpass'; f.frequency.setValueAtTime(300,t); f.frequency.linearRampToValueAtTime(1500,t+.35); f.frequency.linearRampToValueAtTime(700,t+1.2);
+   g.gain.setValueAtTime(.0001,t); g.gain.linearRampToValueAtTime(.09,t+.12); g.gain.setValueAtTime(.09,t+.8); g.gain.exponentialRampToValueAtTime(.0001,t+1.3); f.connect(g); g.connect(master);
+   [98,147,196].forEach((fr,i)=>{ const o=AC.createOscillator(); o.type='sawtooth'; o.frequency.setValueAtTime(fr*.97,t); o.frequency.linearRampToValueAtTime(fr,t+.15); o.connect(f); o.start(t); o.stop(t+1.35); });
+   if(verbSend){const w=AC.createGain(); w.gain.value=.5; g.connect(w); w.connect(verbSend);} } break;
   case 'roar': tone(90,1.1,'sawtooth',.09,0,.6); nz(1,.12,300,0,.7,120); break;
-  case 'taunt': tone(180,.3,'sawtooth',.07,0,.7); break;
-  case 'cleave': nz(.2,.14,1800,0,1.2,400); break;
+  case 'taunt': voice(120,.55,.08,0,600,1100); tone(60,.3,'sine',.12,0,.7); break;
+  case 'cleave': nz(.22,.13,1600,0,1.1,350); metal(.06,.04,1400); tone(70,.18,'sine',.1,.05,.6); break;
   case 'fire': nz(.35,.12,600,0,1,2400); break;
   case 'boom': nz(.5,.22,300,0,.8,60); tone(70,.4,'sine',.14,0,.5); break;
   case 'frost': [1568,1976,2349].forEach((f,i)=>tone(f,.4,'sine',.03,i*.04)); nz(.3,.05,5000,0,4); break;
@@ -2528,7 +2743,7 @@ function thumb(key){
  const P=S.R.pal, horde=S.race==='horde';
  g.save();
  if(key.startsWith('tower:')){ g.translate(29,45); g.scale(.46,.46); drawBuildingShape(g,'tower',P,horde,false,0,key.slice(6)); }
- else if(key==='keep'||key==='castle'||BUILDINGS[key]){const sc={townhall:.4,keep:.36,castle:.3,farm:.72,barracks:.6,forge:.7,tower:.52}[key]; g.translate(key==='castle'?32:29,key==='castle'?44:43); g.scale(sc,sc); drawBuildingShape(g,key==='keep'||key==='castle'?'townhall':key,P,horde,key==='castle'?2:key==='keep'?1:0,0);}
+ else if(key==='keep'||key==='castle'||BUILDINGS[key]){const sc={townhall:.4,keep:.36,castle:.3,farm:.72,barracks:.6,forge:.7,tower:.52,roost:.55}[key]; g.translate(key==='castle'?32:29,key==='castle'?44:43); g.scale(sc,sc); drawBuildingShape(g,key==='keep'||key==='castle'?'townhall':key,P,horde,key==='castle'?2:key==='keep'?1:0,0);}
  else if(key==='siege'){ g.translate(30,42); g.scale(1.25,1.25); drawSiege(g,{x:0,y:0,face:1,atk:0,s:1,flash:0,trim:P.trim,banner:P.banner},horde); }
  else if(key.startsWith('e:')){const t=key.slice(2), d=ENEMIES[t], sc={wolf:1.35,goblin:1.45,gobArcher:1.45,skeleton:1.3,shaman:1.4,knight:1.1,troll:.95,giant:.62,wyrm:.5,trollKing:.72,lich:.66,hound:1.35,imp:1.6,slinger:1.45,ashwalker:1.3,flamecaller:1.4,golem:.95,blob:1.8,obsknight:1.1,pyrrhus:.74,gorgath:.62,ashgar:.5,kragmor:.62}[t]; g.translate(t==='wolf'||t==='hound'?24:29,t==='wyrm'||t==='ashgar'?52:46); g.scale(sc,sc); drawEnemy(g,{type:t,x:0,y:0,face:1,walk:0,moving:false,atk:0,flash:0,s:d.s,fly:!!d.fly,r:d.r});}
  else if(key.startsWith('h:')){g.translate(29,43); g.scale(1.25,1.25); drawFigure(g,heroLook({cls:key.slice(2),x:0,y:0,face:1,walk:0,moving:false,atk:0,flash:0}));}
@@ -2560,14 +2775,14 @@ function gearIcon(id,locked){ const k=id+(locked?':l':''); if(GEARIMG[k]) return
  if(locked){ g.globalCompositeOperation='source-in'; g.fillStyle='#3A4A5C'; g.fillRect(0,0,48,48); }
  return GEARIMG[k]=cc.toDataURL(); }
 function costHtml(c,food){
- const g=c.gold||0,l=c.lumber||0;
- return `<span class="cost">${g?`<i class="${S.res.gold<g?'no':''}">${g}</i>`:''}${l?`<i class="l ${S.res.lumber<l?'no':''}">${l}</i>`:''}${food?`<i class="f ${foodUsed()+food>foodCap()?'no':''}">${food}</i>`:''}</span>`;
+ const g=c.gold||0,l=c.lumber||0,fd=c.food||0;
+ return `<span class="cost">${g?`<i class="${S.res.gold<g?'no':''}">${g}</i>`:''}${l?`<i class="l ${S.res.lumber<l?'no':''}">${l}</i>`:''}${fd?`<i class="fd ${S.res.food<fd?'no':''}">${fd}</i>`:''}${food?`<i class="f ${foodUsed()+food>foodCap()?'no':''}">${food}</i>`:''}</span>`;
 }
 let sheetTab=null, uiDirty=true;
 function openTab(tab){ if(mode!=='play') return; if(ringCtx){ringCtx=null;$('#ring').hidden=true;} if(talHero) closeTalent(); if(sheetTab===tab){closeSheet();return;} sheetTab=tab; $('#sheet').hidden=false; renderSheet(); sfx('click'); document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.tab===tab)); }
 function closeSheet(){sheetTab=null; $('#sheet').hidden=true; S&&(S.selPlot=null); document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));}
 const ARMY_KEYS=['melee','ranged','heavy','healer','siege'];
-const unitLock=k=>{ const d=UNITS[k]; return d.req==='keep'&&!S.keep?'Needs a Keep':d.req==='castle'&&!S.castle?'Needs a Castle':''; };
+const unitLock=k=>{ const d=UNITS[k]; return d.req==='keep'&&!S.keep?'Needs a Keep':d.req==='castle'&&!S.castle?'Needs a Castle':d.req==='war'&&!warB()?(S.castle?'Needs War Barracks':'Needs War Barracks (Castle)'):''; };
 function queueHtml(b){ if(!b.queue.length) return ''; const N=S.R.names;
  return `<div class="sec">In training <span class="hint">(× cancels with a full refund)</span></div><div class="qlist">${b.queue.map((q,i)=>`<div class="qi"><span>${q.kind==='hero'?S.R.heroNames[q.key]:N[q.key]}</span><span class="qline"><i style="width:${i?0:Math.round(q.t/q.time*100)}%"></i></span><button data-act="q:${b.id}:${i}" aria-label="Cancel">×</button></div>`).join('')}</div>`; }
 function renderSheet(){
@@ -2578,26 +2793,28 @@ function renderSheet(){
   $('#sheetTitle').textContent=S.selPlot!=null?'Build on this plot':'Build';
   const ws=S.units.filter(u=>u.type==='worker'), cnt=j=>ws.filter(w=>w.job===j).length;
   const tq=S.tc.queue.filter(q=>q.key==='worker').length;
-  h+=`<div class="sec">${N.worker}s (${ws.length})</div><div class="wrow"><span class="wchip">Idle ${cnt('idle')}</span><span class="wchip">Gold ${cnt('gold')}</span><span class="wchip">Lumber ${cnt('lumber')}</span></div>
-  <div class="wrow" style="margin-top:6px"><button class="wbtn" data-act="w:gold">+ Gold</button><button class="wbtn" data-act="w:lumber">+ Lumber</button><button class="wbtn alt" data-act="w:train">Train ${N.worker} (50 gold)${tq?` [${tq}]`:''}</button>${ws.length?`<button class="wbtn alt" data-hold="dis:worker">Dismiss one</button>`:''}</div>`;
+  h+=`<div class="sec">${N.worker}s (${ws.length})</div><div class="wrow"><span class="wchip">Idle ${cnt('idle')}</span><span class="wchip">Gold ${cnt('gold')}</span><span class="wchip">Lumber ${cnt('lumber')}</span><span class="wchip">Food ${cnt('food')}</span></div>
+  <div class="wrow" style="margin-top:6px"><button class="wbtn" data-act="w:gold">+ Gold</button><button class="wbtn" data-act="w:lumber">+ Lumber</button><button class="wbtn" data-act="w:food">+ Food</button><button class="wbtn alt" data-act="w:train">Train ${N.worker} (50 food)${tq?` [${tq}]`:''}</button>${ws.length?`<button class="wbtn alt" data-hold="dis:worker">Dismiss one</button>`:''}</div>`;
   h+=queueHtml(S.tc);
   h+=`<div class="sec">Buildings <span class="hint">(tap twice to build; tap a building on the map to sell it)</span></div><div class="grid">`;
-  ['barracks','farm','forge','tower'].forEach(k=>{const d=BUILDINGS[k], n=S.buildings.filter(b=>b.type===k).length, full=n>=d.max; const desc=k==='tower'?d.desc+'. Tap a built tower to specialize it.':d.desc;
+  ['barracks','farm','forge','tower','roost'].forEach(k=>{const d=BUILDINGS[k], n=S.buildings.filter(b=>b.type===k).length, full=n>=d.max; const desc=k==='tower'?d.desc+'. Tap a built tower to specialize it.':d.desc;
    h+=`<button class="card ${full?'dis':''} ${(k==='barracks'&&S.quest===2)||(k==='forge'&&S.quest===6)?'hot':''}" data-hold="b:${k}"><img src="${thumb(k)}" alt=""><span class="ct"><b>${d.name}</b><small>${full?(d.max===1?'Built':'Limit reached'):desc}</small>${full?'':costHtml(d.cost)}</span>${n&&d.max>1?`<span class="badge">${n}/${d.max}</span>`:''}</button>`;});
   const tc=S.tc;
   if(!S.keep) h+=`<button class="card ${tc.upg?'dis':''}" data-hold="keep"><img src="${thumb('keep')}" alt=""><span class="ct"><b>Upgrade to Keep</b><small>${tc.upg?'Upgrading…':KEEP_UPGRADE.desc}</small>${tc.upg?'':costHtml(KEEP_UPGRADE.cost)}</span></button>`;
-  else h+=`<button class="card ${S.castle||tc.upg?'dis':''}" data-hold="castle"><img src="${thumb('castle')}" alt=""><span class="ct"><b>Upgrade to Castle</b><small>${S.castle?'Done':tc.upg?'Raising the Castle…':CASTLE_UPGRADE.desc}</small>${S.castle||tc.upg?'':costHtml(CASTLE_UPGRADE.cost)}</span></button>`;
+  { const bb=S.buildings.find(x=>x.type==='barracks'&&x.built); if(bb&&!bb.war) h+=`<button class="card ${S.castle&&!bb.upg?'':'dis'}" data-hold="war"><img src="${thumb('barracks')}" alt=""><span class="ct"><b>War Barracks</b><small>${bb.upg?'Upgrading…':S.castle?BARRACKS_UPGRADE.desc:'Needs a Castle. '+BARRACKS_UPGRADE.desc}</small>${S.castle&&!bb.upg?costHtml(BARRACKS_UPGRADE.cost):''}</span></button>`; }
+  if(S.keep) h+=`<button class="card ${S.castle||tc.upg?'dis':''}" data-hold="castle"><img src="${thumb('castle')}" alt=""><span class="ct"><b>Upgrade to Castle</b><small>${S.castle?'Done':tc.upg?'Raising the Castle…':CASTLE_UPGRADE.desc}</small>${S.castle||tc.upg?'':costHtml(CASTLE_UPGRADE.cost)}</span></button>`;
   h+=`</div>`;
  }else if(sheetTab==='army'){
   $('#sheetTitle').textContent='Army';
   const b=getB('barracks');
   if(!b){h+=`<div class="note">Build a Barracks to recruit heroes and train soldiers.<div style="margin-top:10px"><button class="wbtn" data-act="tab:build">Go to Build</button></div></div>`;}
   else{
-   h+=`<div class="sec">Heroes</div><div class="grid">`;
+   h+=`<div class="sec">Heroes <span class="hint">(${heroSlots()<3?`${heroSlots()} of 3 open; the next comes with the ${heroSlots()===1?'Keep':'Castle'}`:'all 3 open'})</span></div><div class="grid">`;
    Object.keys(HEROES).forEach(cls=>{const d=HEROES[cls], hero=S.heroes.find(x=>x.cls===cls), q=queuedHero(cls);
     let sub=d.role, cost=costHtml(d.cost,d.food), dis='';
     if(hero){sub=hero.dead?`Back in ${Math.ceil(hero.revive)}s`:`Level ${hero.lvl}  ${Math.round(hero.hp)}/${Math.round(hero.maxHp)} hp`; cost=''; dis='dis';}
     else if(q){sub='Training…'; cost=''; dis='dis';}
+    else if(S.heroes.length+heroesQueued()>=heroSlots()){sub=heroSlots()===1?'Second hero: needs a Keep':heroSlots()===2?'Third hero: needs a Castle':'All heroes chosen'; cost=''; dis='dis';}
     h+=`<button class="card ${dis} ${S.quest===3&&!hero&&!q?'hot':''}" data-hold="h:${cls}"><img src="${thumb('h:'+cls)}" alt=""><span class="ct"><b>${S.R.heroNames[cls]}</b><small>${d.cls}: ${sub}</small>${cost}</span></button>`;});
    h+=`</div>`;
    if(S.heroes.length){ h+=`<div class="sec">Talents <span class="hint">(levels 3, 6 and 9)</span></div>`;
@@ -2607,9 +2824,11 @@ function renderSheet(){
    ARMY_KEYS.forEach(k=>{const d=UNITS[k], lock=unitLock(k), n=S.units.filter(u=>u.type===k).length, qn=b.queue.filter(x=>x.key===k).length;
     h+=`<button class="card ${lock?'dis':''}" data-act="u:${k}"><img src="${thumb(k)}" alt=""><span class="ct"><b>${N[k]}</b><small>${lock||d.desc}</small>${lock?'':costHtml(d.cost,d.food)}</span>${n||qn?`<span class="badge">${n}${qn?' +'+qn:''}</span>`:''}</button>`;});
    h+=`</div>`;
+   { const mb=mercBands(), mc=mercCost(), act=S.units.filter(u=>u.type==='merc'&&!u.leaving);
+    h+=`<div class="sec">Mercenaries <span class="hint">(no population; paid by the wave)</span></div><div class="grid"><button class="card ${!S.keep||mb>=MERCS.max?'dis':''}" data-hold="merc"><img src="${thumb('merc')}" alt=""><span class="ct"><b>Sellswords</b><small>${!S.keep?'Needs a Keep':mb>=MERCS.max?'Two bands at most':`${MERCS.n} veterans for ${MERCS.waves} waves`}${act.length?` · ${act.length} serving`:''}</small>${S.keep&&mb<MERCS.max?costHtml(mc):''}</span></button></div>`; }
    const ranked=S.units.filter(u=>u.rank).length; if(ranked) h+=`<div class="hint" style="margin:6px 2px">${ranked} veteran${ranked>1?'s':''} (gold chevrons): +12% health and damage per rank, faster healing.</div>`;
    const have=ARMY_KEYS.filter(k=>S.units.some(u=>u.type===k));
-   if(have.length) h+=`<div class="sec">Dismiss to free food <span class="hint">(tap twice)</span></div><div class="wrow">${have.map(k=>`<button class="wbtn alt" data-hold="dis:${k}">${N[k]} (${S.units.filter(u=>u.type===k).length})</button>`).join('')}</div>`;
+   if(have.length) h+=`<div class="sec">Dismiss to free population <span class="hint">(tap twice)</span></div><div class="wrow">${have.map(k=>`<button class="wbtn alt" data-hold="dis:${k}">${N[k]} (${S.units.filter(u=>u.type===k).length})</button>`).join('')}</div>`;
    h+=queueHtml(b);
   }
  }else if(sheetTab==='forge'){
@@ -2641,7 +2860,7 @@ $('#sheetBody').addEventListener('click',e=>{
 $('#sheetClose').onclick=closeSheet;
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>openTab(b.dataset.tab));
 $('#waveBtn').onclick=()=>{ if(mode!=='play') return; if(S.waveState==='idle'||S.waveState==='countdown') startWave(); };
-$('#stanceBtn').onclick=()=>{ if(mode!=='play') return; const o=['defend','hold','charge'], st=o[(o.indexOf(S.stance)+1)%3]; setStance(st); sfx(st==='charge'?'horn':'click');
+$('#stanceBtn').onclick=()=>{ if(mode!=='play') return; const o=['defend','hold','charge'], st=o[(o.indexOf(S.stance)+1)%3]; setStance(st); sfx(st==='charge'?'warcry':st==='hold'?'march':'click');
  if(!PROG.stanceHelp){ PROG.stanceHelp=true; store.set('prog',PROG); paused=true;
   showModal(`<h2>Stances</h2>${['hold','defend','charge'].map(k=>`<div class="erow"><span class="ic stic">${stanceIcon(k)}</span><span><b>${STANCES[k].name}${k==='defend'?' (default)':''}</b><small>${STANCES[k].desc}</small></span></div>`).join('')}<p class="hint" style="margin-top:8px">Drag the banner to choose where the army stands. On Charge, it fights its way there.</p><div class="row"><button class="mbtn pri" data-m="resume">Got it</button></div>`); }
  else toast(`${STANCES[st].name}: ${STANCES[st].desc}`); };
@@ -2695,14 +2914,14 @@ function endDrag(e){
   else if(d.hero.dead) toast(`${d.hero.name} is back in ${Math.ceil(d.hero.revive)}s`);
  } else if(d.kind==='rally'){
   if(!d.moved) { toast('Drag the banner to move your army'); return; }
-  moveArmy(); toast('Army marching to the banner'); sfx('horn');
+  moveArmy(); toast(S.stance==='charge'?'Charge!':'Army marching to the banner'); sfx(S.stance==='charge'?'warcry':'march');
  }
 }
 window.addEventListener('pointerup',endDrag); window.addEventListener('pointercancel',endDrag);
 function selHero(){ if(S&&S.sel&&S.heroes.includes(S.sel)) return S.sel; if(S&&S.heroes.length){S.sel=S.heroes[0];return S.sel;} return null; }
 
 /* ---------- ring menu: tap an object on the map, act from big buttons around it ---------- */
-const RICONS={plus:'<path d="M12 5v14M5 12h14"/>',minus:'<path d="M5 12h14"/>',sell:'<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>',
+const RICONS={fire:'<path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-3 2-4 2-6 1 1 2 2 2 3 1-2 1-4 1-7z"/>',plus:'<path d="M12 5v14M5 12h14"/>',minus:'<path d="M5 12h14"/>',sell:'<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>',
  heroes:'<path d="M3 17l3-9 4 5 2-7 2 7 4-5 3 9z"/><path d="M3 20h18"/>',anvil:ICONS.weapons,build:ICONS.keep};
 const rsvg=k=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${RICONS[k]}</svg>`;
 let ringCtx=null, ringItemsCache=[];
@@ -2713,8 +2932,8 @@ function ringAnchor(){ const t=ringCtx; if(t.kind==='plot') return {x:t.obj.x,y:
  const b=t.obj; return {x:b.x,y:b.y-b.h*.45,name:(b===S.tc&&S.castle?'Castle':b===S.tc&&S.keep?'Keep':b.spec?TOWER_SPECS[b.spec].name:BUILDINGS[b.type].name)+(b.built?'':' (building)')}; }
 function ringItems(){
  const t=ringCtx, N=S.R.names, it=[];
- if(t.kind==='plot'){ ['barracks','farm','forge','tower'].forEach(k=>{const d=BUILDINGS[k], n=S.buildings.filter(b=>b.type===k).length;
-   it.push({img:thumb(k),name:k==='tower'?'Tower':d.name,cost:d.cost,hold:1,dis:n>=d.max,why:`${d.name} limit reached`,act:()=>{S.selPlot=t.obj.i; tryBuild(k);}});}); }
+ if(t.kind==='plot'){ ['barracks','farm','forge','tower'].concat(S.castle?['roost']:[]).forEach(k=>{const d=BUILDINGS[k], n=S.buildings.filter(b=>b.type===k).length;
+   it.push({img:thumb(k),name:k==='tower'?'Tower':k==='roost'?'Roost':d.name,cost:d.cost,hold:1,dis:n>=d.max,why:`${d.name} limit reached`,act:()=>{S.selPlot=t.obj.i; tryBuild(k);}});}); }
  else if(t.kind==='mine'||t.kind==='trees'){ const job=t.kind==='mine'?'gold':'lumber', n=S.units.filter(u=>u.type==='worker'&&u.job===job).length;
    it.push({icon:'plus',name:'Add',stay:1,act:()=>assignWorker(job)}); it.push({icon:'minus',name:'Remove',stay:1,dis:!n,why:`No workers on ${job}`,act:()=>unassignWorker(job)}); }
  else { const b=t.obj;
@@ -2722,11 +2941,17 @@ function ringItems(){
      it.push({img:thumb('worker'),name:N.worker,cost:UNITS.worker.cost,stay:1,qn:tq,act:trainWorker});
      if(!S.keep&&!b.upg) it.push({icon:'build',name:'Keep',cost:KEEP_UPGRADE.cost,hold:1,act:upgradeKeep});
      else if(S.keep&&!S.castle&&!b.upg) it.push({img:thumb('castle'),name:'Castle',cost:CASTLE_UPGRADE.cost,hold:1,act:upgradeCastle});
+     if(S.keep) it.push({img:thumb('merc'),name:'Sellswords',cost:mercCost(),hold:1,dis:mercBands()>=MERCS.max,why:'Two bands at most',act:hireMercs});
      it.push({icon:'plus',name:'Workers',act:()=>openTab('build')}); }
+   if(b.type==='roost'&&b.built) it.push({icon:'fire',name:S.dragonCd>0?Math.ceil(S.dragonCd)+'s':'Dragonfire',cost:DRAGON.cost,hold:1,dis:S.dragonCd>0||!!S.dragon,why:'The dragon is resting',act:callDragon});
    if(b.type==='barracks'&&b.built){ ARMY_KEYS.forEach(k=>{const d=UNITS[k];
      it.push({img:thumb(k),name:N[k].split(' ')[0],cost:d.cost,stay:1,qn:b.queue.filter(q=>q.key===k).length,dis:!!unitLock(k),why:unitLock(k),act:()=>trainUnit(k)});});
      it.push({icon:'heroes',name:'Heroes',act:()=>openTab('army')}); }
    if(b.type==='forge'&&b.built) it.push({icon:'anvil',name:'Upgrade',act:()=>openTab('forge')});
+   if(b.type==='farm'&&b.built){ const nf=S.units.filter(u=>u.type==='worker'&&u.farm===b).length;
+     it.push({icon:'plus',name:`Farmer ${nf}/${RESOURCES.food.perFarm}`,stay:1,dis:nf>=RESOURCES.food.perFarm,why:'This farm has 2 farmers',act:()=>{ const w=S.units.filter(u=>u.type==='worker').sort((a,c)=>(a.job==='idle'?0:1)-(c.job==='idle'?0:1)).find(u=>u.farm!==b); if(!w){toast('No workers free');return;} setJob(w,'food'); if(w.farm!==b&&w.farm){ w.farm.nf--; w.farm=b; b.nf=(b.nf||0)+1; w.fspot={x:b.x+rnd(-24,6),y:b.y+rnd(-5,6)}; } toast('Farmer sent'); sfx('click'); }});
+     it.push({icon:'minus',name:'Remove',stay:1,dis:!nf,why:'No farmers here',act:()=>{ const w=S.units.find(u=>u.type==='worker'&&u.farm===b); if(w){ setJob(w,'idle'); sfx('click'); } }}); }
+   if(b.type==='barracks'&&b.built&&!b.war&&!b.upg) it.push({icon:'build',name:'War Barracks',cost:BARRACKS_UPGRADE.cost,hold:1,dis:!S.castle,why:'War Barracks needs a Castle',act:()=>upgradeBarracks(b)});
    if(b.type==='tower'&&b.built&&!b.spec) Object.entries(TOWER_SPECS).forEach(([k,sp])=>it.push({img:thumb('tower:'+k),name:sp.name.split(' ')[0],cost:sp.cost,hold:1,dis:!hasB('forge'),why:'Specialized towers need a Forge',act:()=>specTower(b,k)}));
    if(b!==S.tc){const v=sellValue(b); it.push({icon:'sell',name:b.built?'Sell':'Cancel',refund:v,hold:1,danger:1,act:()=>sellBuilding(b)});}
  }
@@ -2739,7 +2964,8 @@ function renderRing(soft){
  let h=`<div class="rlabel" style="left:${clamp(cx0,70,CW-70)}px;top:${clamp(up?cy+26:cy-26,14,CH-14)}px">${a.name}</div>`;
  items.forEach((o,i)=>{ const ang=n===1?(up?-Math.PI/2:Math.PI/2):start+span*i/(n-1), x=clamp(cx+Math.cos(ang)*R,34,CW-34), y=clamp(cy+Math.sin(ang)*R,34,CH-34);
   const cost=o.refund?`<span class="rc"><i class="g">+${o.refund.gold}</i><i class="l">+${o.refund.lumber}</i></span>`
-   :o.cost?`<span class="rc">${o.cost.gold?`<i class="g ${S.res.gold<o.cost.gold?'no':''}">${o.cost.gold}</i>`:''}${o.cost.lumber?`<i class="l ${S.res.lumber<o.cost.lumber?'no':''}">${o.cost.lumber}</i>`:''}</span>`:'';
+   :o.cost&&o.cost.food&&!o.cost.gold&&!o.cost.lumber?`<span class="rc"><i class="fd ${S.res.food<o.cost.food?'no':''}">${o.cost.food}</i></span>`
+   :o.cost?`<span class="rc">${o.cost.gold?`<i class="g ${S.res.gold<o.cost.gold?'no':''}">${o.cost.gold}</i>`:''}${o.cost.lumber?`<i class="l ${S.res.lumber<o.cost.lumber?'no':''}">${o.cost.lumber}</i>`:''}${o.cost.food?`<i class="fd ${S.res.food<o.cost.food?'no':''}">${o.cost.food}</i>`:''}</span>`:'';
   h+=`<button class="rb ${o.dis?'dis':''} ${o.danger?'danger':''}" style="left:${x}px;top:${y}px" ${o.hold?`data-hold="ring:${i}"`:`data-ring="${i}"`}>${o.img?`<img src="${o.img}" alt="">`:rsvg(o.icon)}${o.name?`<span class="rn">${o.name}</span>`:''}${cost}${o.qn?`<span class="qn">${o.qn}</span>`:''}</button>`;});
  r.innerHTML=h; r.hidden=false; reapplyArmed();
 }
@@ -2764,7 +2990,7 @@ function fireHold(k){ const [a,v]=k.split(':');
  if(a==='boon'){ const [,c,i,id]=k.split(':'); pickBoon(c,+i,id); const bx=$('#boonBox'); if(bx) bx.innerHTML=boonChooserHtml(c,+i); if(mode==='maps') renderCampTools(); return; }
  if(a==='restart'){ const C=campState(v); C.heroes={}; C.boons=[]; C.offered={}; store.set('prog',PROG); toastAny(`${CAMP[v].name} restarted: heroes and boons reset (stars and Crowns kept)`); sfx('collapse'); renderCampTools(); return; }
  if(a==='tal'){ const [,hid,tier,ch]=k.split(':'); pickTalent(S.heroes.find(h=>h.id===+hid),+tier,+ch); return; }
- if(a==='ring') runRing(+v); else if(a==='b') tryBuild(v); else if(a==='keep') upgradeKeep(); else if(a==='castle') upgradeCastle(); else if(a==='mw') buyMasterwork(); else if(a==='f') forgeUp(v);
+ if(a==='ring') runRing(+v); else if(a==='b') tryBuild(v); else if(a==='keep') upgradeKeep(); else if(a==='castle') upgradeCastle(); else if(a==='war') upgradeBarracks(); else if(a==='merc') hireMercs(); else if(a==='dragon') callDragon(); else if(a==='mw') buyMasterwork(); else if(a==='f') forgeUp(v);
  else if(a==='h') recruitHero(v); else if(a==='dis') dismissUnit(v); else if(a==='up') buyUpgrade(v);
  uiDirty=true; if(sheetTab&&S) renderSheet(); }
 
@@ -2796,6 +3022,29 @@ function jobList(){
  S.heroes.forEach(h=>{ if(h.dead) J.push({img:thumb('h:'+h.cls),p:1-h.revive/(15+h.lvl*2),cls:'rev',txt:`${Math.ceil(h.revive)}s`}); });
  return J;
 }
+const ST_TABS=[['dealt','Damage'],['taken','Taken'],['heal','Healing'],['kills','Kills'],['deaths','Losses']];
+let stOpen=false, stTab='dealt', stScope='wave', statsLast=0;
+function stName(k){ const [a,b]=k.split(':'); if(a==='h') return S.R.heroNames[b]; if(k==='dragon') return 'Dragon'; if(k==='b:tower') return 'Towers'; if(k==='b:townhall') return S.castle?'Castle':S.keep?'Keep':'Town Center';
+ if(b==='merc') return 'Sellswords'; if(b==='wolfpet') return 'Wolves'; const n=S.R.names[b]||b; return n+(n.endsWith('s')?'':'s'); }
+function stIcon(k){ const [a,b]=k.split(':'); if(a==='h') return `<img src="${thumb('h:'+b)}" alt="">`; if(k==='dragon') return `<span class="si">${rsvg('fire')}</span>`;
+ if(k==='b:tower') return `<img src="${thumb('tower')}" alt="">`; if(k==='b:townhall') return `<img src="${thumb(S.castle?'castle':S.keep?'keep':'townhall')}" alt="">`; if(b==='wolfpet') return `<span class="si">${rsvg('plus')}</span>`; return `<img src="${thumb(b)}" alt="">`; }
+const fmtN=v=>v>=10000?Math.round(v/1000)+'k':v>=1000?(v/1000).toFixed(1)+'k':Math.round(v)+'';
+function renderStats(){
+ const el=$('#statsPanel'); if(!stOpen||!S||!S.st){ el.hidden=true; return; } el.hidden=false;
+ const D=S.st[stScope]||{}, rows=Object.entries(D).filter(([k,r])=>r[stTab]>0&&!(k==='u:worker'&&stTab!=='deaths'&&stTab!=='taken')).sort((a,b)=>b[1][stTab]-a[1][stTab]), mx=rows.length?rows[0][1][stTab]:1;
+ const tot=f=>Object.values(D).reduce((a,r)=>a+r[f],0), heroD=Object.entries(D).filter(([k])=>k.startsWith('h:')).reduce((a,[,r])=>a+r.dealt,0), allD=tot('dealt');
+ el.innerHTML=`<div class="sh"><b>Battle report</b><span class="scope"><button data-sc="wave" class="${stScope==='wave'?'on':''}">Wave ${S.wave||1}</button><button data-sc="battle" class="${stScope==='battle'?'on':''}">Battle</button></span><button class="x" data-sx="1" aria-label="Close">×</button></div>
+  <div class="tabs">${ST_TABS.map(([k,n])=>`<button data-st="${k}" class="${stTab===k?'on':''}">${n}</button>`).join('')}</div>
+  <div class="rows">${rows.length?rows.map(([k,r])=>`<div class="sr">${stIcon(k)}<span class="sn">${stName(k)}<i class="${k.startsWith('h:')?'hero':''}" style="width:${Math.max(4,Math.round(r[stTab]/mx*100))}%"></i></span><span class="sv">${fmtN(r[stTab])}</span></div>`).join(''):'<div class="sf" style="border:0">Nothing yet.</div>'}</div>
+  <div class="sf">${fmtN(tot('kills'))} kills · ${Object.entries(D).filter(([k])=>k.startsWith('u:')&&k!=='u:worker').reduce((a,[,r])=>a+r.deaths,0)} soldiers lost · heroes did ${allD?Math.round(heroD/allD*100):0}% of the damage</div>`;
+}
+$('#statsBtn').onclick=()=>{ if(mode!=='play') return; stOpen=!stOpen; if(stOpen&&sheetTab) closeSheet(); sfx('click'); renderStats(); };
+// tabs react on pointerdown so a refresh between press and release can't swallow the tap
+$('#statsPanel').addEventListener('pointerdown',e=>{ const b=e.target.closest('button'); if(!b) return; e.preventDefault();
+ if(b.dataset.sx){ stOpen=false; } else if(b.dataset.sc){ stScope=b.dataset.sc; } else if(b.dataset.st){ stTab=b.dataset.st; } sfx('click'); renderStats(); });
+function battleReportHtml(){ const D=(S.st&&S.st.battle)||{}, R=Object.entries(D), k=R.reduce((a,[,r])=>a+r.kills,0), lost=R.filter(([x])=>x.startsWith('u:')&&x!=='u:worker').reduce((a,[,r])=>a+r.deaths,0);
+ const top=R.filter(([,r])=>r.dealt>0).sort((a,b)=>b[1].dealt-a[1].dealt).slice(0,3), hl=R.filter(([,r])=>r.heal>0).sort((a,b)=>b[1].heal-a[1].heal)[0];
+ return `<div class="rep"><div><span>Kills</span><b>${fmtN(k)}</b></div><div><span>Soldiers lost</span><b>${lost}</b></div>${top.map(([x,r],i)=>`<div><span>${['Top damage','Second','Third'][i]}: ${stName(x)}</span><b>${fmtN(r.dealt)}</b></div>`).join('')}${hl?`<div><span>Top healer: ${stName(hl[0])}</span><b>${fmtN(hl[1].heal)}</b></div>`:''}</div>`; }
 function renderJobs(){
  const J=jobList(), el=$('#jobs');
  el.innerHTML=J.map((j,i)=>`<button class="job ${j.cls}" data-j="${i}"><img src="${j.img}" alt=""><span>${j.txt}<span class="jb"><i style="width:${Math.round(clamp(j.p,0,1)*100)}%"></i></span></span></button>`).join('');
@@ -2842,7 +3091,9 @@ function uiTick(dt){
  uiT-=dt; if(uiT>0&&!uiDirty) return; uiT=.12;
  $('#rGold b').textContent=Math.floor(S.res.gold);
  $('#rLumber b').textContent=Math.floor(S.res.lumber);
- const fu=foodUsed(), fc=foodCap(); const fb=$('#rFood b'); fb.textContent=`${fu}/${fc}`; fb.style.color=fu>=fc?'var(--bad)':'';
+ $('#rFood b').textContent=Math.floor(S.res.food);
+ { const db=$('#dragonBtn'), has=!!getB('roost'); db.hidden=!has; if(has){ const cd=Math.max(0,S.dragonCd||0); db.style.setProperty('--p',S.dragon?1:cd/DRAGON.cd); db.querySelector('.cdv').textContent=S.dragon?'':cd>0?Math.ceil(cd):''; } }
+ const fu=foodUsed(), fc=foodCap(); const fb=$('#rPop b'); fb.textContent=`${fu}/${fc}`; fb.style.color=fu>=fc?'var(--bad)':'';
  $('#waveBadge').textContent=S.waveState==='spawning'||S.waveState==='fighting'?`Wave ${S.wave}`:`Wave ${S.wave}${S.endless?'':'/'+S.map.waves}`;
  const wb=$('#waveBtn');
  if(S.waveState==='idle'){wb.innerHTML=`Start wave ${S.wave+1}`; wb.classList.remove('busy');}
@@ -2874,7 +3125,7 @@ function uiTick(dt){
    b.style.setProperty('--p',lock?0:clamp(cd/full,0,1)); b.querySelector('.cdv').textContent=lock?`Lv ${a.lvl}`:cd>0?Math.ceil(cd):'';});
  }
  $('#targetLbl').textContent=S.mode[0].toUpperCase()+S.mode.slice(1);
- renderJobs(); renderPreview();
+ renderJobs(); if(stOpen&&performance.now()-statsLast>500){ statsLast=performance.now(); renderStats(); } renderPreview();
  if(sheetTab&&(uiDirty||Math.random()<.2)){ renderSheet(); reapplyArmed(); }
  uiDirty=false;
 }
@@ -2905,7 +3156,7 @@ function mapTap(x,y){
  C.push({d:Math.hypot(x-MINE.x-6,y-MINE.y+8)-26,k:'mine'});
  TREES.forEach(t=>C.push({d:Math.hypot(t.x-x,t.y-14-y)-10,k:'trees',o:t}));
  S.buildings.forEach(b=>{ const dx=Math.max(0,Math.abs(x-b.x)-b.r*.85), dy=y>b.y+6?y-b.y-6:y<b.y-b.h?b.y-b.h-y:0; C.push({d:Math.hypot(dx,dy),k:'b',o:b}); });
- S.plots.forEach(p=>{ if(!p.b) C.push({d:Math.hypot(x-p.x,(y-p.y)*1.6)-22,k:'plot',o:p}); });
+ S.plots.forEach(p=>{ if(!p.b&&plotOpen(p)) C.push({d:Math.hypot(x-p.x,(y-p.y)*1.6)-22,k:'plot',o:p}); });
  C.sort((a,b)=>a.d-b.d); const c=C[0];
  if(c&&c.d<F){
   if(c.k==='enemy'){ if(h&&!h.dead){h.focus=c.o; h.moveTo=null; toast(`${h.name} targets ${ENEMIES[c.o.type].name}`); sfx('click');} return; }
@@ -2947,6 +3198,7 @@ function pickBoon(c,idx,id){ const C=campState(c), O=C.offered[idx]; if(!O||O.pi
 const pendingBoons=c=>{ const C=campState(c); return Object.keys(C.offered).filter(k=>!C.offered[k].picked).map(Number); };
 const boonIcons=c=>{ const B=campState(c).boons; return B.length?`<span class="boons">${B.map(id=>`<i title="${BOONS[id].name}">${svgI(BOONS[id].icon)}</i>`).join('')}</span>`:''; };
 function gameOver(win){
+ stOpen=false; if(typeof renderStats==='function') renderStats();
  if(S.over) return; S.over=true; mode='over'; clearSave(); saveCampHeroes();
  sfx(win?'victory':'defeat'); const M=S.map;
  if(win){
@@ -2956,7 +3208,7 @@ function gameOver(win){
   const lines=['Held every wave','Town Center above half health','No hero fell'];
   const cid=M.campaign, bi=campMaps(cid).indexOf(mapIdx), CS=campState(cid);
   if(bi>=0&&bi<3&&!CS.offered[bi]){ CS.offered[bi]={ids:boonOffer(cid,bi),picked:null}; store.set('prog',PROG); }
-  const vic=()=>showModal(`<h2>Victory</h2><p>${M.name} holds. ${S.kills} raiders defeated.</p><div class="starrow">${lines.map((t,k)=>`<div><span class="s ${got[k]?'':'off'}">★</span>${t}</div>`).join('')}</div>
+  const vic=()=>showModal(`<h2>Victory</h2><p>${M.name} holds. ${S.kills} raiders defeated.</p><div class="starrow">${lines.map((t,k)=>`<div><span class="s ${got[k]?'':'off'}">★</span>${t}</div>`).join('')}</div>${battleReportHtml()}
    <p><b>${gained>0?`+${gained} Crown${gained>1?'s':''} earned.`:'No new stars this time.'}</b> ${crowns()} Crowns to spend.</p>${bi>=0&&bi<3?`<div id="boonBox">${boonChooserHtml(cid,bi)}</div>`:''}
    <div class="row">${unlocked?`<button class="mbtn pri" data-m="march" data-i="${mapIdx+1}">Next: ${next.name}</button>`:''}<button class="mbtn ${unlocked?'':'pri'}" data-m="council">War council</button><button class="mbtn" data-m="maps">Choose a battle</button><button class="mbtn" data-m="endless">Keep defending (endless)</button></div>`);
   let cards=PROG.storyOn?storyOf(M.id,'victory').concat(storyOf(M.id,'epilogue').filter(c=>!seenStory(c.id))):[];
@@ -2964,7 +3216,7 @@ function gameOver(win){
   showStory(cards,vic,{map:mapIdx});
  }else{
   const dl=storyOf(M.id,'defeat')[0]; if(dl) markStory(dl.id);
-  showModal(`<h2>The hold has fallen</h2>${dl?`<p class="mq"><b>${MAERA}:</b> ${storyText(dl.text)}</p>`:''}<p>${M.name} fell on wave ${S.wave} of ${M.waves}. ${S.kills} raiders defeated.</p><div class="row"><button class="mbtn pri" data-m="retry">Try again</button><button class="mbtn" data-m="council">War council</button><button class="mbtn" data-m="maps">Choose a battle</button></div>`);
+  showModal(`<h2>The hold has fallen</h2>${dl?`<p class="mq"><b>${MAERA}:</b> ${storyText(dl.text)}</p>`:''}<p>${M.name} fell on wave ${S.wave} of ${M.waves}. ${S.kills} raiders defeated.</p>${battleReportHtml()}<div class="row"><button class="mbtn pri" data-m="retry">Try again</button><button class="mbtn" data-m="council">War council</button><button class="mbtn" data-m="maps">Choose a battle</button></div>`);
  }
 }
 /* ---------- campaign screens ---------- */
@@ -3026,7 +3278,7 @@ function showMaps(){
  $('#raceRow').hidden=curCamp!=='c1'; document.querySelectorAll('#raceRow .race').forEach(b=>{ b.classList.toggle('on',b.dataset.race===chosenRace); b.hidden=b.dataset.race==='dwarf'&&!PROG.dwarvesC1; });
  const allCards=Object.values(STORY).flat(); $('#chronN').textContent=`${allCards.filter(c=>seenStory(c.id)).length}/${allCards.length}`;
  renderCampTools();
- $('#mapList').innerHTML=campMaps(curCamp).map(i=>{ const M=MAPS[i], st=starsOf(M.id), lock=ts<M.need, boss=[...new Set(Object.values(M.bosses).map(b=>ENEMIES[b].name.split(' the ')[0]))].join(', ');
+ $('#mapList').innerHTML=campMaps(curCamp).map(i=>{ const M=MAPS[i], st=starsOf(M.id), lock=ts<M.need&&!PREVIEW, boss=[...new Set(Object.values(M.bosses).map(b=>ENEMIES[b].name.split(' the ')[0]))].join(', ');
   return `<button class="mapc ${lock?'lock':''}" data-map="${i}" style="--t:${TIERS[M.tier]}"><img src="${mapPreview(i)}" alt=""><span class="tier">${M.tier}</span><span class="st">${st.map(v=>v?'★':'<i>★</i>').join('')}</span>${lock?`<span class="lk">Earn ${M.need} ★ in this campaign to unlock (you have ${ts})</span>`:''}
    ${(()=>{const sv=store.get('save',null); return sv&&sv.map===i?`<span class="cont">Saved after wave ${sv.wave}</span>`:'';})()}<span class="mb"><b>${M.name}</b><small>${M.story.split('. ')[0]}.</small><span class="mm">${M.waves} waves, boss: ${boss}</span></span></button>`; }).join('');
 }
@@ -3035,7 +3287,7 @@ function renderCampTools(){ const c=curCamp, C=campState(c), pend=pendingBoons(c
 $('#campTools').addEventListener('click',e=>{ const b=e.target.closest('[data-ct]'); if(!b) return; const c=curCamp, i=pendingBoons(c)[0];
  if(i!=null) showModal(`<h2>Spoils of War</h2><p>From ${MAPS[campMaps(c)[i]].name}.</p><div id="boonBox">${boonChooserHtml(c,i)}</div><div class="row"><button class="mbtn pri" data-m="maps">Done</button></div>`); });
 $('#mapList').addEventListener('click',e=>{ const b=e.target.closest('.mapc'); if(!b) return; initAudio(); const i=+b.dataset.map, M=MAPS[i];
- if(starsIn(M.campaign)<M.need){ toastAny(`Earn ${M.need} stars in ${CAMP[M.campaign].name} to unlock ${M.name}`); return; } sfx('click'); briefing(i); });
+ if(starsIn(M.campaign)<M.need&&!PREVIEW){ toastAny(`Earn ${M.need} stars in ${CAMP[M.campaign].name} to unlock ${M.name}`); return; } sfx('click'); briefing(i); });
 $('#mapsBack').onclick=()=>{ $('#maps').hidden=true; showSaga(); };
 document.querySelectorAll('#raceRow .race').forEach(b=>b.onclick=()=>{initAudio(); chosenRace=b.dataset.race; store.set('race',chosenRace); document.querySelectorAll('#raceRow .race').forEach(x=>x.classList.toggle('on',x===b)); sfx('click'); THUMB={}; showMaps();});
 $('#upBtn').onclick=()=>showUpgrades();
@@ -3118,16 +3370,19 @@ function storyFrame(now){
  requestAnimationFrame(storyFrame); }
 function hideModal(){$('#modal').hidden=true;}
 const HOWTO=`<h2>How to play</h2><ul>
-<li>Tap the <b>gold mine</b> or <b>pine trees</b> to send workers. Train more at the Town Center (tap it, or Build).</li>
-<li>Tap an <b>empty plot</b> to build. Farms raise your food cap, which limits army size.</li>
-<li>Recruit heroes and soldiers in <b>Army</b> once the Barracks is up. Heroes level up from nearby kills and unlock a third ability at level 3.</li>
+<li>Tap the <b>gold mine</b>, the <b>trees</b> or a <b>Farm</b> to send workers. Train more at the Town Center; they cost food and take no population.</li>
+<li><b>Food</b> pays for workers, soldiers and heroes. Farms grow it, faster with up to 2 farmers each. <b>Population</b> (the helmet) limits your army: 25, then 45 with the Keep and 70 with the Castle. The Keep and the Castle each open 2 more building plots.</li>
+<li>Recruit heroes and soldiers in <b>Army</b> once the Barracks is up. You lead one hero at first; a second joins with the Keep and a third with the Castle. Heroes level up from nearby kills.</li>
 <li>At levels 3, 6 and 9 a hero can learn a <b>talent</b>: tap the portrait with the gold <b>!</b> and pick one of two (tap twice). Talents last for the battle.</li>
 <li>Drag the <b>banner</b> to move your army. It lines up facing the road: melee in front, ranged and healers behind, siege at the back, heroes at the ends of the front row. The <b>stance</b> button sets how they fight: <b>Hold the line</b> braces in formation (melee guard their spot), <b>Defend</b> fights freely once enemies enter the zone around the banner, <b>Charge</b> fights its way to the banner.</li>
 <li>Bosses drop <b>gear</b> the first time you beat them. Equip it in the <b>Armory</b> (battle list or briefing): one item per hero.</li>
 <li>Tap the ground to move your hero. Tap an enemy to focus it. <b>Target</b> switches between nearest, weakest and strongest for everyone.</li>
 <li>Upgrade gear at the <b>Forge</b>. Upgrade the Town Center to a <b>Keep</b> (elite units, healers, forge 4-5), then a <b>Castle</b> (forge 6-8, siege engines and endless <b>Masterwork</b>: +4% damage and health each).</li>
-<li>Workers cost no food: food is only for your army and heroes. Soldiers earn <b>ranks</b> from kills (gold chevrons: +12% health and damage each), so keep them alive.</li>
-<li>The <b>Cleric</b> or <b>Witch Doctor</b> heals the most injured ally nearby. The <b>Trebuchet</b> or <b>Catapult</b> hurls stones at dense waves from the back rows, but can't hit anything closer than 60.</li>
+<li>Soldiers earn <b>ranks</b> from kills (gold chevrons: +12% health and damage each), so keep them alive.</li>
+<li>With a Castle, upgrade the Barracks to the <b>War Barracks</b>: 50% faster training, two at a time, and the healers and siege engines. The <b>Cleric</b> or <b>Witch Doctor</b> heals the most injured ally nearby. The <b>Trebuchet</b> or <b>Catapult</b> hurls stones at dense waves from the back rows, but can't hit anything closer than 60.</li>
+<li><b>Late game:</b> hire <b>Sellswords</b> at the Town Center (Keep): five veterans for two waves, no population. Build a <b>Dragon Roost</b> (Castle) for <b>Dragonfire</b>: your dragon burns everything along the road, at a huge price.</li>
+<li><b>Stats</b> opens the battle report: damage, damage taken, healing, kills and losses for each hero and unit type, for this wave or the whole battle.</li>
+<li><b>Music</b> in this menu cycles Calm, Epic and Intense; each map has its own theme. Sound pauses when you leave the app.</li>
 <li>Maera's story cards can be switched off in this menu (Story: on/off) and re-read in the <b>Chronicle</b> on the battle list.</li>
 <li>Each battle ends with a boss. Clearing a wave pays out; calling the next one early pays extra gold.</li><li>Your battle saves after every cleared wave. Continue from the title screen or the battle list.</li><li>Tap a built Watch Tower to turn it into a Frost Tower (slows) or a Ballista (ignores armor). Both need a Forge.</li><li>Earn up to three stars per battle. Stars unlock harder tiers and give Crowns for permanent upgrades in the War council.</li>
 <li><b>Campaigns:</b> Play opens the saga. Each campaign is four battles; win The Ice Crown (or earn 8 stars in Campaign 1) to open Campaign 2, The Ember Deep, where you always lead the Ironhold Dwarves.</li>
@@ -3136,7 +3391,7 @@ const HOWTO=`<h2>How to play</h2><ul>
 <li><b>Hazards</b> (Campaign 2): lava vents glow and show a red circle a few seconds before they burst; ash storms shorten every ranged attack while they last; on Heart of the Mountain the volcano erupts. Move out of the circles.</li></ul>
 <div class="row"><button class="mbtn pri" data-m="resume">Got it</button></div>`;
 $('#menuBtn').onclick=()=>{ if(mode!=='play') return; paused=true; sfx('click');
- showModal(`<h2>Paused</h2><div class="row"><button class="mbtn pri" data-m="resume">Resume</button><button class="mbtn" data-m="howto">How to play</button><button class="mbtn" data-m="music">Music: ${musicOn?'on':'off'}</button><button class="mbtn" data-m="sound">Sound effects: ${sfxOn?'on':'off'}</button><button class="mbtn" data-m="storyOn">Story: ${PROG.storyOn?'on':'off'}</button><button class="mbtn" data-m="retry">Restart run</button><button class="mbtn" data-m="maps">Quit to battle select</button></div>${campState(S.map.campaign).boons.length?`<div class="sec">Spoils of War</div>${campState(S.map.campaign).boons.map(id=>`<div class="erow"><span class="ic stic">${svgI(BOONS[id].icon)}</span><span><b>${BOONS[id].name}</b><small>${BOONS[id].desc}</small></span></div>`).join('')}`:''}`);};
+ showModal(`<h2>Paused</h2><div class="row"><button class="mbtn pri" data-m="resume">Resume</button><button class="mbtn" data-m="howto">How to play</button><button class="mbtn" data-m="music">Music: ${MSTYLES[musicStyle]}</button><button class="mbtn" data-m="sound">Sound effects: ${sfxOn?'on':'off'}</button><button class="mbtn" data-m="storyOn">Story: ${PROG.storyOn?'on':'off'}</button><button class="mbtn" data-m="retry">Restart run</button><button class="mbtn" data-m="maps">Quit to battle select</button></div>${campState(S.map.campaign).boons.length?`<div class="sec">Spoils of War</div>${campState(S.map.campaign).boons.map(id=>`<div class="erow"><span class="ic stic">${svgI(BOONS[id].icon)}</span><span><b>${BOONS[id].name}</b><small>${BOONS[id].desc}</small></span></div>`).join('')}`:''}`);};
 $('#modal').addEventListener('click',e=>{
  const cb=e.target.closest('[data-chr]'); if(cb){ const [a,b]=cb.dataset.chr.split(':'); if(CAMP[a]){ const L=campMaps(a); showStory([STORY[a][+b]],null,{map:L[0]}); } else showStory([STORY[MAPS[+a].id][+b]],null,{map:+a}); return; }
  const ab=e.target.closest('[data-arm]');
@@ -3147,7 +3402,7 @@ $('#modal').addEventListener('click',e=>{
  if(m==='resume'){hideModal();paused=false;}
  else if(m==='howto'){showModal(HOWTO);}
  else if(m==='sound'){sfxOn=!sfxOn; store.set('sfx',sfxOn); b.textContent=`Sound effects: ${sfxOn?'on':'off'}`;}
- else if(m==='music'){setMusic(!musicOn); b.textContent=`Music: ${musicOn?'on':'off'}`;}
+ else if(m==='music'){ const o=['off','calm','epic','intense'], v=o[(o.indexOf(musicStyle)+1)%4]; setMusicStyle(v); b.textContent=`Music: ${MSTYLES[v]}`; if(v!=='off') toast({calm:'Calm: soft and spacious',epic:'Epic: the full orchestra',intense:'Intense: faster, heavier drums'}[v]); }
  else if(m==='storyOn'){PROG.storyOn=!PROG.storyOn; store.set('prog',PROG); b.textContent=`Story: ${PROG.storyOn?'on':'off'}`;}
  else if(m==='retry'){startMap(mapIdx);}
  else if(m==='march'){startMap(+b.dataset.i);}
@@ -3172,13 +3427,13 @@ function frame(now){
 new ResizeObserver(()=>resize()).observe(stage);
 resize(); newGame(chosenRace);
 requestAnimationFrame(frame);
-if(/[?&]debug/.test(location.search)) window.__IC={saveRun,restoreRun,specTower,snapshot,clearW:()=>{for(const k in WCACHE) delete WCACHE[k];},trainUnit,trainWorker,forgeUp,upgradeKeep,setJob,setStance,foodCap,foodUsed,waveDef,genWave,MAPS,PROG_SET:p=>{PROG=normProg(p);},startMap,showMaps,get PROG(){return PROG;},tick:n=>{for(let i=0;i<n;i++)update(.05);},get S(){return S;},startWave,tryBuild,recruitHero,assignWorker,setMode:m=>mode=m,finish:w=>gameOver(w),BOONS,GEAR,THEMES,startEruption,setRace:r=>{chosenRace=r;},pickBoon,boonOffer,campState,pendingBoons,campMaps,moveArmy,refreshFormation,upgradeCastle,buyMasterwork,forgeCost,masterCost,reseed:n=>{Math.random=mulberry(n);},showChronicle,talentPending,pickTalent,TALENTS,grantXP,GEAR,equipGear,showArmory};
+if(/[?&]debug/.test(location.search)) window.__IC={openStats:(t,sc)=>{stOpen=true;stTab=t||'dealt';stScope=sc||'battle';renderStats();},battleReportHtml,hireMercs,callDragon,mercCost,upgradeBarracks,heroSlots,sfxTest:n=>sfx(n),setMusicStyle,get AC(){return AC;},get master(){return master;},get musicStyle(){return musicStyle;},saveRun,restoreRun,specTower,snapshot,clearW:()=>{for(const k in WCACHE) delete WCACHE[k];},trainUnit,trainWorker,forgeUp,upgradeKeep,setJob,setStance,foodCap,foodUsed,waveDef,genWave,MAPS,PROG_SET:p=>{PROG=normProg(p);},startMap,showMaps,get PROG(){return PROG;},tick:n=>{for(let i=0;i<n;i++)update(.05);},get S(){return S;},startWave,tryBuild,recruitHero,assignWorker,setMode:m=>mode=m,finish:w=>gameOver(w),BOONS,GEAR,THEMES,startEruption,setRace:r=>{chosenRace=r;},pickBoon,boonOffer,campState,pendingBoons,campMaps,moveArmy,refreshFormation,upgradeCastle,buyMasterwork,forgeCost,masterCost,reseed:n=>{Math.random=mulberry(n);},showChronicle,talentPending,pickTalent,TALENTS,grantXP,GEAR,equipGear,showArmory};
 })();
 </script>
 <script>
 /* Ice Crown PWA: offline worker with silent updates, plus the install hint. */
 (function(){
- var VERSION='1.6.0';
+ var VERSION='1.7.0';
  var v=document.getElementById('verLbl'); if(v) v.textContent='Ice Crown v'+VERSION+' beta';
  // Silent updates: the worker fetches the newest game page whenever online, so the next open is always current.
  if('serviceWorker' in navigator && location.protocol!=='file:'){
