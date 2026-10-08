@@ -9,6 +9,9 @@
 // heroes unlock by tier (the game enforces it); raises the War Barracks after the Castle; checks food in every cost.
 // Splits gold and lumber workers by what's scarce, keeps up to 16 workers (they take no population), and spends a
 // surplus the way a good player would: sellswords when rich in gold and food, Dragonfire when it can afford it.
+// v1.8: builds a Palisade at the middle wall site once the Barracks stands, a second at the inner site later, and
+// raises both to Stone after the Keep.
+// v1.9: no bot changes; maps 8 to 11 are Campaign 3 and maps 12 to 15 Campaign 4 (run with --campaign c3,c4). The runner now prints the first lines of a page error's stack.
 // Runs inside the game page opened with ?debug (which exposes window.__IC).
 (opts)=>{ const I=__IC; if(!opts.keepProg) I.PROG_SET(Object.assign({gear:{owned:[],equipped:{}}},opts.prog)); I.startMap(opts.map); I.setStance('defend'); const S=()=>I.S;
  const heroOrder=['warrior','mage','ranger'], buildOrder=['barracks','farm','forge','farm','tower','farm','tower','farm','farm'];
@@ -28,6 +31,9 @@
   const have={}; s.buildings.forEach(b=>have[b.type]=(have[b.type]||0)+1); const need={};
   for(const t of buildOrder){ need[t]=(need[t]||0)+1; if((have[t]||0)<need[t]){ if(cost(({barracks:{gold:120,lumber:60},farm:{gold:30,lumber:70},forge:{gold:100,lumber:120},tower:{gold:80,lumber:100}})[t])) I.tryBuild(t); break; } }
   const bar=s.buildings.find(b=>b.type==='barracks'&&b.built);
+  if(bar&&s.wslots&&s.wslots[1]&&!s.wslots[1].b&&s.res.lumber>=260) I.buildWall(s.wslots[1]);
+  if(s.keep&&s.wslots&&s.wslots[2]&&!s.wslots[2].b&&s.res.lumber>=400) I.buildWall(s.wslots[2]);
+  if(s.keep) (s.wslots||[]).forEach(w=>{ if(w.b&&w.b.built&&w.b.tier==='palisade'&&!w.b.upg&&s.res.gold>=400&&s.res.lumber>=350) I.upgradeWall(w.b); });
   if(bar){ for(const h of heroOrder){ if(!s.heroes.some(x=>x.cls===h)&&!bar.queue.some(q=>q.key===h)){ if(s.res.gold>=180&&s.res.food>=110&&s.heroes.length<I.heroSlots()) I.recruitHero(h); break; } } }
   if(!s.keep&&!s.tc.upg&&s.wave>=opts.keepAt&&s.res.gold>=380&&s.res.lumber>=240) I.upgradeKeep();
   if(s.keep&&!s.castle&&!s.tc.upg&&s.res.gold>=750&&s.res.lumber>=450&&s.res.food>=350) I.upgradeCastle();

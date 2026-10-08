@@ -1,7 +1,7 @@
 // Ice Crown offline worker. Bump VERSION on every release.
 // Silent updates: the game page and manifest are fetched network-first, so the next open after a release
 // shows the new version with no prompt. Everything else is cache-first for speed and offline play.
-const VERSION = '1.7.0';
+const VERSION = '1.9.0';
 const CACHE = 'icecrown-' + VERSION;
 const ASSETS = ['./', './index.html', './manifest.webmanifest',
   './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png', './icons/apple-touch-icon.png',
