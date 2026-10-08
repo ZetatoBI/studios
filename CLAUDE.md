@@ -40,3 +40,13 @@ minutes; the Actions tab shows the "pages build and deployment" run.
 - Every release: bump VERSION in games/icecrown/sw.js and in the PWA script at the end of games/icecrown/index.html.
 - Never change the manifest id or the icecrown.* storage keys without a migration.
 - Before opening any PR that changes a game, load it headless and confirm there are no page errors.
+
+## Roost Rivals (games/roost-rivals/)
+- Read dev/roost-rivals/DESIGN.md before changing gameplay, balance, controls or releases.
+- The first script block in games/roost-rivals/index.html is the deterministic core (RR). It must not use Math.random, Date,
+  or Math.sin/cos/atan2/hypot/pow; online duels and replays depend on that. After any change to it, run
+  node dev/roost-rivals/verify-replay.mjs and confirm every match is identical.
+- After any change to birds, calls, roosts, map generation or rival AI, run node dev/roost-rivals/balance/run-balance.mjs
+  and put the results in the PR, compared with the targets in DESIGN.md.
+- Every release: bump VERSION in games/roost-rivals/sw.js and both VERSION values in games/roost-rivals/index.html.
+- Never change the manifest id or the roostrivals.* storage keys without a migration.
