@@ -42,7 +42,7 @@ const PROFILES = {
 };
 const browser = await chromium.launch(process.env.CHROME_PATH ? { executablePath: process.env.CHROME_PATH } : {});
 const page = await browser.newPage({ viewport: { width: 390, height: 800 } });
-const errors = []; page.on('pageerror', e => errors.push(String(e)));
+const errors = []; page.on('pageerror', e => { const s = String(e.stack || e).split('\n').slice(0, 4).join(' | '); if (!errors.includes(s)) errors.push(s); });
 await page.goto(`http://localhost:${port}/games/icecrown/?debug&seed=${SEED}`);
 await page.waitForTimeout(1500);
 await page.evaluate(() => { const t = document.querySelector('#title'); if (t) t.hidden = true; });

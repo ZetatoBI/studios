@@ -12,7 +12,7 @@ Read it before changing gameplay, balance or controls.
 - `dev/icecrown/balance/`: the balance bot and runner (section 5).
 - `dev/icecrown/v1.4-SPEC.md`: the build spec for v1.4 "The Long Night" (story, talents, gear).
 - `dev/icecrown/v1.5-SPEC.md`: the build spec for v1.5 "Hold the Line" (movement, formations, late-game scaling).
-- v1.7 was built in chat and published as finished files (no spec); its design is in section 3, "Economy, heroes and the late game".
+- v1.7 and v1.8 were built in chat and published as finished files (no spec); its design is in section 3, "Economy, heroes and the late game".
 - `dev/icecrown/v1.6-SPEC.md`: the build spec for v1.6 "The Ember Deep" (saga of campaigns, carry-over, boons,
   the Dwarves, the Ember Legion, hazards, Campaign 2).
 
@@ -132,10 +132,10 @@ unit strikes back at an attacker just outside the zone (this stops enemy archers
 ### Saga and campaigns (v1.6)
 | # | Campaign | Army | Enemy | State |
 |---|---|---|---|---|
-| 1 | The Long Night | Kingdom of Aldmere or Grukash Horde (player's choice; Dwarves after Campaign 2) | The Frost | Playable |
+| 1 | The Long Night | Kingdom of Aldmere or Grukash Horde (player's choice; Dwarves after Campaign 2, Elves after Campaign 3) | The Frost | Playable |
 | 2 | The Ember Deep | Ironhold Dwarves (always) | The Ember Legion | Playable (v1.6) |
-| 3 | The Withering Wood | Sylvan Elves | The Blight | Teaser card ("coming soon") |
-| 4 | The Red Wastes | Grukash Horde | The Sand-Dead | Teaser card ("coming soon") |
+| 3 | The Withering Wood | Sylvan Elves (always) | The Blight | Playable (v1.9) |
+| 4 | The Red Wastes | Grukash Horde (always) | The Sand-Dead | Playable (v1.9); ends the saga |
 
 - **Data model:** `CAMPAIGNS` (id, number, name, race or null for player's choice, faction, `lockText`, `soon` for
   teasers) and `CAMP` by id. Each map in `MAPS` carries `campaign` (old maps default to `c1`), plus `faction`
@@ -234,6 +234,86 @@ Built in chat and tested there (bot runs and headless checks), then published as
 - **Preview mode** (`PREVIEW`): on any host other than zetatobi.com or localhost (Claude artifact links), every
   campaign and battle is unlocked for testing. The live site is unaffected.
 
+### Ramparts (v1.8)
+Built in chat and tested there (bot runs and headless checks), then published as finished files.
+- **Workers:** assigning a worker only ever uses an idle one. If none is idle the game says so (train more, or tap
+  Remove at a mine, wood or farm). Nothing is pulled off another job at random. Tools upgrades are described as
+  boosting gold, lumber and food (farms always used them).
+- **Hero progression:** level cap 20 (`HERO_MAX`), `XP_TABLE` to 65,000. Measured with the campaign profile: about
+  level 8, 13, 17 and 19 after each of a campaign's battles. Growth (`hpGrow`, `dmgGrow`, `apGrow`): +12% health,
+  +8% damage, +10% ability power per level to 10, then +7% / +5% / +6%; armor +1 per 3 levels to 9, then per 4.
+  Titles every 5 levels (`TITLES`: Veteran, Champion, Hero, Legend), each +6% health, damage and ability power
+  (`TITLE_BONUS`), a coloured aura under the hero and a banner and fanfare. Level-ups show the health and damage
+  gained. Portraits have an XP line and a level badge in the title colour. Talents stay at 3, 6 and 9.
+- **Walls** (`WALLS`, `BUILDINGS.wall`, type `wall`): three sites per map across the road at 40%, 55% and 70% of
+  its length from the rift (`wallSlots`, `S.wslots`). Palisade: 150 lumber, 1,400 health, armor 3. Stone (needs the
+  Keep): +150 gold and 150 lumber, 3,800 health, armor 8. A wall is a 68-wide segment (`segDist`); `edgeDist` uses
+  it. Enemies on the road are held on the rift side (`separate`, remembering which side each enemy came from in
+  `wside`) and attack the wall once it blocks them (`blockingWall`). They never target a wall from afar
+  (`nearestFriendly` skips walls). Fliers ignore walls, and friendly units pass through and never steer around them.
+  Saved in the run save (`wslot`, `tier`).
+- **Mop-up rule** (`mopUp`): once a wave has finished spawning and 3 or fewer enemies remain, soldiers and heroes
+  behave as on Charge. Found by the bot: a lone archer plinking a stone wall from out of reach stalled a wave for
+  over 20 minutes.
+- **Camera** (`CAM`, `applyCam`, `zoomAt`, `resetCam`): zoom 1 to 2.5 by pinch or mouse wheel; one-finger drag
+  pans when zoomed in; a corner button resets. `SC`, `OX` and `OY` always hold the current camera transform, so
+  drawing, taps, rings and lighting follow it. The ground is painted once per map and screen size into a
+  zoom-ready cache (`GV`, up to 4,096 px) and drawn in world coordinates. The map resets the view on start.
+
+### The Withering Wood, the Sylvan Elves and bigger maps (v1.9)
+- **Campaign 3** (`c3`, faction `blight`, race `elf`): Iron **Silverleaf Glade** (12 waves, Gnarlroot), Bronze
+  **The Thornwall** (16, blooms, Gnarlroot and Vorthak), Silver **Hollowmere** (20, spore clouds, finite mine 7000,
+  Vorthak and Hollowwing), Gold **The Withered Heart** (24, spore rain, mine 14000, all four bosses ending with the
+  Rot Mother). Opens with a win on Heart of the Mountain or 8 stars in Campaign 2. Winning The Withered Heart sets
+  `PROG.elvesC1` (the Elves become a third choice in Campaign 1).
+- **Bigger maps:** the world size is per map: `world:{w,h,z0}` in `MAPS` (default 420 x 560). `setWorld(M)` sets
+  `WW`/`WH` in `newGame` and around `mapPreview`. Campaign 3 maps are 520 x 700 and open at zoom `z0` 1.3 centred
+  above the Town Center, so the player pans (drag) and pinches to see the rift. Never hard-code 420 or 560: use
+  `WW`/`WH`. Campaigns 1 and 2 keep the original size.
+- **Sylvan Elves** (`RACES.elf`): lumber x1.2, speed x1.12, ranged range and ranged damage x1.15, military health
+  x0.9 (`perks.rangedMul`, `rangedDmg`, `hpMul`, applied in `applyStats`). Units: Gatherer, Bladedancer, Longbow,
+  Glade Guard, Druid, Glaive Thrower. Heroes: Blademaster Thalion, Sylwen the Grovewarden, Aerin Swiftbow. Drawn
+  slimmer and taller with long hair and pointed ears (`elfLook`, `drawFigure` flags `elf`, `hair`, `elfEar`).
+- **The Blight** (`ENEMIES`): rotwolf, rotling, sporeArcher (`slowHit` .3: its hits slow), husk, sporePriest
+  (heals), **bloat** (`burst`: on death it damages friendly units and heroes in a radius, so shoot it early),
+  thornKnight. Bosses: Gnarlroot (regenerates, summons rotlings), Vorthak (rot pools), Hollowwing (flies, spore
+  breath), the Rot Mother (summons bloats and husks, spore rain). The opening probe per faction is in `OPENERS`.
+- **Hazards** (`HAZ`): `blooms` (warned circle, burst, then a rot pool that hurts **both** sides: pool team
+  `'all'`), `spores` (cloud: ranged range x0.8 for 12s), and `erupt` reused as spore rain on blight maps.
+- **Look:** `THEMES[id].blight` switches the ground painter to `paintBlight` (moss, rot spreading from the rift by
+  `rot` 0 to 1, roots, optional stream and bridge), elder trees (`drawElder`), `drawRiftBlight`, spores and falling
+  leaves instead of snow sparkles.
+- **Crown upgrades** (need Campaign 3 open, generic `PROG[req+'open']`): Wisdom (heroes +15% XP), Grove (walls
+  +25% health). **Gear:** Heartwood (+20% health, regen), Antler (+15% damage, +2 armor), Mothwing (+15% speed,
+  15% less damage taken), Verdant (+20% ability power, cooldowns x0.9).
+- Storage: `icecrown.prog` gains `c3open` and `elvesC1`. No save version change.
+
+### The Red Wastes, the Sand-Dead and the saga finale (v1.9)
+- **Campaign 4** (`c4`, faction `sand`, race `horde`): Iron **Dustwater Oasis** (12 waves, Sandjaw), Bronze
+  **The Bone Canyons** (16, quicksand, Sandjaw and Sephet), Silver **The Sunken Necropolis** (20, sandstorms, finite
+  mine 7000, Sephet and Zarakesh), Gold **Tomb of the Sun King** (24, tomb collapse via `erupt`, mine 14000, Sandjaw,
+  Sephet, Zarakesh, then **Vael** herself at wave 24). Same 520 x 700 world as Campaign 3. Opens with a win on The
+  Withered Heart or 8 stars in Campaign 3. Winning the Tomb sets `PROG.sagaDone` (finale card; the title screen says
+  the saga is complete).
+- **The Sand-Dead** (`ENEMIES`): jackal, ghoul, duneArcher, mummy, tombPriest (`ward`: every 6s nearby raiders get
+  +5 armor for 4s, gold ring; read in `hit()` through `buffs.ward`), scarab (`burrow`: ignores walls, both in
+  `blockingWall` and in the wall collision in `separate`), colossus (splits into 3 scarabs), tombGuard. Bosses:
+  Sandjaw (scorpion, `drawScorpion`; venom pool, scarabs), Sephet (wards, mummies), Zarakesh (flying sand wyrm; sand
+  breath slows, `stormProj:'sandbolt'`), Vael (frost slam, `storm` of crown shards, tomb guards, `erupt`).
+- **Hazards** (`HAZ`): `quicksand` (every 45s two telegraphed circles open under random soldiers or heroes; they
+  burst, then leave a pool that hurts and slows both sides: burn fx with `slow`), `sandstorm` (every 60s for 10s:
+  ranged range x0.8 and everyone slowed via `S.blizT`/`S.blizK` = 0.75), `erupt` reused as falling tomb stones.
+- **Fix:** storm range now reads the current map's hazard (`hzRange()`); before, spore clouds always used the ash
+  value (x0.75) instead of their own.
+- **Look:** `THEMES[id].desert` switches to `paintDesert` (dunes, ripples, sandstone road, bones, red mesas or a
+  full canyon with `canyon`, `ruins` columns, `pyramids`, an `oasis`), `drawPalm` for lumber, `drawRiftSand`, drifting
+  sand and sandstorm overlays, stars instead of the aurora on desert nights. Music colour `oud` (plucked lute).
+- **Crown upgrades** (need Campaign 4 open): Oasis Wells (farms +20% food), Sun-hardened (soldiers +1 armor).
+  **Gear:** Sandjaw's Stinger (basic attacks poison), The Embalmer's Wraps (+25% health, can't be slowed),
+  Zarakesh's Fang (+20% damage, 15% faster attacks), The Shattered Crown (+15% health, damage and ability power,
+  cooldowns x0.9). Campaign 3 and 4 gear now have their own Armory icons.
+- Storage: `icecrown.prog` gains `c4open` and `sagaDone`. No save version change.
+
 ### How to add a campaign
 1. Add an entry to `CAMPAIGNS` (drop `soon`; set `race` if the army is fixed, and `lockText`), and make
    `campUnlocked` open it.
@@ -321,6 +401,33 @@ Whitefang lost at 18 / won (82 lost); The Ice Crown fell at 21 / won; Emberfall 
 82 / 79; Ashen Halls fell at 17 / 18; Heart of the Mountain fell at 21 / 21. Watch: The Ice Crown with upgrades and
 the Deep Forges' high losses.
 
+### v1.8 retune
+Walls and longer hero growth made most maps a little easier. The Ice Crown's late knobs were raised (`gm` 2.9 to
+3.6, `hm` 1.75 to 2.1): without upgrades it falls at wave 21 (2 of 2 runs); with upgrades it is won in 1 of 2.
+Fresh-start results otherwise (no upgrades / some upgrades): Frostmere won 10 / 8 lost; Hollow Pass won 15 / 11;
+Whitefang won 37 / 23; Emberfall won 26 / 33; Deep Forges won 65 / 58; Ashen Halls fell at 18 / 18; Heart of
+the Mountain fell at 22 / 24. Watch: Hollow Pass and Emberfall now lean easy, the Deep Forges costly, and the
+campaign profile (carried heroes) was not re-measured on Gold.
+
+### v1.9 retune (Campaign 3)
+The four Blight maps started from Campaign 2's knobs and were eased in two seeded rounds, because the Elves are
+lighter and Bloats punish a packed line: Silverleaf `gm` 10 to 8.5, Thornwall 7 to 5.5, Hollowmere 6.8 to 5,
+The Withered Heart 4.8 to 4.5; Bloat burst 55 damage / radius 58 to 45 / 54; spore cloud range x0.75 to x0.8.
+Campaign profile, 2 runs (no upgrades / some upgrades): Silverleaf won, 16 to 18 / 13 to 19 lost; Thornwall won,
+27 to 33 / 24 to 43; Hollowmere fell at wave 18 / fell to Hollowwing at wave 20; The Withered Heart fell at 21 /
+won 1 of 2. Targets for Campaign 3 are the Campaign 2 table above. Watch: Hollowmere is the hardest Silver map
+(the bot never wins it); a human who shoots Bloats first should. Campaigns 1 and 2 were re-run and are unchanged.
+
+### v1.9 retune (Campaign 4)
+The Horde with carried heroes crushed the first draft (Campaign 3 knobs: won all four battles in 3 of 4 runs).
+Two seeded rounds: Dustwater `gm` 8.5 to 11; Bone Canyons `gm` 5.5 to 9, `hm` 2.3 to 2.9; Necropolis `gm` 5 to 6.8,
+`hm` 2.7 to 3; Tomb of the Sun King `gm` 4.5 to 5.8, `hm` 2.5 to 3.1, `lateK` 1.3 to 1.5. Campaign profile, 2 runs
+(no upgrades / some upgrades): Dustwater won, 4 to 15 / 0 lost; Bone Canyons won, 14 to 15 / 13 to 15 (quicksand is
+about 20% of damage taken); Necropolis won once with 75 lost and fell at wave 20 once / won, 32 to 36; Tomb fell at
+waves 21 and 23 / won 1 of 2 (the other fell to Vael). Watch: Bone Canyons leans easy against the 20 to 35 target,
+and the gap between "no upgrades" and "some upgrades" is wider than in other campaigns. Campaigns 1 to 3 were re-run
+after these changes and still sit inside their targets.
+
 ### Knobs
 - Per map in `MAPS`: `b0` (opening budget), `bg` (growth per wave), `gm` (extra late-game growth, ramps in over the
   map), `hm` (extra late-game enemy HP), `lateK` (last-third pressure), `hp`/`dmg` (flat multipliers), `themes`,
@@ -361,7 +468,7 @@ Since v1.6:
   (shown on the title screen as "Ice Crown vX beta"). Keep the cache prefix `icecrown-`.
 - Never change `manifest.webmanifest`'s `id`, or the storage keys below, without a migration:
   `icecrown.prog` (stars, upgrades, and since v1.4 `story`: ids of cards seen, `gear`: {owned, equipped by class},
-  `storyOn`; since v1.5 `stanceHelp`; since v1.6 `camp`: per campaign {heroes, boons, offered}, `c2open`,
+  `storyOn`; since v1.5 `stanceHelp`; since v1.6 `camp`: per campaign {heroes, boons, offered}, `c2open` (v1.9: also `c3open`, `elvesC1`, `c4open`, `sagaDone`),
   `dwarvesC1`; older saves load with safe defaults), `icecrown.save` (run save, `v: 2` adds
   each hero's talents; `v: 3` adds the Castle tier, Masterwork count and per-unit kills for veterancy, next to the
   stance and banner position already saved; `v: 4` adds the campaign id; `v: 1` to `v: 3` saves still load),
@@ -373,7 +480,7 @@ Since v1.6:
 - Units move in straight lines toward targets with local steering around buildings (enemies also follow road
   waypoints); there is still no real pathfinding.
 - All art is drawn in code on a canvas; music is procedural (Web Audio), not composed tracks.
-- One large file (about 310 KB since v1.6). Splitting it into modules is fine, but keep it build-free and add every new file
+- One large file (about 310 KB since v1.6, about 430 KB since v1.9). Splitting it into modules is fine, but keep it build-free and add every new file
   to the worker's cache list.
 - Name risk: "Icecrown" is a known Warcraft location. Fine for the web beta; revisit before app store submission.
 
@@ -382,8 +489,9 @@ Since v1.6:
    **Done in v1.4.**
    **v1.5 "Hold the Line"** (movement, formations and stances, late-game scaling, seeded balance runs): **done.**
    **v1.6 "The Ember Deep"** (saga of campaigns, carry-over, boons, the Dwarves, Campaign 2): **done.**
-   Next: Campaign 3 "The Withering Wood" (Sylvan Elves vs. the Blight) and Campaign 4 "The Red Wastes" (Grukash Horde
-   vs. the Sand-Dead), following "How to add a campaign" in section 3.
+   **v1.9 "The Withering Wood"** (Campaign 3, the Sylvan Elves, the Blight, bigger maps): **done.**
+   Campaign 4 "The Red Wastes" (Grukash Horde vs. the Sand-Dead, Vael as the saga's last boss): **done in v1.9.**
+   Next (v2.0): the endless "Eternal Siege" mode that opens after the four campaigns.
 2. **More maps:** fill each tier to 3 maps, with new twists.
 3. **Art pass:** sprite-based units with animations, camera zoom and pan.
 4. **Two fronts:** larger maps with two rifts, squad banners plus hero-led squads, pathfinding, mini-map alerts.
