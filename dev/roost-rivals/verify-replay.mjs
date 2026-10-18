@@ -15,7 +15,7 @@ let fail = 0, cmds = 0, ticks = 0;
 for (let m = 0; m < N; m++) {
   const R = RR.rng(777 + m), nP = 2 + (m % 3), duel = m % 4 === 3;          // every 4th match is a pure two-human duel (no AI at all)
   const players = (duel ? [0, 1] : [...Array(nP).keys()]).map(i => ({ bird: birds[Math.floor(R() * 5)], name: 'P' + i, ai: (duel || i === 0) ? null : { skill: 0.3 + R() * 0.7, pers: pers[Math.floor(R() * 5)] } }));
-  const setup = { players, opts: { seed: 4242 + m * 7919, mods: m % 5 === 0 ? { gale: 1 } : {}, soloEnd: duel ? -1 : 0 } };
+  const themes = Object.keys(RR.THEMES || { city: 1 }), setup = { players, opts: { seed: 4242 + m * 7919, mods: m % 5 === 0 ? { gale: 1 } : {}, soloEnd: duel ? -1 : 0, theme: themes[m % themes.length], start: m % 3 === 1 ? [null, { lv: 5, count: 34 }] : null } };
   const humans = players.map((p, i) => p.ai ? -1 : i).filter(i => i >= 0);
   const S = RR.newMatch(setup.players, setup.opts), trail = []; let snap = null;
   while (!S.over && S.tick < CAP) {

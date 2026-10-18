@@ -38,8 +38,24 @@ button:focus-visible{outline:3px solid var(--lamp);outline-offset:2px}
 
 /* match HUD */
 #hud{position:absolute;left:0;right:0;top:0;z-index:5;padding:10px 12px 0;display:flex;flex-direction:column;gap:8px;pointer-events:none}
-#share{display:flex;height:22px;border-radius:11px;overflow:hidden;background:rgba(0,0,0,.35);box-shadow:0 0 0 2px rgba(0,0,0,.25)}
-#share i{display:flex;align-items:center;justify-content:center;min-width:0;font-style:normal;font-size:12px;font-weight:800;color:#1B1433;transition:flex-grow .5s ease;overflow:hidden;white-space:nowrap}
+#chips{display:flex;gap:6px}
+.pc{flex:1 1 0;min-width:0;display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:5px;align-items:center;padding:4px 7px 4px 5px;border-radius:12px;background:rgba(27,20,51,.82);box-shadow:inset 0 0 0 2px var(--c);transition:box-shadow .2s,opacity .3s}
+.pc .ic{grid-row:1/3;position:relative;width:30px;height:26px}
+.pc .ic svg.b{width:28px;height:21px;position:absolute;left:0;top:1px}
+.pc .ic svg.pw{width:15px;height:15px;position:absolute;right:-3px;bottom:-2px;border-radius:8px;background:#1B1433;padding:1px}
+.pc b{font-size:16px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums;color:var(--c);white-space:nowrap;overflow:hidden}
+.pc small{font-size:11px;font-weight:800;line-height:1.1;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pc.boost{box-shadow:inset 0 0 0 2px var(--c),0 0 12px var(--c)}
+.pc.boost small{color:var(--ink)}
+.pc.full small{color:var(--bad)}
+.pc.out{opacity:.3}
+#share{display:flex;height:5px;border-radius:3px;overflow:hidden;background:rgba(0,0,0,.35)}
+#share i{display:block;min-width:0;transition:flex-grow .5s ease}
+#diffChip{white-space:nowrap;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+#upBtn{position:absolute;z-index:6;display:flex;flex-direction:column;align-items:center;padding:6px 12px;border-radius:14px;background:var(--you);color:var(--lamp-ink);box-shadow:0 4px 0 #8A4B00;line-height:1.1;white-space:nowrap;animation:banIn .18s ease-out both}
+#upBtn b{font-size:14px;font-weight:800}
+#upBtn span{font-size:11px;font-weight:800;font-variant-numeric:tabular-nums}
+#upBtn.no{background:var(--panel2);color:var(--muted);box-shadow:0 4px 0 #1B1433}
 .hrow{display:flex;align-items:center;gap:8px}
 .sp{flex:1}
 .chip{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 11px;border-radius:17px;background:rgba(27,20,51,.72);font-size:14px;font-weight:800;font-variant-numeric:tabular-nums}
@@ -71,22 +87,37 @@ button:focus-visible{outline:3px solid var(--lamp);outline-offset:2px}
 
 /* home */
 #home{background:linear-gradient(180deg,rgba(33,27,63,.5) 0%,rgba(33,27,63,.82) 30%,rgba(33,27,63,.97) 55%);padding:0 16px 12px;overflow-y:auto;touch-action:pan-y}
-.hometop{flex:1 0 auto;display:flex;flex-direction:column;justify-content:flex-end;min-height:150px;padding-block:20px 12px}
+.hometop{flex:1 0 auto;display:flex;flex-direction:column;justify-content:flex-end;min-height:170px;padding-block:20px 18px}
 h1{margin:0;font-family:var(--display);font-weight:400;line-height:.86;font-size:clamp(52px,17vw,84px);letter-spacing:.005em;text-transform:uppercase;display:flex;flex-direction:column}
 h1 span:first-child{color:var(--you);text-shadow:0 4px 0 #8A4B00}
 h1 span:last-child{color:var(--ink);text-shadow:0 4px 0 #1B1433;margin-left:.5em}
-.tag{margin:12px 0 0;font-weight:800;color:var(--muted);font-size:15px}
 .homebody{display:flex;flex-direction:column;gap:10px;max-width:460px;width:100%;margin:0 auto}
-.rank{padding:12px 14px;border-radius:16px;background:var(--panel);display:grid;grid-template-columns:1fr auto;gap:8px 12px;align-items:end}
+.rank{padding:12px 14px;border-radius:16px;background:var(--panel);display:grid;grid-template-columns:1fr auto;gap:8px 12px;align-items:end;text-align:left}
 .rk1{display:flex;flex-direction:column;gap:1px;min-width:0}
 .rlab{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .rk1 b{font-family:var(--display);font-weight:400;font-size:26px;line-height:1.05}
 .rk2{text-align:right;display:flex;flex-direction:column;line-height:1.05}
 .rk2 b{font-size:24px;font-weight:800;color:var(--lamp);font-variant-numeric:tabular-nums}
 .rk2 span{font-size:12px;color:var(--muted);font-weight:800}
-.prog{grid-column:1/-1;height:10px;border-radius:5px;background:rgba(0,0,0,.35);overflow:hidden}
+.prog{display:block;grid-column:1/-1;height:10px;border-radius:5px;background:rgba(0,0,0,.35);overflow:hidden}
 .prog i{display:block;height:100%;width:0;border-radius:5px;background:linear-gradient(90deg,var(--lamp),var(--you));transition:width .9s cubic-bezier(.2,.8,.2,1)}
 .rank p,.resrank p{grid-column:1/-1;margin:0;font-size:13px;color:var(--muted);font-weight:700}
+.pick{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:16px;background:var(--panel);text-align:left}
+.picon{position:relative;width:46px;height:36px;flex:none}
+.picon svg.b{width:42px;height:32px;position:absolute;left:0;top:2px}
+.picon svg.pw{width:20px;height:20px;position:absolute;right:-4px;bottom:-3px;border-radius:10px;background:#1B1433;padding:2px}
+.ptxt{flex:1;min-width:0;display:flex;flex-direction:column}
+.ptxt b{font-size:17px;font-weight:800}
+.ptxt small{font-size:13px;color:var(--muted);font-weight:700}
+.chev{font-size:13px;font-weight:800;color:var(--lamp)}
+.subrow{display:flex;justify-content:center;gap:18px;margin-top:-2px}
+.link{min-height:36px;font-size:14px;font-weight:800;color:var(--muted)}
+.link b{color:var(--ink)}
+.brow{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;background:rgba(0,0,0,.2);text-align:left;border:2px solid transparent}
+.brow.on{border-color:var(--you)}
+.brow.lock{opacity:.5}
+.brow .ptxt small{line-height:1.3}
+.brow .ptxt small b{color:var(--ink);font-size:13px}
 .birds{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
 .birds button{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 2px 7px;border-radius:14px;background:var(--panel);font-size:12px;font-weight:800;min-width:0;border:2px solid transparent}
 .birds button svg{width:34px;height:26px}
@@ -105,7 +136,7 @@ h1 span:last-child{color:var(--ink);text-shadow:0 4px 0 #1B1433;margin-left:.5em
 .daily em{font-style:normal;font-weight:800;color:var(--lamp);white-space:nowrap}
 .daily.done em{color:var(--good)}
 .trio{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.trio button{height:44px;border-radius:12px;background:var(--panel);font-weight:800;font-size:14px}
+.trio button{height:44px;border-radius:12px;background:rgba(53,44,99,.7);font-weight:800;font-size:14px;color:var(--muted)}
 .ver{margin:0;text-align:center;font-size:12px;color:var(--muted);font-weight:700}
 #inst{position:absolute;left:12px;right:12px;top:12px;display:flex;align-items:center;gap:10px;background:var(--ink);color:#1B1433;border-radius:14px;padding:10px 8px 10px 14px;box-shadow:0 8px 24px rgba(0,0,0,.35);animation:banIn .35s ease-out both;z-index:2}
 #inst .it{flex:1;display:flex;flex-direction:column;gap:1px;font-size:14px;line-height:1.3;min-width:0}
@@ -169,6 +200,48 @@ h1 span:last-child{color:var(--ink);text-shadow:0 4px 0 #1B1433;margin-left:.5em
 @keyframes zin{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 
+/* v0.4: story */
+.big{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.big small{font-family:var(--body);font-size:13px;font-weight:800;letter-spacing:0;text-transform:none;opacity:.8}
+.big.alt{height:52px;font-size:20px;background:var(--panel2);color:var(--ink);box-shadow:0 5px 0 #1B1433}
+.big.alt:active{box-shadow:0 1px 0 #1B1433}
+#story{background:rgba(27,20,51,.94);padding:0 16px 16px;overflow-y:auto;touch-action:pan-y}
+.sthead{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:12px;padding-block:12px;background:rgba(27,20,51,.97)}
+.sthead h2{flex:1;margin:0;font-family:var(--display);font-weight:400;font-size:28px}
+#storyStars{font-weight:800;color:var(--lamp);font-variant-numeric:tabular-nums}
+#storyList{display:flex;flex-direction:column;gap:12px;max-width:520px;width:100%;margin:0 auto}
+.dist{padding:12px 14px 14px;border-radius:16px;background:var(--panel);box-shadow:inset 4px 0 0 var(--a);display:flex;flex-direction:column;gap:8px}
+.dist.lock{opacity:.55}
+.dh{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.dh b{font-family:var(--display);font-weight:400;font-size:20px}
+.dh span{font-weight:800;color:var(--lamp);font-size:14px;white-space:nowrap}
+.dist p{margin:0;font-size:13.5px;line-height:1.35;color:var(--muted);font-weight:700}
+.stages{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.stg{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0 5px;border-radius:12px;background:rgba(0,0,0,.25);min-width:0}
+.stg b{width:34px;height:34px;border-radius:17px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;background:var(--panel2)}
+.stg.done b{background:var(--a);color:#1B1433}
+.stg.boss b{border-radius:9px}
+.stg.next b{box-shadow:0 0 0 3px var(--ink)}
+.stg.lock{opacity:.45}
+.stg i{font-style:normal;font-size:11px;letter-spacing:1px;color:#5B4F7A}
+.stg i em{font-style:normal;color:var(--lamp)}
+.goal{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:10px;background:rgba(0,0,0,.2);font-weight:800}
+.goal i{font-style:normal;color:#5B4F7A;font-size:18px}
+.goal.on i{color:var(--lamp)}
+.kick{font-size:12px!important;letter-spacing:.12em;text-transform:uppercase}
+#resSub .stars{display:flex;gap:6px;margin-bottom:6px}
+#resSub .stars i{font-style:normal;font-size:34px;line-height:1;color:#4A3F73}
+#resSub .stars i.on{color:var(--lamp)}
+#resSub .stars i.new{animation:starPop .5s cubic-bezier(.2,1.6,.4,1) both}
+@keyframes starPop{from{transform:scale(0) rotate(-40deg)}to{transform:none}}
+#resSub small{display:block;font-size:14px;font-weight:800;color:var(--muted)}
+#resSub small.ok{color:var(--good)}
+table.sharp{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
+table.sharp th,table.sharp td{padding:6px 4px;text-align:left;border-bottom:1px solid var(--line)}
+table.sharp th{color:var(--muted);font-weight:800;font-size:11px;text-transform:uppercase;letter-spacing:.06em}
+table.sharp tr.me td{color:var(--lamp)}
+.tw{overflow-x:auto}
+
 </style>
 </head>
 <body>
@@ -176,10 +249,12 @@ h1 span:last-child{color:var(--ink);text-shadow:0 4px 0 #1B1433;margin-left:.5em
  <canvas id="cv" aria-label="Roost Rivals play field"></canvas>
 
  <header id="hud" hidden>
-  <div id="share" aria-label="Birds held by each flock"></div>
+  <div id="chips" aria-label="Each flock: birds held and birds hatching per second"></div>
+  <div id="share" aria-hidden="true"></div>
   <div class="hrow">
    <div class="chip" id="night"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" fill="currentColor"/></svg><b id="nightT">4:30</b></div>
    <div class="chip" id="windChip"><svg id="windArrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l6 8h-4v10h-4V11H6z" fill="currentColor"/></svg><span>wind</span></div>
+   <div class="chip" id="diffChip"></div>
    <span class="sp"></span>
    <button class="chip btn" id="pauseBtn" aria-label="Pause"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1" fill="currentColor"/><rect x="14" y="5" width="4" height="14" rx="1" fill="currentColor"/></svg></button>
   </div>
@@ -187,6 +262,7 @@ h1 span:last-child{color:var(--ink);text-shadow:0 4px 0 #1B1433;margin-left:.5em
 
  <div id="banner" hidden><b id="banT"></b><span id="banS"></span></div>
  <div id="bubble" hidden></div>
+ <button id="upBtn" hidden><b id="upT">Upgrade</b><span id="upS"></span></button>
 
  <footer id="bar" hidden>
   <div id="coach" hidden></div>
@@ -200,24 +276,27 @@ h1 span:last-child{color:var(--ink);text-shadow:0 4px 0 #1B1433;margin-left:.5em
   <div id="inst" hidden><div class="it"><b>Play it like an app</b><span id="instMsg"></span></div><button id="instGo" hidden>Install</button><button id="instX" aria-label="Dismiss">×</button></div>
   <div class="hometop">
    <h1><span>Roost</span><span>Rivals</span></h1>
-   <p class="tag">Bird turf wars. No ads, ever.</p>
   </div>
   <div class="homebody">
-   <div class="rank" id="rankCard">
-    <div class="rk1"><span class="rlab">Pecking Order</span><b id="tierName">Hatchling</b></div>
-    <div class="rk2"><b id="feathers">0</b><span>feathers</span></div>
-    <div class="prog"><i id="progFill"></i></div>
-    <p id="nextLine"></p>
-   </div>
-   <div class="birds" id="birdRow" role="radiogroup" aria-label="Choose your bird"></div>
-   <p id="birdDesc"></p>
+   <button class="rank" id="rankCard" aria-label="Your rank">
+    <span class="rk1"><span class="rlab">Pecking Order</span><b id="tierName">Hatchling</b></span>
+    <span class="rk2"><b id="feathers">0</b><span>feathers</span></span>
+    <span class="prog"><i id="progFill"></i></span>
+   </button>
+   <button class="pick" id="birdBtn" aria-label="Choose your bird"><span class="picon" id="birdIcon"></span><span class="ptxt"><b id="birdName"></b><small id="birdTrait"></small></span><span class="chev">Change</span></button>
    <p id="nemLine" hidden></p>
-   <button class="big" id="playBtn">Take flight</button>
-   <button class="ghost" id="dropBtn" hidden>Forfeit the saved match (counts as a loss)</button>
+   <button class="big" id="storyBtn"><span>Story</span><small id="storySub"></small></button>
+   <button class="big alt" id="playBtn">Quick match</button>
+   <div class="subrow"><button id="diffBtn" class="link"></button><button class="link" id="dropBtn" hidden>Forfeit saved match</button></div>
    <button class="daily" id="dailyBtn"><span><b>Daily Flight</b><i id="dailyMod"></i></span><em id="dailyState">+20</em></button>
    <div class="trio"><button id="rivalsBtn">Rivals</button><button id="badgesBtn">Badges</button><button id="setBtn">Settings</button></div>
    <p class="ver" id="verLbl"></p>
   </div>
+ </section>
+
+ <section id="story" class="ov" hidden>
+  <div class="sthead"><button id="storyBack" class="link">‹ Back</button><h2>Story</h2><span id="storyStars"></span></div>
+  <div id="storyList"></div>
  </section>
 
  <section id="result" class="ov" hidden>
@@ -256,7 +335,7 @@ h1 span:last-child{color:var(--ink);text-shadow:0 4px 0 #1B1433;margin-left:.5em
    5. Replays. setup + command log replays any match exactly (replay). A server can referee a ranked duel that way. */
 const RR = (function () {
   'use strict';
-  const W = 1000, H = 1400, TICK_HZ = 30, DT = 1 / TICK_HZ, CORE_VERSION = 2;
+  const W = 1000, H = 1400, TICK_HZ = 30, DT = 1 / TICK_HZ, CORE_VERSION = 4;
   const RATIOS = [0.25, 0.5, 0.75, 1];
 
   // ---------- seeded random (state lives in the object passed in, so it is saved with the match) ----------
@@ -266,8 +345,8 @@ const RR = (function () {
 
   // ---------- birds: one modest edge and one call each. Tuned with the balance bot so none wins or loses by default ----------
   const BIRDS = {
-    pigeon:   { name: 'Pigeon',   trait: 'Fast breeder', desc: 'Roosts hatch new birds 8% faster.',               hatch: 1.08, speed: 1,    atk: 1,    def: 1,    capBonus: 0, unlock: 0, call: { name: 'Brood',       desc: 'All your roosts hatch 30% faster for 6 seconds.', dur: 6 } },
-    gull:     { name: 'Gull',     trait: 'Fast flyer',   desc: 'Flocks fly 40% faster. First to every scrap.',     hatch: 1,    speed: 1.4,  atk: 1,    def: 1,    capBonus: 0, unlock: 1, call: { name: 'Tailwind',    desc: 'Your flocks in the air fly two and a half times as fast for 6 seconds.', dur: 6 } },
+    pigeon:   { name: 'Pigeon',   trait: 'Fast breeder', desc: 'Roosts hatch new birds 6% faster.',               hatch: 1.06, speed: 1,    atk: 1,    def: 1,    capBonus: 0, unlock: 0, call: { name: 'Brood',       desc: 'All your roosts hatch 30% faster for 6 seconds.', dur: 6 } },
+    gull:     { name: 'Gull',     trait: 'Fast flyer',   desc: 'Flocks fly 45% faster. First to every scrap.',     hatch: 1,    speed: 1.45, atk: 1,    def: 1,    capBonus: 0, unlock: 1, call: { name: 'Tailwind',    desc: 'Your flocks in the air fly two and a half times as fast for 6 seconds.', dur: 6 } },
     owl:      { name: 'Owl',      trait: 'Stubborn',     desc: 'Birds defending a roost fight 12% harder.',        hatch: 1,    speed: 1,    atk: 1,    def: 1.12, capBonus: 0, unlock: 2, call: { name: 'Hunker',      desc: 'Your roosts defend 30% harder for 6 seconds.', dur: 6 } },
     crow:     { name: 'Crow',     trait: 'Hard hitter',  desc: 'Birds storming a roost hit 10% harder.',           hatch: 1,    speed: 1,    atk: 1.1,  def: 1,    capBonus: 0, unlock: 3, call: { name: 'Mob',         desc: 'Your birds storming a roost hit 50% harder for 6 seconds.', dur: 6 } },
     starling: { name: 'Starling', trait: 'Swarm',        desc: 'Every roost you capture gains a bird at once.',    hatch: 1,    speed: 1,    atk: 1,    def: 1,    capBonus: 1, unlock: 4, call: { name: 'Murmuration', desc: 'Every roost you hold gains 2 birds at once.', dur: 0 } }
@@ -281,20 +360,32 @@ const RR = (function () {
     feeder: { name: 'Feeder',     prod: 1.5,  def: 1 },
     tower:  { name: 'Bell tower', prod: 0.85, def: 1.4 }
   };
-  const SIZE = [null, { cap: 30, prod: 0.75, r: 44 }, { cap: 45, prod: 1, r: 54 }, { cap: 60, prod: 1.25, r: 64 }];
+  // building levels 1-5 (node.size). Maps start buildings at levels 2-4; players upgrade them up to 5.
+  const SIZE = [null, { cap: 20, prod: 0.55, r: 40 }, { cap: 30, prod: 0.75, r: 46 }, { cap: 45, prod: 1, r: 53 }, { cap: 60, prod: 1.3, r: 60 }, { cap: 80, prod: 1.65, r: 66 }];
+  const UPCOST = [0, 10, 16, 22, 30, 0];          // birds spent to go from level i to i+1
+  const MAX_LV = 5;
   const BASE_PROD = 0.8, BASE_SPEED = 128, EMIT_RATE = 14, CLASH_R = 17, NIGHTFALL = 270;
 
   // ---------- rival personalities ----------
   const PERS = {
-    rusher:      { label: 'Rusher',      expand: 0.8, aggro: 1.6, caution: 0.3, antiLeader: 0.3, grudge: 0.6, tempo: 0.85 },
-    turtle:      { label: 'Turtle',      expand: 1.1, aggro: 0.8, caution: 1.2, antiLeader: 0.5, grudge: 0.8, tempo: 1.1 },
-    opportunist: { label: 'Opportunist', expand: 1.0, aggro: 1.25, caution: 0.7, antiLeader: 0.2, grudge: 0.3, tempo: 0.95 },
-    schemer:     { label: 'Schemer',     expand: 0.9, aggro: 1.1, caution: 0.9, antiLeader: 1.5, grudge: 1.5, tempo: 1.0 },
-    expander:    { label: 'Expander',    expand: 1.5, aggro: 0.8, caution: 0.8, antiLeader: 0.6, grudge: 0.5, tempo: 0.9 }
+    rusher:      { label: 'Rusher',      expand: 0.8, aggro: 1.6, caution: 0.3, antiLeader: 0.3, grudge: 0.6, tempo: 0.85, build: 0.12 },
+    turtle:      { label: 'Turtle',      expand: 1.1, aggro: 0.8, caution: 1.2, antiLeader: 0.5, grudge: 0.8, tempo: 1.1, build: 0.45 },
+    opportunist: { label: 'Opportunist', expand: 1.0, aggro: 1.25, caution: 0.7, antiLeader: 0.2, grudge: 0.3, tempo: 0.95, build: 0.25 },
+    schemer:     { label: 'Schemer',     expand: 0.9, aggro: 1.1, caution: 0.9, antiLeader: 1.5, grudge: 1.5, tempo: 1.0, build: 0.35 },
+    expander:    { label: 'Expander',    expand: 1.5, aggro: 0.8, caution: 0.8, antiLeader: 0.6, grudge: 0.5, tempo: 0.9, build: 0.3 }
   };
 
   // ---------- map generation: symmetric, so nobody starts ahead ----------
-  function genMap(seed, nPlayers) {
+  // districts change the building mix only; the rules stay the same everywhere
+  const THEMES = {
+    city:    { feeder: 0.18, tower: 0.16, lv: 0 },
+    harbor:  { feeder: 0.12, tower: 0.12, lv: 0 },
+    market:  { feeder: 0.38, tower: 0.08, lv: 0 },
+    oldtown: { feeder: 0.12, tower: 0.36, lv: 0 },
+    skyline: { feeder: 0.16, tower: 0.16, lv: 1 }
+  };
+  function genMap(seed, nPlayers, theme) {
+    const TH = THEMES[theme] || THEMES.city;
     const R = rng(seed), four = nPlayers > 2, pts = [];
     const mx = 95, my = 110, minD = 185, axisGap = 100;
     const want = four ? 3 + (R() < 0.5 ? 1 : 0) : 5 + Math.floor(R() * 3);
@@ -311,12 +402,12 @@ const RR = (function () {
     let si = 0, sd = -1; pts.forEach((p, i) => { const d = dist(p.x, p.y, W / 2, H / 2); if (d > sd) { sd = d; si = i; } });   // start roost = furthest from the centre
     const nodes = []; let id = 0;
     pts.forEach((p, i) => {
-      const start = i === si, size = start ? 2 : 1 + Math.floor(R() * 3), kr = R();
-      const kind = start ? 'roof' : kr < 0.18 ? 'feeder' : kr < 0.34 ? 'tower' : 'roof';
-      const cnt = start ? 20 : Math.round(4 + size * 3 + R() * 5);
+      const start = i === si, size = start ? 3 : Math.min(MAX_LV, 2 + Math.floor(R() * 3) + TH.lv), kr = R();
+      const kind = start ? 'roof' : kr < TH.feeder ? 'feeder' : kr < TH.feeder + TH.tower ? 'tower' : 'roof';
+      const cnt = start ? 20 : Math.round(1 + size * 3 + R() * 5);
       mirrors(p.x, p.y).forEach((m, k) => nodes.push({ id: id++, x: m[0], y: m[1], size, kind, owner: -1, count: cnt, startSlot: start ? k : -1, pulse: 0, hit: -9 }));
     });
-    if (R() < 0.75) { const kind = R() < 0.5 ? 'feeder' : 'tower'; nodes.push({ id: id++, x: W / 2, y: H / 2, size: 3, kind, owner: -1, count: 20 + Math.round(R() * 6), startSlot: -1, pulse: 0, hit: -9 }); }
+    if (R() < 0.75) { const kind = R() < 0.5 ? 'feeder' : 'tower'; nodes.push({ id: id++, x: W / 2, y: H / 2, size: 4, kind, owner: -1, count: 20 + Math.round(R() * 6), startSlot: -1, pulse: 0, hit: -9 }); }
     // seat 0 gets the bottom-left start (thumb side); seat 1 the far corner
     const slots = nodes.filter(n => n.startSlot >= 0).sort((a, b) => (b.y - a.y) || (a.x - b.x));
     const order = four ? [slots[0], slots[3], slots[1], slots[2]] : [slots[0], slots[1]];
@@ -331,11 +422,13 @@ const RR = (function () {
   function newMatch(players, opts) {
     opts = opts || {}; const seed = (opts.seed >>> 0) || 1, mods = opts.mods || {};
     const S = { v: CORE_VERSION, tick: 0, t: 0, seed, rs: (seed ^ 0x9E3779B9) | 0, mods, soloEnd: opts.soloEnd == null ? -1 : opts.soloEnd,
-      setup: { players: players.map(p => ({ bird: p.bird, name: p.name || '', ai: p.ai ? { skill: p.ai.skill, pers: p.ai.pers, focus: p.ai.focus || 1, tune: p.ai.tune || null } : null })), opts: { seed, mods, soloEnd: opts.soloEnd == null ? -1 : opts.soloEnd } },
-      nodes: genMap(seed, players.length), birds: [], streams: [], events: [], cmds: [], log: [], seq: 0, over: null, bid: 1, players: [], wind: null, cat: null, catT: 0, fries: null, friesT: 0 };
+      setup: { players: players.map(p => ({ bird: p.bird, name: p.name || '', ai: p.ai ? { skill: p.ai.skill, pers: p.ai.pers, focus: p.ai.focus || 1, tune: p.ai.tune || null } : null })), opts: { seed, mods, soloEnd: opts.soloEnd == null ? -1 : opts.soloEnd, theme: opts.theme || 'city', start: opts.start || null } },
+      theme: opts.theme || 'city', nodes: genMap(seed, players.length, opts.theme), birds: [], streams: [], events: [], cmds: [], log: [], seq: 0, over: null, bid: 1, players: [], wind: null, cat: null, catT: 0, fries: null, friesT: 0 };
     S.players = players.map((p, i) => ({ idx: i, bird: p.bird, name: p.name || ('P' + i), alive: true, outAt: 0, callReady: CALL.first, callUntil: 0,
       ai: p.ai ? { skill: p.ai.skill, pers: PERS[p.ai.pers] ? p.ai.pers : 'opportunist', nextT: 1.2 + rnd(S) * 1.6, grudge: {}, focus: p.ai.focus || 1, tune: p.ai.tune || null } : null,
-      stats: { sent: 0, captured: 0, lost: 0, clashes: 0, fries: 0, calls: 0 } }));
+      stats: { sent: 0, captured: 0, lost: 0, clashes: 0, fries: 0, calls: 0, ups: 0 } }));
+    // per-seat head start (story bosses): {lv, count} for that seat's home building
+    if (opts.start) opts.start.forEach((st, i) => { if (!st) return; const home = S.nodes.find(n => n.owner === i); if (home) { if (st.lv) home.size = Math.max(1, Math.min(MAX_LV, st.lv)); if (st.count) home.count = st.count; } });
     const w0 = unitVec(S), w1 = unitVec(S);
     S.wind = { x: w0[0], y: w0[1], tx: w1[0], ty: w1[1], s: mods.gale ? 0.5 : 0.28, nextT: 16 + rnd(S) * 10 };
     S.catT = (mods.cats ? 12 : 26) + rnd(S) * 10; S.friesT = (mods.feast ? 10 : 20) + rnd(S) * 10;
@@ -345,7 +438,7 @@ const RR = (function () {
   const BOF = (S, i) => BIRDS[S.players[i].bird];
   const prodRate = (S, n) => n.owner < 0 ? 0 : BASE_PROD * SIZE[n.size].prod * KIND[n.kind].prod * BOF(S, n.owner).hatch * (S.players[n.owner].bird === 'pigeon' && active(S, n.owner) ? CALL.brood : 1);
   const capOf = n => SIZE[n.size].cap;
-  const defOf = (S, n) => KIND[n.kind].def * (n.owner >= 0 ? BOF(S, n.owner).def * (S.players[n.owner].bird === 'owl' && active(S, n.owner) ? CALL.hunker : 1) : 1);
+  const defOf = (S, n) => KIND[n.kind].def * (1 + 0.06 * (n.size - 3)) * (n.owner >= 0 ? BOF(S, n.owner).def * (S.players[n.owner].bird === 'owl' && active(S, n.owner) ? CALL.hunker : 1) : 1);
   const atkOf = (S, i) => BOF(S, i).atk * (S.players[i].bird === 'crow' && active(S, i) ? CALL.mob : 1);
   const birdSpeed = (S, b) => b.v * (S.players[b.owner].bird === 'gull' && active(S, b.owner) ? CALL.tailwind : 1);
   function flySpeed(S, owner, ux, uy) { return BASE_SPEED * BOF(S, owner).speed * (1 + (ux * S.wind.x + uy * S.wind.y) * S.wind.s); }
@@ -353,6 +446,7 @@ const RR = (function () {
   // ---------- commands: the only way anything outside the core changes a match ----------
   // {k:'send', p, from, to, r}   r is one of 0.25 / 0.5 / 0.75 / 1 (rivals use the same four sizes)
   // {k:'call', p}                use your bird's call
+  // {k:'up', p, from}            upgrade building `from` one level (costs UPCOST[level] birds)
   // {k:'quit', p}                leave the match (forfeit / disconnect)
   // cmd(): "do this `delay` ticks from now" (local play uses 0; online play uses a few ticks so both phones agree on the tick).
   // cmdAt(): a command that arrives already stamped with its tick (from the network or a replay). Returns false if it is too late.
@@ -369,13 +463,17 @@ const RR = (function () {
     if (p.bird === 'starling') for (const n of S.nodes) if (n.owner === i) { n.count += CALL.murmur; n.pulse = 1; }
     S.events.push({ type: 'call', who: i, bird: p.bird, t: S.t }); return true;
   }
+  function doUpgrade(S, owner, id) {
+    const n = S.nodes[id]; if (!n || n.owner !== owner || n.size >= MAX_LV) return false; const cost = UPCOST[n.size]; if (n.count < cost) return false;
+    n.count -= cost; n.size++; n.pulse = 1; S.players[owner].stats.ups++; S.events.push({ type: 'upgrade', node: id, by: owner, lv: n.size, t: S.t }); return true;
+  }
   function doQuit(S, i) { const p = S.players[i]; if (!p.alive) return; for (const n of S.nodes) if (n.owner === i) n.owner = -1; S.birds = S.birds.filter(b => b.owner !== i); S.streams = S.streams.filter(s => s.owner !== i); p.alive = false; p.outAt = S.t; p.quit = true; S.events.push({ type: 'out', who: i, t: S.t }); }
   function applyCmds(S) {
     if (!S.cmds.length) return; const due = [], later = [];
     for (const c of S.cmds) (c.tick <= S.tick ? due : later).push(c); if (!due.length) return;
     S.cmds = later; due.sort((a, b) => (a.tick - b.tick) || (a.p - b.p) || (a.seq - b.seq));
     for (const c of due) { if (!S.players[c.p].alive) continue; S.log.push([S.tick, c.p, c.k, c.from, c.to, c.r]);
-      if (c.k === 'send') doSend(S, c.p, c.from, c.to, c.r); else if (c.k === 'call') doCall(S, c.p); else if (c.k === 'quit') doQuit(S, c.p); }
+      if (c.k === 'send') doSend(S, c.p, c.from, c.to, c.r); else if (c.k === 'call') doCall(S, c.p); else if (c.k === 'up') doUpgrade(S, c.p, c.from); else if (c.k === 'quit') doQuit(S, c.p); }
   }
 
   function land(S, b) {
@@ -465,7 +563,7 @@ const RR = (function () {
   function hash(S) {
     let h = 2166136261 >>> 0; const mix = v => { h ^= v | 0; h = Math.imul(h, 16777619) >>> 0; };
     mix(S.tick); mix(S.rs); mix(S.bid);
-    for (const n of S.nodes) { mix(n.owner + 2); mix(Math.round(n.count * 1000)); }
+    for (const n of S.nodes) { mix(n.owner + 2); mix(n.size); mix(Math.round(n.count * 1000)); }
     mix(S.birds.length); for (const b of S.birds) { mix(b.owner); mix(b.to); mix(Math.round(b.x * 100)); mix(Math.round(b.y * 100)); }
     for (const p of S.players) { mix(p.alive ? 1 : 0); mix(Math.round(p.callReady * 1000)); }
     mix(S.over ? S.over.winner + 2 : 0); return h >>> 0;
@@ -479,79 +577,88 @@ const RR = (function () {
     return S;
   }
 
-  // ---------- rival AI. Plays by the same rules as you: same hatch rates, same send sizes (25/50/75/100%), same calls.
-  // Skill (0..1) only changes how fast it reacts, how far ahead it counts, how many orders it juggles, and how often it misjudges.
+  // ---------- rival AI. Plays by the same rules as you: same hatch rates, same send sizes (25/50/75/100%), same calls, same upgrades.
+  // It plays like a person, not a calculator: it eyeballs roost sizes (estimates carry error at every skill), gives one or two
+  // orders per glance, rounds its sends up to 50/75/All, sometimes gambles, and sometimes misses an attack coming in.
+  // Skill (0..1) changes how quickly it glances, how good its estimates are, how often it notices threats and how far ahead it plans.
   function gauss(S) { return (rnd(S) + rnd(S) + rnd(S) - 1.5) / 0.87; }
   function aiThink(S, p) {
     const ai = p.ai, sk = ai.skill, pr = PERS[ai.pers], me = p.idx, B = BIRDS[p.bird];
-    const T = Object.assign({ react: 3.3 - 2.7 * sk, margin: 1.0 + 0.42 * sk, pad: 1 + 3.5 * sk, resv: 1.25 - 0.7 * sk, foeVal: 1 + 0.5 * sk, hold: 0, consolAt: 0.85, consolRatio: 0.75, distW: 0.035 }, ai.tune || {});
-    ai.nextT = S.t + T.react * (0.7 + rnd(S) * 0.6) * pr.tempo;
+    const T = Object.assign({ react: 3.2 - 2.0 * sk, noise: 0.3 - 0.18 * sk, margin: 1.08 + 0.27 * sk, pad: 2 + 2 * sk, resv: 1.25 - 0.6 * sk, foeVal: 1 + 0.4 * sk, consolAt: 0.85, distW: 0.035 }, ai.tune || {});
+    ai.nextT = S.t + T.react * (0.6 + rnd(S) * 0.8) * pr.tempo;
     const mine = S.nodes.filter(n => n.owner === me); if (!mine.length) return;
-    if (rnd(S) < 0.45 * (1 - sk * 2.2)) return;                      // green rivals dither
-    const aware = sk > 0.25, deep = sk > 0.5;
-    // what is in the air
+    if (rnd(S) < 0.42 * (1 - sk * 1.6)) return;                      // easy rivals dither
+    const look = S.nodes.map(n => Math.max(0, n.count * (1 + gauss(S) * T.noise)));     // what it thinks each roost holds
+    const notice = rnd(S) < 0.25 + 0.75 * sk, deep = sk > 0.6;
+    // what is in the air (it sees this roughly, as a person would)
     const myIn = {}, foeIn = {}, helpIn = {}; let myRaid = 0, foeRaid = 0;
     for (const b of S.birds) { const n = S.nodes[b.to]; if (b.owner === me) { myIn[b.to] = (myIn[b.to] || 0) + 1; if (n.owner !== me) myRaid++; } else if (n.owner === me) { foeIn[b.to] = (foeIn[b.to] || 0) + atkOf(S, b.owner); foeRaid++; } else if (n.owner === b.owner) helpIn[b.to] = (helpIn[b.to] || 0) + 1; }
     for (const st of S.streams) { if (st.owner === me) { myIn[st.to] = (myIn[st.to] || 0) + st.left; if (S.nodes[st.to].owner !== me) myRaid += st.left; } else if (S.nodes[st.to].owner === me) { foeIn[st.to] = (foeIn[st.to] || 0) + st.left * atkOf(S, st.owner); foeRaid += st.left; } }
     // the call: sharper rivals time it, green ones forget they have it
-    if (S.t >= p.callReady && sk > 0.2 && rnd(S) < 0.25 + 0.75 * sk) {
+    if (S.t >= p.callReady && sk > 0.2 && rnd(S) < 0.25 + 0.65 * sk) {
       const below = mine.filter(n => n.count < capOf(n) * 0.9).length;
       const go = p.bird === 'pigeon' ? below >= 2 : p.bird === 'gull' ? myRaid >= 10 : p.bird === 'owl' ? foeRaid >= 8 : p.bird === 'crow' ? myRaid >= 10 : mine.length >= 3;
       if (go) doCall(S, me);
     }
     const tot = totals(S); let leader = 0; tot.forEach((v, i) => { if (v > tot[leader]) leader = i; });
-    const reserve = n => (aware ? (foeIn[n.id] || 0) / defOf(S, n) : 0) + 2 + pr.caution * 3 * T.resv;
+    const threat = n => notice ? (foeIn[n.id] || 0) / defOf(S, n) : 0;
+    const reserve = n => threat(n) + 2 + pr.caution * 3 * T.resv;
     const foes = S.nodes.filter(n => n.owner >= 0 && n.owner !== me);
     const frontD = n => { let d = 1e9; for (const f of foes) d = Math.min(d, dist(f.x, f.y, n.x, n.y)); return d; };
     const spare = n => Math.max(0, Math.floor(n.count - reserve(n)));
-    const acts = 1 + Math.floor(sk * 2.2), used = {};
+    const acts = sk >= 0.65 ? 2 : 1, used = {};
     const order = (s, t, ratio) => { const n = doSend(S, me, s.id, t.id, ratio); used[s.id] = 1; myIn[t.id] = (myIn[t.id] || 0) + n; };
     for (let k = 0; k < acts; k++) {
       let best = null;
-      // a) see the cat coming and get off the roof (sharper rivals only)
-      if (sk > 0.6 && S.cat && S.nodes[S.cat.node].owner === me && !used[S.cat.node] && S.cat.at - S.t < 3.5) {
+      // a) see the cat coming and get off the roof (sharper rivals, not always)
+      if (sk > 0.55 && S.cat && S.nodes[S.cat.node].owner === me && !used[S.cat.node] && S.cat.at - S.t < 3.5 && rnd(S) < sk) {
         const c = S.nodes[S.cat.node]; let near = null, nd = 1e9; for (const n of S.nodes) if (n !== c) { const d = dist(n.x, n.y, c.x, c.y) * (n.owner === me ? 1 : 1.4); if (d < nd) { nd = d; near = n; } }
         if (near && c.count > 12) { order(c, near, 0.75); continue; }
       }
-      // b) rescue a roost that is about to fall
-      if (aware) for (const n of mine) {
-        const need = (foeIn[n.id] || 0) / defOf(S, n) - n.count - (myIn[n.id] || 0) + 2; if (need <= 0) continue;
+      // b) rescue a roost that is about to fall (only if it noticed)
+      if (notice) for (const n of mine) {
+        const need = threat(n) - n.count - (myIn[n.id] || 0) + 2; if (need <= 0) continue;
         for (const s of mine) { if (s === n || used[s.id]) continue; const sp = spare(s); if (sp < need * 0.6) continue; const d = dist(s.x, s.y, n.x, n.y), sc = 3 * SIZE[n.size].prod / (1 + d / 400); if (!best || sc > best.score) best = { score: sc, orders: [[s, n, need]] }; }
       }
-      // b2) don't let a full back-line roost sit idle: push its birds up to the front
-      if (sk > 0.55 && foes.length && mine.length > 1 && !best) {
+      // b2) build up a safe roost: upgrade it when it is full and nothing is coming
+      if (!best && !used.up && rnd(S) < pr.build * (0.4 + 0.6 * sk)) {
+        let pick = null; for (const n of mine) { if (used[n.id] || n.size >= MAX_LV || (foeIn[n.id] || 0) > 0) continue; const cost = UPCOST[n.size]; if (n.count < cost + reserve(n) + 4 || n.count < capOf(n) * 0.7) continue; const sc = frontD(n) + n.size * 40; if (!pick || sc > pick.sc) pick = { n, sc }; }
+        if (pick && doUpgrade(S, me, pick.n.id)) { used[pick.n.id] = 1; used.up = 1; continue; }
+      }
+      // b3) don't let a full back-line roost sit idle: push its birds up to the front
+      if (sk > 0.5 && foes.length && mine.length > 1 && !best && rnd(S) < 0.4 + 0.6 * sk) {
         let src = null, sd = 0; for (const n of mine) { if (used[n.id] || n.count < capOf(n) * T.consolAt) continue; const d = frontD(n); if (d > sd) { sd = d; src = n; } }
         if (src) { let dst = null, dd = 1e9; for (const n of mine) { if (n === src) continue; const d = frontD(n); if (d < dd) { dd = d; dst = n; } }
-          if (dst && dd < sd * 0.8 && dst.count < capOf(dst) * 1.4) order(src, dst, T.consolRatio); }
+          if (dst && dd < sd * 0.8 && dst.count < capOf(dst) * 1.4) { order(src, dst, 0.75); continue; } }
       }
       // c) attacks and expansion
       const myAtk = atkOf(S, me);
       for (const t of S.nodes) {
         if (t.owner === me) continue;
         if (t.owner >= 0 && S.t < (ai.pers === 'rusher' ? 7 : 12)) continue;      // opening manners: rivals grab empty rooftops before they come for anyone's home
-        const srcs = mine.filter(s => !used[s.id]).map(s => ({ s, d: dist(s.x, s.y, t.x, t.y) })).sort((a, b) => (a.d - b.d) || (a.s.id - b.s.id)).slice(0, sk < 0.3 ? 1 : sk < 0.55 ? 2 : sk < 0.8 ? 3 : 5);
+        const srcs = mine.filter(s => !used[s.id]).map(s => ({ s, d: dist(s.x, s.y, t.x, t.y) })).sort((a, b) => (a.d - b.d) || (a.s.id - b.s.id)).slice(0, sk < 0.3 ? 1 : sk < 0.6 ? 2 : 3);
         if (!srcs.length) continue;
         const d0 = srcs[0].d, travel = d0 / (BASE_SPEED * B.speed);
-        let defenders = t.count; if (t.owner >= 0 && sk > 0.4) defenders += Math.min(capOf(t) - t.count > 0 ? capOf(t) - t.count : 0, prodRate(S, t) * (travel + 1));
+        let defenders = look[t.id]; if (t.owner >= 0 && sk > 0.5) defenders += Math.min(Math.max(0, capOf(t) - t.count), prodRate(S, t) * travel * 0.6);
         if (deep) defenders += (helpIn[t.id] || 0);
-        let need = defenders * defOf(S, t) / myAtk * (T.margin + gauss(S) * (1 - sk) * 0.3) + T.pad - (myIn[t.id] || 0);
+        let need = defenders * defOf(S, t) / myAtk * T.margin + T.pad - (myIn[t.id] || 0);
         if (need <= 0) continue;
         let got = 0; const orders = [];
         for (const o of srcs) { const sp = spare(o.s); if (sp < 3) continue; const take = Math.min(sp, need - got); orders.push([o.s, t, take]); got += take; if (got >= need) break; }
-        if (t.owner >= 0 && T.hold && got < need * (1 + T.hold)) { if (got < need) continue; }
-        if (got < need && !(rnd(S) < (1 - sk) * 0.12 && got > need * 0.6)) continue;
+        if (got < need && !(rnd(S) < 0.05 + (1 - sk) * 0.12 && got > need * 0.65)) continue;     // a gamble now and then, at every level
         let val = SIZE[t.size].prod * KIND[t.kind].prod * (t.kind === 'tower' ? 1.25 : 1) * (t.owner < 0 ? pr.expand : pr.aggro);
         if (t.owner >= 0) { val *= T.foeVal; if (t.owner === leader && leader !== me) val *= 1 + pr.antiLeader * 0.5 * sk; val *= 1 + Math.min(3, ai.grudge[t.owner] || 0) * 0.15 * pr.grudge; if (S.players[t.owner].ai === null) val *= ai.focus; }
         if (S.fries && S.fries.node === t.id && sk > 0.3) val *= 2;
-        const score = val / (need + 6 + d0 * T.distW) * (1 + gauss(S) * (1 - sk) * 0.35);
+        const score = val / (need + 6 + d0 * T.distW) * (1 + gauss(S) * (0.45 - 0.25 * sk));
         if (!best || score > best.score) best = { score, orders, target: t };
       }
       if (!best) break;
-      for (const [s, t, amt] of best.orders) { const frac = amt / Math.max(1, s.count); order(s, t, frac <= 0.25 ? 0.25 : frac <= 0.5 ? 0.5 : frac <= 0.75 ? 0.75 : 1); }   // the same four send sizes the player has
+      // a person picks a send size by eye and rounds up: half, three quarters or everything
+      for (const [s, t, amt] of best.orders) { const frac = amt / Math.max(1, s.count); order(s, t, frac <= 0.25 && sk > 0.6 ? 0.25 : frac <= 0.5 ? 0.5 : frac <= 0.75 ? 0.75 : 1); }
     }
   }
 
-  return { W, H, TICK_HZ, DT, CORE_VERSION, RATIOS, BIRDS, BIRD_IDS, CALL, KIND, SIZE, PERS, NIGHTFALL, rng, genMap, newMatch, step, cmd, cmdAt, totals, ranking, prodRate, capOf, defOf, atkOf, birdSpeed, active, hash, snapshot, restore, replay };
+  return { W, H, TICK_HZ, DT, CORE_VERSION, RATIOS, BIRDS, BIRD_IDS, CALL, KIND, SIZE, UPCOST, MAX_LV, THEMES, PERS, NIGHTFALL, rng, genMap, newMatch, step, cmd, cmdAt, totals, ranking, prodRate, capOf, defOf, atkOf, birdSpeed, active, hash, snapshot, restore, replay };
 })();
 if (typeof module !== 'undefined') module.exports = RR;
 
@@ -560,7 +667,7 @@ if (typeof module !== 'undefined') module.exports = RR;
 /* ===== ROOST RIVALS UI: rendering, touch, sound, progression, menus. Reads the core's state; changes it only through Session.send(). ===== */
 (function () {
 'use strict';
-const VERSION = '0.2.0';
+const VERSION = '0.4.0';
 const $ = s => document.querySelector(s), clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const PREVIEW = !/(^|\.)zetatobi\.com$|^localhost$|^127\.0\.0\.1$/.test(location.hostname);   // preview links: every bird selectable for testing
 const COLORS = ['#FFC53D', '#43D9C8', '#FF6F91', '#8EA7FF'], NEUTRAL = '#9A92B6', DARK = '#1B1433', INK = '#FFF4E2';
@@ -598,21 +705,93 @@ const BADGES = [
   { id: 'feather',  name: 'Birds of a Feather',   how: 'Win with every bird.' },
   { id: 'apex',     name: 'Top of the Pecking Order', how: 'Reach Apex.' }
 ];
+const DIFF = {
+  easy:   { name: 'Easy',   lo: 0.12, hi: 0.32, win: 0.6, loss: 0.5, desc: 'Relaxed rivals. They hesitate, misjudge and miss your attacks. Wins pay 60% of the feathers.' },
+  medium: { name: 'Medium', lo: 0.32, hi: 0.56, win: 1,   loss: 1,   desc: 'A fair fight. Rivals expand, defend and punish open doors, but they make human mistakes.' },
+  hard:   { name: 'Hard',   lo: 0.56, hi: 0.82, win: 1.5, loss: 1,   desc: 'Sharp rivals. Quick, aggressive and good at spotting your weak roosts. Wins pay 150% of the feathers.' }
+};
+const BIRD_SVG = {
+  pigeon: '<ellipse cx="17" cy="15" rx="10" ry="7"/><circle cx="27" cy="9" r="4.5"/><path d="M31 9l4 1.5-4 1.5zM8 13L1 9l2 8z"/>',
+  gull: '<path d="M1 16C7 6 13 6 17 13 21 6 27 6 33 16 27 11 22 12 17 18 12 12 7 11 1 16z"/>',
+  owl: '<path d="M8 6l4 4h10l4-4v12a9 7 0 0 1-18 0z"/><circle cx="13.5" cy="13" r="2.6" fill="#1B1433"/><circle cx="20.5" cy="13" r="2.6" fill="#1B1433"/>',
+  crow: '<path d="M4 20l7-12c3-4 10-4 12 0l10 3-9 2c0 5-5 8-11 7z"/><path d="M4 20l-3 4 8-2z"/>',
+  starling: '<ellipse cx="16" cy="15" rx="8" ry="5.5"/><circle cx="24" cy="11" r="3.4"/><path d="M27 11l5 .8-5 1.4zM9 14l-7-3 3 7z"/><circle cx="6" cy="5" r="1.4"/><circle cx="30" cy="20" r="1.4"/><circle cx="13" cy="4" r="1"/>'
+};
+function birdIcon(id, col) { return `<svg class="b" viewBox="0 0 36 26" fill="${col}" aria-hidden="true">${BIRD_SVG[id]}</svg><svg class="pw" viewBox="0 0 20 20" aria-hidden="true">${POWER_SVG[id]}</svg>`; }
+// one small badge per bird power, shown next to the bird everywhere
+const POWER_SVG = {
+  pigeon: '<path d="M10 2.5C6.6 2.5 4.5 8 4.5 11.5a5.5 5.5 0 0 0 11 0C15.5 8 13.4 2.5 10 2.5z" fill="#FFF4E2"/><path d="M4.8 10.2l2.4 1.6 2-2 2 2 2-2 2.2 1.6" fill="none" stroke="#1B1433" stroke-width="1.6" stroke-linejoin="round"/>',
+  gull: '<path d="M2 6.5h9M4 10h11M2 13.5h8" stroke="#8FD3FF" stroke-width="2" stroke-linecap="round"/><path d="M13 5l5 5-5 5" fill="none" stroke="#8FD3FF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>',
+  owl: '<path d="M10 2.2l6.5 2.6v4.7c0 4-2.8 6.9-6.5 8.2-3.7-1.3-6.5-4.2-6.5-8.2V4.8z" fill="#7BE0A0"/><path d="M10 5v9.5" stroke="#1B1433" stroke-width="1.5"/>',
+  crow: '<path d="M15.5 2.5h2v2l-8 8 1.6 1.6-1.6 1.6-1.6-1.6-3 3-1.6-1.6 3-3-1.6-1.6 1.6-1.6 1.6 1.6z" fill="#FF8A7A"/>',
+  starling: '<path d="M10 4v12M4 10h12" stroke="#C8A6FF" stroke-width="2.6" stroke-linecap="round"/><circle cx="4" cy="4" r="1.6" fill="#C8A6FF"/><circle cx="16" cy="4" r="1.6" fill="#C8A6FF"/><circle cx="4" cy="16" r="1.6" fill="#C8A6FF"/><circle cx="16" cy="16" r="1.6" fill="#C8A6FF"/>'
+};
 const DAILY_MODS = [
   { id: 'gale',  name: 'Gale day',   desc: 'Strong wind', mods: { gale: 1 } },
   { id: 'cats',  name: 'Cat alley',  desc: 'The cat hunts twice as often', mods: { cats: 1 } },
   { id: 'feast', name: 'Chip shop',  desc: 'Fries drop twice as often', mods: { feast: 1 } }
 ];
 
+// ---------- districts (look) ----------
+const THEME_ART = {
+  city:    { name: 'Featherby Rooftops', bg: ['#2A2152', '#1C1638'], block: [52, 42, 92], lamp: '255,184,74', wall: '#4C4088', side: '#30285E', nwall: '#3A3360', nside: '#28224A', lit: '255,210,122', roof: 'flat', accent: '#FFC53D', mods: {} },
+  harbor:  { name: 'The Harbour', bg: ['#1E3350', '#122036'], block: [40, 64, 96], lamp: '255,214,140', wall: '#4A6888', side: '#2D4560', nwall: '#3A5068', nside: '#26374A', lit: '255,222,150', roof: 'saw', accent: '#5FC7FF', mods: { gale: 1 } },
+  market:  { name: 'Market Square', bg: ['#4A2A3A', '#2C1826'], block: [100, 58, 70], lamp: '255,190,110', wall: '#8E5866', side: '#5E3640', nwall: '#6C4A56', nside: '#4A3038', lit: '255,214,140', roof: 'pitched', accent: '#FF8FA8', mods: { feast: 1 } },
+  oldtown: { name: 'Old Town', bg: ['#3A2C2A', '#221818'], block: [88, 68, 58], lamp: '255,170,90', wall: '#8E5442', side: '#5C3328', nwall: '#6C5046', nside: '#47342D', lit: '255,200,120', roof: 'pitched', accent: '#FFB070', mods: { cats: 1 } },
+  skyline: { name: 'The Skyline', bg: ['#10203E', '#070F22'], block: [30, 52, 92], lamp: '140,200,255', wall: '#33547F', side: '#1E3355', nwall: '#2C3C58', nside: '#1B263A', lit: '160,216,255', roof: 'glass', accent: '#8EC8FF', mods: {} }
+};
+const THEME_IDS = Object.keys(THEME_ART);
+// ---------- story: five districts, six stages each; every district ends with a boss ----------
+// stage: [name, rival ids, rival skill (Medium), extras]. Skill shifts by difficulty: Easy -0.12, Hard +0.1.
+const STORY = [
+  { id: 'd1', theme: 'city', unlock: 'gull', boss: 'brutus',
+    intro: "You've flown into Featherby with a scrappy little flock. Every rooftop here belongs to whoever can hold it, and Brutus the Crow says they're all his.",
+    bossLine: 'My street, my roofs, my rules. Turn around, featherweight.',
+    outro: 'Brutus is off his roof and the whole street saw it. Down at the harbour, the gulls are already talking about you.',
+    stages: [['First Perch', ['pip'], 0.05], ['Chimney Row', ['nan'], 0.12], ['Two Neighbours', ['pip', 'nan'], 0.15], ['Washing Lines', ['mabel'], 0.2], ['Pigeon Post', ['pip', 'mabel'], 0.24], ['Brutus Rules the Roofs', ['brutus', 'nan'], 0.28, { boss: 1 }]] },
+  { id: 'd2', theme: 'harbor', unlock: 'owl', boss: 'skua',
+    intro: 'Salt, fish and gulls. The docks belong to Captain Skua, and the wind off the water never stops. Fly with it, not against it.',
+    bossLine: 'Every pier, every crate, every chip on this dock is mine. Shove off.',
+    outro: "Captain Skua tips his hat. 'Market Square,' he squawks. 'The Duchess runs it. Good luck, featherweight.'",
+    stages: [['Fish Market', ['slick'], 0.28], ['Pier Pressure', ['skua'], 0.31], ['Gale Warning', ['slick', 'hoot'], 0.33], ['Container Yard', ['skua', 'pip'], 0.36], ['The Lighthouse', ['slick', 'skua'], 0.39], ['Captain Skua', ['skua', 'slick'], 0.42, { boss: 1 }]] },
+  { id: 'd3', theme: 'market', unlock: 'crow', boss: 'duchess',
+    intro: 'Bakeries on every corner and chips on the cobbles. The Duchess and her starlings own the square, and she never fights alone.',
+    bossLine: 'Darling, you look hungry. Pity none of this is yours.',
+    outro: "The Duchess bows, very slightly. 'Old Town is next. Mind the cats, darling.'",
+    stages: [['Crumbs', ['murmur'], 0.38], ["Bakers' Dozen", ['murmur', 'hoot'], 0.4], ['Chip Shop Rush', ['duchess', 'pip'], 0.42], ['Fruit Stalls', ['murmur', 'slick'], 0.45], ['Festival Night', ['hoot', 'murmur', 'nan'], 0.48], ['The Duchess', ['duchess', 'murmur'], 0.52, { boss: 1 }]] },
+  { id: 'd4', theme: 'oldtown', unlock: 'starling', boss: 'hoot',
+    intro: 'Bell towers, crooked chimneys and alley cats. Professor Hoot has studied every roof in Old Town and knows exactly how to hold them.',
+    bossLine: 'I have read about birds like you. The chapter was very short.',
+    outro: "Hoot adjusts his spectacles. 'Remarkable. But Grackle rules the Skyline, and Grackle has been watching you.'",
+    stages: [['Cobbles', ['mabel'], 0.48], ['Bell Towers', ['hoot', 'mabel'], 0.5], ['Alley Cats', ['grackle', 'nan'], 0.52], ['Clock Square', ['mabel', 'grackle'], 0.55], ['Cathedral Steps', ['hoot', 'brutus', 'mabel'], 0.58], ['Professor Hoot', ['hoot', 'mabel'], 0.62, { boss: 1 }]] },
+  { id: 'd5', theme: 'skyline', unlock: null, boss: 'grackle',
+    intro: "Glass towers and cranes above the clouds. Grackle has gathered every rival you've beaten. This is the last climb.",
+    bossLine: "I let you win down there. Up here, there's nowhere left to fly.",
+    outro: 'The whole city is yours, from the sheds of Featherby to the highest antenna. Every rival tips a wing as you pass.',
+    stages: [['Glass Towers', ['grackle'], 0.58], ['Crane Hop', ['brutus', 'skua'], 0.62], ['Updraft', ['duchess', 'slick'], 0.65], ['Rooftop Garden', ['hoot', 'murmur', 'skua'], 0.68], ['Antenna Alley', ['brutus', 'duchess', 'hoot'], 0.72], ['Grackle, King of the Skyline', ['grackle', 'duchess', 'brutus'], 0.76, { boss: 1 }]] }
+];
+const STORY_SHIFT = { easy: -0.12, medium: 0, hard: 0.1 };
+const stageList = []; STORY.forEach((d, di) => d.stages.forEach((st, si) => stageList.push({ id: d.id + 's' + (si + 1), d, di, si, name: st[0], rivals: st[1], skill: st[2], boss: !!(st[3] && st[3].boss), goal: [0, 100, 130, 160][st[1].length] })));
+const stageById = id => stageList.find(x => x.id === id);
+// sharpness 1-5: one number for how sharp rivals are, used everywhere skill is shown
+const SHARP_AT = [0.22, 0.36, 0.5, 0.64];
+const sharpOf = sk => 1 + SHARP_AT.filter(v => sk >= v).length;
+const pips = n => '●'.repeat(n) + '○'.repeat(5 - n);
+function quickSkill() { const D = DIFF[save.diff], prog = clamp(save.rating / 1200, 0, 1); return clamp(D.lo + (D.hi - D.lo) * prog, 0.05, 0.9); }
+
 // ---------- save (never rename these keys: they hold players' progress) ----------
 const KEY = 'roostrivals.v1', MATCH_KEY = 'roostrivals.match';
-const DEF = { v: 1, pid: '', rating: 0, peak: 0, bird: 'pigeon', wins: 0, losses: 0, streak: 0, lstreak: 0, bestStreak: 0, matches: 0, rivals: {}, nemesis: null, badges: {}, birdWins: {}, clashes: 0, fries: 0, calls: 0, daily: { date: '', won: false }, sound: true, haptics: true, ratio: 0.5, tut: 0 };
+const DEF = { v: 1, pid: '', rating: 0, peak: 0, bird: 'pigeon', wins: 0, losses: 0, streak: 0, lstreak: 0, bestStreak: 0, matches: 0, rivals: {}, nemesis: null, badges: {}, birdWins: {}, clashes: 0, fries: 0, calls: 0, daily: { date: '', won: false }, sound: true, haptics: true, ratio: 0.5, tut: 0, diff: 'medium', tipUp: 0, story: {} };
 let save = Object.assign({}, DEF);
 try { const raw = localStorage.getItem(KEY); if (raw) save = Object.assign({}, DEF, JSON.parse(raw)); } catch (e) {}
 function persist() { try { localStorage.setItem(KEY, JSON.stringify(save)); } catch (e) {} }
 if (!save.pid) { save.pid = 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10); persist(); }   // anonymous id, stays on this device; reserved for online duels
+if (!DIFF[save.diff]) save.diff = 'medium'; if (!save.story || typeof save.story !== 'object') save.story = {};
 const tierOf = r => Math.min(TIERS.length - 1, Math.floor(r / TIER_STEP));
-const birdOpen = b => PREVIEW || tierOf(save.peak) >= RR.BIRDS[b].unlock;
+const goalsOf = id => save.story[id] || 0, starsOf = id => { const g = goalsOf(id); return (g & 1) + (g >> 1 & 1) + (g >> 2 & 1); };
+const stageOpen = st => { const i = stageList.indexOf(st); return PREVIEW || i === 0 || goalsOf(stageList[i - 1].id) > 0; };
+const districtDone = d => goalsOf(d.id + 's6') > 0;
+const birdOpen = b => PREVIEW || tierOf(save.peak) >= RR.BIRDS[b].unlock || STORY.some(d => d.unlock === b && districtDone(d));
 const today = () => { const d = new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); };
 const hash = s => { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; };
 const dailyMod = () => DAILY_MODS[hash(today()) % DAILY_MODS.length];
@@ -637,6 +816,7 @@ function sfx(k, a) {
   else if (k === 'out') { tone(392, 0.2, 'triangle', 0.18); tone(523, 0.2, 'triangle', 0.18, 0, 0.12); tone(784, 0.35, 'triangle', 0.2, 0, 0.24); }
   else if (k === 'win') [523, 659, 784, 1047, 1319].forEach((f, i) => tone(f, 0.3, 'triangle', 0.2, 0, i * 0.11));
   else if (k === 'lose') [392, 349, 294, 220].forEach((f, i) => tone(f, 0.32, 'sawtooth', 0.1, 0, i * 0.16));
+  else if (k === 'upgrade') [0, 4, 7, 12].forEach((st, i) => tone(392 * Math.pow(2, (st + (a || 3) * 2) / 12), 0.16, 'triangle', 0.16, 0, i * 0.07));
   else if (k === 'click') tone(700, 0.06, 'square', 0.07);
   else if (k === 'deny') tone(180, 0.12, 'square', 0.08);
 }
@@ -647,23 +827,30 @@ const cv = $('#cv'), cx = cv.getContext('2d'); let cw = 0, ch = 0, dpr = 1, bg =
 const V = { sx: 1, sy: 1, ox: 0, oy: 0, rs: 1 };
 let SEAT = 0;                                              // which seat this phone plays. Solo play: always 0. Duels: 0 or 1.
 const colOf = i => i < 0 ? NEUTRAL : COLORS[(i - SEAT + 4) % 4];   // you are always gold, whatever your seat
-function resize() { const r = $('#app').getBoundingClientRect(); dpr = Math.min(2.5, window.devicePixelRatio || 1); cw = Math.max(200, r.width); ch = Math.max(300, r.height); cv.width = Math.round(cw * dpr); cv.height = Math.round(ch * dpr); bgSeed = -1; }
+function resize() { bgSeed = ''; const r = $('#app').getBoundingClientRect(); dpr = Math.min(2.5, window.devicePixelRatio || 1); cw = Math.max(200, r.width); ch = Math.max(300, r.height); cv.width = Math.round(cw * dpr); cv.height = Math.round(ch * dpr); bgSeed = -1; }
 function setView(top, bottom) {
   const avail = ch - top - bottom; let sx = cw / RR.W, sy = clamp(avail / RR.H, sx * 0.8, sx * 1.4);
   if (sy * RR.H > avail) { const k = avail / (sy * RR.H); sx *= k; sy *= k; }
   V.sx = sx; V.sy = sy; V.ox = (cw - RR.W * sx) / 2; V.oy = top + (avail - RR.H * sy) / 2; V.rs = Math.min(sx * 1.2, sy * 0.95);
 }
 const X = x => V.ox + x * V.sx, Y = y => V.oy + y * V.sy;
-function makeBg(seed) {
-  bgSeed = seed; bg = document.createElement('canvas'); bg.width = cv.width; bg.height = cv.height; const c = bg.getContext('2d'), R = RR.rng(seed + 7);
-  c.scale(dpr, dpr); const g = c.createLinearGradient(0, 0, 0, ch); g.addColorStop(0, '#2A2152'); g.addColorStop(1, '#1C1638'); c.fillStyle = g; c.fillRect(0, 0, cw, ch);
-  const cols = 5, bw = cw / cols, rows = Math.ceil(ch / (bw * 1.15));          // city blocks seen from above
-  for (let r = 0; r < rows + 1; r++) for (let q = 0; q < cols; q++) {
+function makeBg(seed, theme) {
+  const A = THEME_ART[theme] || THEME_ART.city; bgSeed = seed + theme; bg = document.createElement('canvas'); bg.width = cv.width; bg.height = cv.height; const c = bg.getContext('2d'), R = RR.rng(seed + 7);
+  c.scale(dpr, dpr); const g = c.createLinearGradient(0, 0, 0, ch); g.addColorStop(0, A.bg[0]); g.addColorStop(1, A.bg[1]); c.fillStyle = g; c.fillRect(0, 0, cw, ch);
+  const cols = 5, bw = cw / cols, rows = Math.ceil(ch / (bw * 1.15)), [br, bgc, bb] = A.block;
+  if (theme === 'oldtown') { c.fillStyle = 'rgba(255,230,200,0.05)'; for (let k = 0; k < 900; k++) { c.beginPath(); c.arc(R() * cw, R() * ch, 1 + R() * 1.6, 0, 6.283); c.fill(); } }      // cobbles
+  for (let r = 0; r < rows + 1; r++) for (let q = 0; q < cols; q++) {                     // blocks seen from above
     const x = q * bw + 5 + R() * 4, y = r * bw * 1.15 + 5 + R() * 4, w = bw - 12 - R() * 6, h = bw * 1.15 - 12 - R() * 8;
-    c.fillStyle = `rgba(${52 + R() * 14 | 0},${42 + R() * 10 | 0},${92 + R() * 22 | 0},0.55)`; c.beginPath(); c.roundRect(x, y, w, h, 5); c.fill();
-    if (R() < 0.5) { c.fillStyle = 'rgba(255,244,226,0.035)'; c.fillRect(x + w * 0.15, y + h * 0.15, w * (0.25 + R() * 0.4), h * (0.2 + R() * 0.3)); }
+    c.fillStyle = `rgba(${br + R() * 14 | 0},${bgc + R() * 10 | 0},${bb + R() * 22 | 0},0.55)`; c.beginPath(); c.roundRect(x, y, w, h, theme === 'skyline' ? 2 : 5); c.fill();
+    if (theme === 'skyline') { for (let k = 0; k < 10; k++) { c.fillStyle = R() < 0.5 ? 'rgba(160,216,255,0.16)' : 'rgba(255,220,140,0.12)'; c.fillRect(x + 4 + R() * (w - 10), y + 4 + R() * (h - 10), 3, 3); } }
+    else if (theme === 'market' && R() < 0.6) { const sw = w * 0.5, sx = x + R() * (w - sw), sy = y + R() * (h - 12); for (let k = 0; k < 5; k++) { c.fillStyle = k % 2 ? 'rgba(255,244,226,0.16)' : 'rgba(255,111,145,0.22)'; c.fillRect(sx + k * sw / 5, sy, sw / 5, 9); } }
+    else if (theme === 'harbor' && R() < 0.4) { c.fillStyle = 'rgba(255,255,255,0.05)'; for (let k = 0; k < 3; k++) c.fillRect(x + 6, y + 8 + k * h * 0.28, w - 12, h * 0.16); }   // stacked containers
+    else if (R() < 0.5) { c.fillStyle = 'rgba(255,244,226,0.035)'; c.fillRect(x + w * 0.15, y + h * 0.15, w * (0.25 + R() * 0.4), h * (0.2 + R() * 0.3)); }
   }
-  for (let r = 0; r <= rows; r++) for (let q = 0; q <= cols; q++) { if (R() < 0.45) continue; const x = q * bw, y = r * bw * 1.15, rg = c.createRadialGradient(x, y, 0, x, y, 30); rg.addColorStop(0, 'rgba(255,184,74,0.20)'); rg.addColorStop(1, 'rgba(255,184,74,0)'); c.fillStyle = rg; c.fillRect(x - 30, y - 30, 60, 60); }
+  if (theme === 'harbor') { const wv = cw * 0.075; for (const sx of [0, cw - wv]) { const wg = c.createLinearGradient(sx, 0, sx + wv, 0); wg.addColorStop(sx ? 0 : 1, 'rgba(30,90,140,0.15)'); wg.addColorStop(sx ? 1 : 0, 'rgba(30,110,170,0.75)'); c.fillStyle = wg; c.fillRect(sx, 0, wv, ch);
+    c.strokeStyle = 'rgba(200,235,255,0.25)'; c.lineWidth = 1.5; for (let y = 10; y < ch; y += 22) { c.beginPath(); const x0 = sx + 4 + R() * (wv - 16); c.moveTo(x0, y); c.quadraticCurveTo(x0 + 4, y - 3, x0 + 8, y); c.quadraticCurveTo(x0 + 12, y + 3, x0 + 16, y); c.stroke(); } } }
+  if (theme === 'skyline') { c.fillStyle = 'rgba(255,255,255,0.5)'; for (let k = 0; k < 40; k++) { c.fillRect(R() * cw, R() * ch * 0.25, 1.2, 1.2); } }
+  for (let r = 0; r <= rows; r++) for (let q = 0; q <= cols; q++) { if (R() < 0.45) continue; const x = q * bw, y = r * bw * 1.15, rg = c.createRadialGradient(x, y, 0, x, y, 30); rg.addColorStop(0, `rgba(${A.lamp},0.20)`); rg.addColorStop(1, `rgba(${A.lamp},0)`); c.fillStyle = rg; c.fillRect(x - 30, y - 30, 60, 60); }
 }
 
 // ---------- effects ----------
@@ -701,36 +888,58 @@ function enterMatch(g) {
   G = g; SEAT = g.seat; parts = []; rings = []; floats = []; mode = 'match'; paused = false; lastBubble = -9; saveT = 0;
   $('#home').hidden = true; $('#result').hidden = true; $('#sheet').hidden = true; $('#hud').hidden = false; $('#bar').hidden = false; $('#night').classList.remove('late');
   $('#coach').hidden = save.tut > 0 || g.watch; $('#callBtn').hidden = (save.tut === 0 && !g.watch); $('#bar').classList.toggle('watch', !!g.watch);
-  $('#callName').textContent = RR.BIRDS[g.S.players[SEAT].bird].call.name; setRatio(save.ratio); makeShare();
+  $('#callName').textContent = RR.BIRDS[g.S.players[SEAT].bird].call.name; setRatio(save.ratio); makeChips();
+  const st = g.stage && stageById(g.stage), rsk = g.S.players.filter(p => p.ai).map(p => p.ai.skill);
+  $('#diffChip').textContent = g.watch ? 'Replay' : (st ? 'Stage ' + (st.di + 1) + '-' + (st.si + 1) + ' ' : DIFF[g.diff || 'medium'].name + ' ') + (rsk.length ? pips(sharpOf(Math.max.apply(null, rsk))) : ''); $('#upBtn').hidden = true;
 }
+function newG(o) { return Object.assign({ seat: 0, diff: save.diff, daily: false, dmId: '', stage: '', sel: [], drag: null, tap: false, combo: 0, comboT: 0, lostRoost: false, catHit: false, endT: 0, warned: false, lastTap: 0, lastTapNode: -1, acc: 0, watch: false }, o); }
+function you() { return { bird: birdOpen(save.bird) ? save.bird : 'pigeon', name: 'You', ai: null }; }
 function startMatch(daily) {
   initAudio(); sfx('click'); dropSavedMatch();
   const ti = tierOf(save.rating), nOpp = save.matches < 2 || ti < 1 ? 1 : ti < 3 ? 2 : 3;
-  let base = clamp(0.05 + save.rating / 1450 + Math.min(save.streak, 5) * 0.025 - Math.min(save.lstreak, 4) * 0.05, 0.03, 1);
+  let base = clamp(quickSkill() + Math.min(save.streak, 3) * 0.02 - Math.min(save.lstreak, 3) * 0.03, 0.05, 0.9);   // rivals sit inside your difficulty band and climb it as you climb the ranks
   if (save.matches === 0) base = 0.03;
   const dm = daily ? dailyMod() : null, seed = daily ? hash(today()) : (Date.now() ^ (Math.random() * 1e9)) >>> 0, rv = pickRivals(nOpp, seed);
-  const players = [{ bird: birdOpen(save.bird) ? save.bird : 'pigeon', name: 'You', ai: null }].concat(rv.map(r => { const nem = r.id === save.nemesis; return { bird: r.bird, name: r.name, ai: { skill: clamp(base + r.off + (nem ? 0.08 : 0), 0.03, 1), pers: r.pers, focus: nem ? 1.25 : 1 } }; }));
-  const S = RR.newMatch(players, { seed, mods: dm ? dm.mods : {}, soloEnd: 0 });
-  enterMatch({ S, seat: 0, daily: !!daily, dmId: dm ? dm.id : '', meta: [null].concat(rv.map(r => Object.assign({ nem: r.id === save.nemesis }, r))), sel: [], drag: null, tap: false, combo: 0, comboT: 0, lostRoost: false, catHit: false, endT: 0, warned: false, lastTap: 0, lastTapNode: -1, acc: 0, watch: false });
-  const names = rv.map(r => r.name).join(', ');
-  banner(dm ? dm.name.toUpperCase() : 'TAKE THE ROOFTOPS', dm ? dm.desc + '. You face ' + names + '.' : 'You face ' + names + '.', 2.0);
-  const nem = G.meta.findIndex(m => m && m.nem); if (nem > 0) setTimeout(() => { if (G && mode === 'match' && !G.watch) { lastBubble = -9; bubble(nem, 'greet'); } }, 2200);
+  const theme = THEME_IDS[(daily ? hash(today() + 'd') : seed) % THEME_IDS.length], mods = Object.assign({}, THEME_ART[theme].mods, dm ? dm.mods : {});
+  const players = [you()].concat(rv.map(r => { const nem = r.id === save.nemesis; return { bird: r.bird, name: r.name, ai: { skill: clamp(base + r.off * 0.5 + (nem ? 0.04 : 0), 0.03, 0.9), pers: r.pers, focus: nem ? 1.2 : 1 } }; }));
+  const S = RR.newMatch(players, { seed, mods, soloEnd: 0, theme });
+  enterMatch(newG({ S, daily: !!daily, dmId: dm ? dm.id : '', meta: [null].concat(rv.map(r => Object.assign({ nem: r.id === save.nemesis }, r))) }));
+  const names = rv.map(r => r.name).join(', '), A = THEME_ART[theme];
+  banner(dm ? dm.name.toUpperCase() : A.name.toUpperCase(), (dm ? dm.desc + '. ' : themeRule(theme)) + 'You face ' + names + '.', 2.4);
+  const nem = G.meta.findIndex(m => m && m.nem); if (nem > 0) setTimeout(() => { if (G && mode === 'match' && !G.watch) { lastBubble = -9; bubble(nem, 'greet'); } }, 2400);
+}
+function themeRule(t) { return t === 'harbor' ? 'Strong sea wind. ' : t === 'market' ? 'Chips drop twice as often. ' : t === 'oldtown' ? 'Alley cats hunt twice as often. ' : t === 'skyline' ? 'Taller buildings to start. ' : ''; }
+function stageSkill(st) { return clamp(st.skill + STORY_SHIFT[save.diff], 0.03, 0.9); }
+function startStage(id) {
+  const st = stageById(id); if (!st) return; initAudio(); sfx('click'); dropSavedMatch(); $('#story').hidden = true;
+  const sk = stageSkill(st), theme = st.d.theme, rv = st.rivals.map(r => RIVALS.find(x => x.id === r));
+  const players = [you()].concat(rv.map((r, k) => ({ bird: r.bird, name: r.name, ai: { skill: sk, pers: r.pers, focus: 1 } })));
+  const start = st.boss ? [null, { lv: 4, count: st.di < 2 ? 22 : 26 }] : null;
+  const S = RR.newMatch(players, { seed: hash('roost-' + id), mods: Object.assign({}, THEME_ART[theme].mods), soloEnd: 0, theme, start });
+  enterMatch(newG({ S, stage: id, meta: [null].concat(rv.map(r => Object.assign({ nem: false }, r))) }));
+  banner((st.di + 1) + '-' + (st.si + 1) + '  ' + st.name.toUpperCase(), st.boss ? 'Boss: ' + rv[0].name + ' starts with a level ' + start[1].lv + ' building.' : themeRule(theme) + 'You face ' + rv.map(r => r.name).join(', ') + '.', 2.6);
+  if (st.boss) setTimeout(() => { if (G && mode === 'match' && G.stage === id) { const b = bigRoost(G.S, 1), el = $('#bubble'); if (!b) return; el.innerHTML = `<small>${rv[0].name}</small>${st.d.bossLine}`; el.style.left = clamp(X(b.x), 8, cw - 220) + 'px'; el.style.top = clamp(Y(b.y) - 60, 110, ch - 140) + 'px'; el.style.borderBottom = `4px solid ${colOf(1)}`; el.hidden = false; bubT = 3.2; lastBubble = G.S.t; } }, 2700);
 }
 // resume: the whole match is plain data, so it is saved every few seconds and when the app goes to the background
-function saveMatch() { if (!G || G.watch || G.S.over) return; try { localStorage.setItem(MATCH_KEY, JSON.stringify({ ver: VERSION, snap: RR.snapshot(G.S), seat: G.seat, daily: G.daily, dmId: G.dmId, meta: G.meta, lostRoost: G.lostRoost, catHit: G.catHit, warned: G.warned })); } catch (e) {} }
+function saveMatch() { if (!G || G.watch || G.S.over) return; try { localStorage.setItem(MATCH_KEY, JSON.stringify({ ver: VERSION, snap: RR.snapshot(G.S), seat: G.seat, diff: G.diff, stage: G.stage, daily: G.daily, dmId: G.dmId, meta: G.meta, lostRoost: G.lostRoost, catHit: G.catHit, warned: G.warned })); } catch (e) {} }
 function dropSavedMatch() { try { localStorage.removeItem(MATCH_KEY); } catch (e) {} }
 function savedMatch() { try { const m = JSON.parse(localStorage.getItem(MATCH_KEY) || 'null'); if (!m) return null; const S = RR.restore(m.snap); if (!S || S.over) { dropSavedMatch(); return null; } m.S = S; return m; } catch (e) { return null; } }
 function resumeMatch(forfeit) {
   const m = savedMatch(); if (!m) { showHome(); return; } initAudio(); sfx('click');
-  enterMatch({ S: m.S, seat: m.seat || 0, daily: !!m.daily, dmId: m.dmId || '', meta: m.meta, sel: [], drag: null, tap: false, combo: 0, comboT: 0, lostRoost: !!m.lostRoost, catHit: !!m.catHit, endT: 0, warned: !!m.warned, lastTap: 0, lastTapNode: -1, acc: 0, watch: false });
+  enterMatch(newG({ S: m.S, seat: m.seat || 0, diff: m.diff || save.diff, stage: m.stage || '', daily: !!m.daily, dmId: m.dmId || '', meta: m.meta, lostRoost: !!m.lostRoost, catHit: !!m.catHit, warned: !!m.warned }));
   if (forfeit) Session.send({ k: 'quit' }); else { paused = true; sheet('Match paused', `<p>You left in the middle of this match. It is exactly as you left it.</p><button class="sbtn pri" data-a="resume">Carry on</button><button class="sbtn" data-a="how">How to play</button><button class="sbtn warn" data-a="forfeit">Forfeit match (counts as a loss)</button>`); }
 }
 function watchReplay() {
   if (!LAST) return; initAudio(); sfx('click'); const S = RR.newMatch(LAST.setup.players, LAST.setup.opts);
-  enterMatch({ S, seat: LAST.seat, daily: false, dmId: '', meta: LAST.meta, sel: [], drag: null, tap: false, combo: 0, comboT: 0, lostRoost: false, catHit: false, endT: 0, warned: true, lastTap: 0, lastTapNode: -1, acc: 0, watch: true, log: LAST.log, li: 0 });
+  enterMatch(newG({ S, seat: LAST.seat, diff: LAST.diff, meta: LAST.meta, warned: true, watch: true, log: LAST.log, li: 0 }));
   banner('REPLAY', 'Double speed. Pause to stop.', 1.8);
 }
-function makeShare() { $('#share').innerHTML = G.S.players.map((p, i) => `<i style="background:${colOf(i)};flex:1 1 0" title="${p.name}">${i === SEAT ? 'You' : p.name[0]}</i>`).join(''); }
+function makeChips() {
+  const S = G.S, order = [SEAT].concat(S.players.map(p => p.idx).filter(i => i !== SEAT));
+  $('#chips').innerHTML = order.map(i => { const p = S.players[i], B = RR.BIRDS[p.bird]; return `<div class="pc" data-i="${i}" style="--c:${colOf(i)}" title="${i === SEAT ? 'You' : p.name}: ${B.name}, ${B.trait}"><span class="ic">${birdIcon(p.bird, colOf(i))}</span><b>0</b><small></small></div>`; }).join('');
+  $('#share').innerHTML = S.players.map((p, i) => `<i style="background:${colOf(i)};flex:1 1 0"></i>`).join('');
+}
+function hatchRate(S, i) { let r = 0, full = 0, own = 0; for (const n of S.nodes) if (n.owner === i) { own++; if (n.count < RR.capOf(n)) r += RR.prodRate(S, n); else full++; } return { r, full, own }; }
 function setRatio(r) { save.ratio = r; document.querySelectorAll('.ratios button[data-r]').forEach(b => b.classList.toggle('on', +b.dataset.r === r)); }
 document.querySelectorAll('.ratios button[data-r]').forEach(b => b.onclick = () => { sfx('click'); setRatio(+b.dataset.r); persist(); });
 $('#callBtn').onclick = () => { if (mode !== 'match' || !G || G.watch || paused) return; initAudio(); const p = G.S.players[SEAT]; if (G.S.t < p.callReady) { sfx('deny'); return; } Session.send({ k: 'call' }); };
@@ -750,6 +959,7 @@ function handleEvents(S, quiet) {
       if (quiet) continue; const b = bigRoost(S, e.who); if (b) floatText(X(b.x), Y(b.y) - RR.SIZE[b.size].r * V.rs - 14, call.name.toUpperCase() + '!', colOf(e.who));
       if (mine) { sfx('call'); buzz([12, 30, 40]); if (solo) save.calls++; } else sfx('foecall');
     }
+    else if (e.type === 'upgrade') { ring(px, py, colOf(e.by), 1.2); feathers(px, py - 20, '#FFD25A', 10, 90); if (!quiet) { floatText(px, py - RR.SIZE[n.size].r * V.rs * 2.2, 'LEVEL ' + e.lv, colOf(e.by)); if (e.by === SEAT) { sfx('upgrade', e.lv); buzz([10, 20, 30]); } } }
     else if (e.type === 'catWarn') { if (!quiet) { banner('CAT!', n.owner === SEAT ? 'It scatters 40% of YOUR roost in 5 seconds. Send them out!' : 'It scatters 40% of that roost in 5 seconds.', 2.4); sfx('cat'); } }
     else if (e.type === 'catPounce') { feathers(px, py, colOf(n.owner), 22, 160); ring(px, py, INK, 1.6); if (!quiet) { shake = 12; sfx('pounce'); floatText(px, py - 20, '-' + e.lost, '#FF7A6B'); if (e.owner === SEAT) { G.catHit = true; buzz(60); } } }
     else if (e.type === 'friesDrop') { if (!quiet) { banner('FRIES!', 'Hold that roost in 9 seconds for +14 birds.', 2.4); sfx('fries'); } ring(px, py, '#FFB84A', 1.8); }
@@ -760,20 +970,69 @@ function handleEvents(S, quiet) {
 }
 
 // ---------- drawing ----------
+// buildings: level 1 shed, 2 house, 3 apartment, 4 block with water tank, 5 high-rise with antenna and gold trim.
+// Feeders are bakeries (striped awning, seed on the roof); bell towers carry a spire. Stars under each building show its level.
+const LVSHAPE = [null, { w: 0.95, h: 0.72 }, { w: 1.15, h: 0.92 }, { w: 1.2, h: 1.28 }, { w: 1.26, h: 1.62 }, { w: 1.3, h: 2.05 }];
+function star(c, x, y, s) { c.beginPath(); for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? s * 0.45 : s; c[i ? 'lineTo' : 'moveTo'](x + Math.cos(a) * rr, y + Math.sin(a) * rr); } c.closePath(); c.fill(); }
+function roostGeo(n) { const lv = n.size, r = RR.SIZE[lv].r * V.rs, L = LVSHAPE[lv], w = r * L.w * 1.2, h = r * L.h * 1.2; return { r, w, h, d: w * 0.24, x: X(n.x), gy: Y(n.y) + r * 0.3 }; }
 function drawRoost(S, n, t, sel, hot) {
-  const col = colOf(n.owner), x = X(n.x), y = Y(n.y), r = RR.SIZE[n.size].r * V.rs * (1 + n.pulse * 0.22), c = cx;
-  c.fillStyle = 'rgba(8,4,22,0.45)'; c.beginPath(); c.arc(x + 2, y + 5, r + 2, 0, 6.283); c.fill();
-  if (n.owner >= 0 && RR.active(S, n.owner)) { c.strokeStyle = col; c.globalAlpha = 0.35 + 0.25 * Math.sin(t * 10); c.lineWidth = 6; c.beginPath(); c.arc(x, y, r + 11 + 2 * Math.sin(t * 10), 0, 6.283); c.stroke(); c.globalAlpha = 1; }   // a call is in effect
-  if (sel || hot) { c.strokeStyle = hot ? INK : col; c.globalAlpha = 0.5 + 0.3 * Math.sin(t * 8); c.lineWidth = 4; c.setLineDash([8, 7]); c.lineDashOffset = -t * 30; c.beginPath(); c.arc(x, y, r + 10, 0, 6.283); c.stroke(); c.setLineDash([]); c.globalAlpha = 1; }
-  const shape = () => { c.beginPath(); if (n.kind === 'tower') { for (let i = 0; i < 8; i++) { const a = i / 8 * 6.283 + 0.3927; c[i ? 'lineTo' : 'moveTo'](x + Math.cos(a) * r * 1.06, y + Math.sin(a) * r * 1.06); } c.closePath(); } else c.arc(x, y, r, 0, 6.283); };
-  shape(); c.fillStyle = n.owner >= 0 ? '#241B46' : '#2B2450'; c.fill(); c.globalAlpha = n.owner >= 0 ? 0.26 : 0.1; c.fillStyle = col; c.fill(); c.globalAlpha = 1;
-  c.lineWidth = n.kind === 'tower' ? 5 : 3.5; c.strokeStyle = col; c.stroke();
-  if (n.owner === SEAT && G) { c.lineWidth = 1.5; c.beginPath(); c.arc(x, y, r - 6, 0, 6.283); c.stroke(); }             // your roosts carry a second ring, so colour is not the only cue
-  if (n.kind === 'feeder') { c.fillStyle = '#FFB84A'; for (let i = 0; i < 5; i++) { const a = Math.PI * (0.2 + i * 0.15); c.beginPath(); c.arc(x + Math.cos(a) * r * 0.68, y + Math.sin(a) * r * 0.68, Math.max(1.6, r * 0.075), 0, 6.283); c.fill(); } }
-  if (n.owner >= 0) { const f = clamp(n.count / RR.capOf(n), 0, 1); c.strokeStyle = col; c.globalAlpha = 0.9; c.lineWidth = 3; c.beginPath(); c.arc(x, y, r + 5, -Math.PI / 2, -Math.PI / 2 + f * 6.283); c.stroke(); c.globalAlpha = 1; }
-  if (S.t - n.hit < 0.12) { shape(); c.fillStyle = 'rgba(255,255,255,0.45)'; c.fill(); }
-  c.fillStyle = INK; c.font = `${Math.max(13, r * 0.82) | 0}px "Bowlby One","Arial Black",sans-serif`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(Math.floor(n.count), x, y + (n.kind === 'feeder' ? -r * 0.08 : 1));
+  const c = cx, own = n.owner >= 0, col = colOf(n.owner), lv = n.size, g = roostGeo(n), k = 1 + n.pulse * 0.14;
+  const r = g.r * k, w = g.w * k, h = g.h * k, d = g.d * k, x = g.x, gy = g.gy, dy = d * 0.6;
+  // plot of ground in the owner's colour
+  c.beginPath(); c.ellipse(x + d * 0.35, gy, w * 0.78 + d * 0.4, r * 0.4, 0, 0, 6.283); c.fillStyle = col; c.globalAlpha = own ? 0.3 : 0.12; c.fill(); c.globalAlpha = 1;
+  c.lineWidth = own ? 2.5 : 1.5; c.strokeStyle = col; c.stroke();
+  if (own && RR.active(S, n.owner)) { c.globalAlpha = 0.35 + 0.3 * Math.sin(t * 10); c.lineWidth = 5; c.beginPath(); c.ellipse(x + d * 0.35, gy, w * 1.05 + d * 0.4 + 3 * Math.sin(t * 10), r * 0.55, 0, 0, 6.283); c.stroke(); c.globalAlpha = 1; }
+  if (sel || hot) { c.strokeStyle = hot ? INK : col; c.globalAlpha = 0.55 + 0.3 * Math.sin(t * 8); c.lineWidth = 3.5; c.setLineDash([7, 6]); c.lineDashOffset = -t * 30; c.beginPath(); c.ellipse(x + d * 0.35, gy - h * 0.35, w * 0.9 + d + 10, h * 0.55 + r * 0.5 + 8, 0, 0, 6.283); c.stroke(); c.setLineDash([]); c.globalAlpha = 1; }
+  const A = THEME_ART[S.theme] || THEME_ART.city, wall = own ? A.wall : A.nwall, side = own ? A.side : A.nside, roofC = own ? col : '#77709A', top = gy - h, style = A.roof;
+  // shadow, side face, front face
+  c.fillStyle = 'rgba(8,4,22,0.35)'; c.beginPath(); c.moveTo(x - w / 2, gy); c.lineTo(x + w / 2 + d * 1.8, gy); c.lineTo(x + w / 2 + d * 2.4, gy - dy * 1.4); c.lineTo(x - w / 2 + d, gy - dy * 1.4); c.fill();
+  c.fillStyle = side; c.beginPath(); c.moveTo(x + w / 2, gy); c.lineTo(x + w / 2 + d, gy - dy); c.lineTo(x + w / 2 + d, top - dy); c.lineTo(x + w / 2, top); c.closePath(); c.fill();
+  c.fillStyle = wall; c.fillRect(x - w / 2, top, w, h);
+  // windows (lit in owned buildings) and a door
+  const cols = lv >= 3 ? 3 : 2, rows = Math.max(1, Math.round(h / (r * 0.36)) - 1), ws = w * 0.15, gx = w / (cols + 1), gyy = (h - r * 0.32) / (rows + 1);
+  for (let ry = 0; ry < rows; ry++) for (let q = 0; q < cols; q++) { const lit = own && ((n.id * 7 + ry * 3 + q * 5) % 4 !== 0); c.fillStyle = lit ? `rgba(${A.lit},0.85)` : 'rgba(150,140,190,0.35)'; c.fillRect(x - w / 2 + gx * (q + 1) - ws / 2, top + gyy * (ry + 1) - ws * 0.6, ws, ws * 1.2); }
+  c.fillStyle = '#1B1433'; c.fillRect(x - w * 0.09, gy - r * 0.3, w * 0.18, r * 0.3);
+  // roof by kind and level
+  if (n.kind === 'tower') {
+    c.fillStyle = side; c.fillRect(x - w / 2, top - 2, w + d, 3);
+    c.fillStyle = roofC; c.beginPath(); c.moveTo(x - w * 0.42, top); c.lineTo(x + d * 0.5, top - r * (0.75 + 0.08 * lv)); c.lineTo(x + w * 0.42 + d, top - dy); c.lineTo(x + w * 0.42, top); c.closePath(); c.fill();
+    c.fillStyle = '#FFD25A'; c.beginPath(); c.arc(x + d * 0.2, top - r * 0.22, Math.max(2, r * 0.1), 0, 6.283); c.fill();
+  } else if (lv <= 2 || style === 'pitched') {
+    c.fillStyle = shade(roofC, -0.3); c.beginPath(); c.moveTo(x, top - h * 0.6); c.lineTo(x + d, top - h * 0.6 - dy); c.lineTo(x + w / 2 + d + 2, top - dy); c.lineTo(x + w / 2 + 2, top); c.closePath(); c.fill();
+    c.fillStyle = roofC; c.beginPath(); c.moveTo(x - w / 2 - 3, top + 1); c.lineTo(x, top - h * 0.6); c.lineTo(x + w / 2 + 3, top + 1); c.closePath(); c.fill();
+    if (style === 'pitched' && lv >= 3) { c.fillStyle = shade(A.wall, -0.2); c.fillRect(x + w * 0.22, top - h * 0.5, w * 0.12, h * 0.32); }       // chimney
+  } else if (style === 'saw') {                                                                    // warehouse sawtooth roof
+    c.fillStyle = shade(roofC, -0.3); c.beginPath(); c.moveTo(x - w / 2, top); c.lineTo(x + w / 2, top); c.lineTo(x + w / 2 + d, top - dy); c.lineTo(x - w / 2 + d, top - dy); c.closePath(); c.fill();
+    c.fillStyle = roofC; for (let k = 0; k < 3; k++) { const sx = x - w / 2 + k * w / 3; c.beginPath(); c.moveTo(sx, top); c.lineTo(sx + w / 3, top - r * 0.38); c.lineTo(sx + w / 3, top); c.closePath(); c.fill(); }
+  } else {
+    c.fillStyle = roofC; c.beginPath(); c.moveTo(x - w / 2, top); c.lineTo(x + w / 2, top); c.lineTo(x + w / 2 + d, top - dy); c.lineTo(x - w / 2 + d, top - dy); c.closePath(); c.fill();
+    c.fillStyle = shade(roofC, -0.35); c.fillRect(x - w / 2, top, w, Math.max(2, r * 0.08));
+    if (lv === 4) { const tx = x + w * 0.15, tw = w * 0.22; c.fillStyle = '#5B4E8A'; c.fillRect(tx, top - dy * 0.5 - r * 0.42, tw, r * 0.32); c.fillStyle = roofC; c.beginPath(); c.ellipse(tx + tw / 2, top - dy * 0.5 - r * 0.42, tw / 2, tw * 0.22, 0, 0, 6.283); c.fill(); }
+    if (style === 'glass') { c.fillStyle = 'rgba(200,235,255,0.14)'; c.beginPath(); c.moveTo(x - w / 2, gy - h * 0.2); c.lineTo(x - w / 2 + w * 0.35, top); c.lineTo(x - w / 2 + w * 0.55, top); c.lineTo(x - w / 2, gy); c.closePath(); c.fill(); }
+    if (lv === 5) { c.strokeStyle = '#FFD25A'; c.lineWidth = 2; c.beginPath(); c.moveTo(x - w / 2, top + r * 0.14); c.lineTo(x + w / 2, top + r * 0.14); c.lineTo(x + w / 2 + d, top + r * 0.14 - dy); c.stroke();
+      c.strokeStyle = INK; c.lineWidth = 1.5; c.beginPath(); c.moveTo(x + d * 0.5, top - dy * 0.5); c.lineTo(x + d * 0.5, top - dy * 0.5 - r * 0.7); c.stroke(); c.fillStyle = Math.sin(t * 4 + n.id) > 0 ? '#FF6F61' : '#7A2B3D'; c.beginPath(); c.arc(x + d * 0.5, top - dy * 0.5 - r * 0.7, 2.4, 0, 6.283); c.fill(); }
+  }
+  if (n.kind === 'feeder') {
+    const ay = gy - Math.min(h * 0.62, r * 0.75), aw = w + 6, sw = aw / 6;
+    for (let i = 0; i < 6; i++) { c.fillStyle = i % 2 ? '#FFF4E2' : roofC; c.beginPath(); c.moveTo(x - aw / 2 + i * sw, ay); c.lineTo(x - aw / 2 + (i + 1) * sw, ay); c.lineTo(x - aw / 2 + (i + 1) * sw, ay + r * 0.2); c.lineTo(x - aw / 2 + (i + 0.5) * sw, ay + r * 0.27); c.lineTo(x - aw / 2 + i * sw, ay + r * 0.2); c.closePath(); c.fill(); }
+    c.fillStyle = '#FFB84A'; for (let i = 0; i < 4; i++) { c.beginPath(); c.arc(x - w * 0.3 + i * w * 0.2 + d * 0.5, top - dy * 0.5 + (lv <= 2 ? -h * 0.2 : 0), Math.max(1.5, r * 0.07), 0, 6.283); c.fill(); }
+  }
+  if (own && n.count >= 6) { const k = Math.min(3, 1 + Math.floor(n.count / 15)), ry = n.kind === 'tower' ? top - 2 : (lv <= 2 || style === 'pitched') ? top - h * 0.18 : style === 'saw' ? top - r * 0.2 : top - dy * 0.5, bs = Math.max(4, r * 0.17);
+    c.lineCap = 'round'; c.lineJoin = 'round'; for (let pass = 0; pass < 2; pass++) { c.beginPath(); for (let q = 0; q < k; q++) { const bx = x - w * 0.25 + q * w * 0.28 + (lv <= 2 || style === 'pitched' ? 0 : d * 0.5), by = ry - (lv <= 2 || style === 'pitched' ? Math.abs(q - 1) * -h * 0.1 : 0) + Math.sin(t * 3 + n.id + q * 2) * 0.8, fl = 0.5 + 0.5 * Math.sin(t * 2.2 + q * 1.7 + n.id);
+      c.moveTo(bx - bs, by - bs * 0.55 * fl); c.lineTo(bx, by); c.lineTo(bx + bs, by - bs * 0.55 * fl); } if (pass === 0) { c.strokeStyle = 'rgba(15,8,34,0.8)'; c.lineWidth = 3.6; } else { c.strokeStyle = col; c.lineWidth = 1.8; } c.stroke(); } }
+  if (n.owner === SEAT && G) { const fx = x - w / 2 + 3, fy = (n.kind === 'tower' ? top : lv <= 2 ? top - h * 0.25 : top - dy * 0.5); c.strokeStyle = INK; c.lineWidth = 1.5; c.beginPath(); c.moveTo(fx, fy); c.lineTo(fx, fy - r * 0.6); c.stroke(); c.fillStyle = COLORS[0]; c.beginPath(); c.moveTo(fx, fy - r * 0.6); c.lineTo(fx + r * 0.42, fy - r * 0.48); c.lineTo(fx, fy - r * 0.34); c.fill(); }
+  if (S.t - n.hit < 0.12) { c.fillStyle = 'rgba(255,255,255,0.45)'; c.fillRect(x - w / 2, top, w + d, h); }
+  // count pill with a capacity bar
+  const txt = String(Math.floor(n.count)), fs = Math.max(12, Math.min(20, r * 0.6)); c.font = `${fs | 0}px "Bowlby One","Arial Black",sans-serif`;
+  const pw = Math.max(fs * 1.7, c.measureText(txt).width + 14), ph = fs + 8, px = x - pw / 2, py = gy + r * 0.12 - ph / 2;
+  c.fillStyle = 'rgba(27,20,51,0.92)'; c.beginPath(); c.roundRect(px, py, pw, ph, ph / 2); c.fill(); c.strokeStyle = col; c.lineWidth = 2; c.stroke();
+  if (own) { const f = clamp(n.count / RR.capOf(n), 0, 1); c.fillStyle = col; c.fillRect(px + ph * 0.35, py + ph - 3.5, (pw - ph * 0.7) * f, 2); }
+  c.fillStyle = INK; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(txt, x, py + ph / 2 + 0.5);
+  // level stars
+  const ss = Math.max(3, Math.min(5, r * 0.12)), sy = py + ph + ss + 2;
+  c.fillStyle = own ? '#FFD25A' : '#B9B2D6'; for (let i = 0; i < lv; i++) star(c, x + (i - (lv - 1) / 2) * ss * 2.3, sy, ss);
 }
+function shade(hex, k) { const v = parseInt(hex.slice(1), 16); let r = v >> 16, g = v >> 8 & 255, b = v & 255; if (k < 0) { r *= 1 + k; g *= 1 + k; b *= 1 + k; } else { r += (255 - r) * k; g += (255 - g) * k; b += (255 - b) * k; } return `rgb(${r | 0},${g | 0},${b | 0})`; }
 function drawBirds(S, t, ex) {      // ex = seconds since the last tick, so birds glide between ticks
   const c = cx, by = S.players.map(() => []); for (const b of S.birds) by[b.owner].push(b);
   c.lineCap = 'round'; c.lineJoin = 'round';
@@ -789,7 +1048,7 @@ function drawBirds(S, t, ex) {      // ex = seconds since the last tick, so bird
   }
 }
 function drawMarker(S, n, t, kind, left, total) {
-  const c = cx, r = RR.SIZE[n.size].r * V.rs, x = X(n.x) + r * 0.9, y = Y(n.y) - r * 0.95, m = Math.max(13, r * 0.5), bob = Math.sin(t * 7) * 2;
+  const c = cx, gg = roostGeo(n), r = gg.r, x = gg.x + gg.w * 0.75, y = gg.gy - gg.h - r * 0.35, m = Math.max(13, r * 0.5), bob = Math.sin(t * 7) * 2;
   c.fillStyle = 'rgba(8,4,22,0.5)'; c.beginPath(); c.arc(x, y + bob + 2, m + 4, 0, 6.283); c.fill();
   c.fillStyle = kind === 'cat' ? '#FF7A6B' : '#D8382B'; c.beginPath(); c.arc(x, y + bob, m, 0, 6.283); c.fill();
   c.strokeStyle = INK; c.lineWidth = 3; c.beginPath(); c.arc(x, y + bob, m + 2.5, -Math.PI / 2, -Math.PI / 2 + clamp(left / total, 0, 1) * 6.283); c.stroke();
@@ -803,7 +1062,7 @@ function sendPreview() {     // birds each selected roost would send, and what t
 }
 function render(S, t, isMatch, ex) {
   const c = cx; c.setTransform(dpr, 0, 0, dpr, 0, 0);
-  if (bgSeed !== S.seed) makeBg(S.seed);
+  if (bgSeed !== S.seed + (S.theme || 'city')) makeBg(S.seed, S.theme || 'city');
   c.save(); if (shake > 0.3) c.translate((Math.random() - 0.5) * shake, (Math.random() - 0.5) * shake);
   c.drawImage(bg, 0, 0, cw, ch);
   const dusk = clamp(S.t / RR.NIGHTFALL, 0, 1); if (dusk > 0.02) { c.fillStyle = `rgba(8,4,26,${0.42 * dusk})`; c.fillRect(0, 0, cw, ch); }
@@ -811,7 +1070,7 @@ function render(S, t, isMatch, ex) {
   c.strokeStyle = 'rgba(255,244,226,0.07)'; c.lineWidth = 1.5; c.lineCap = 'round'; c.beginPath(); const wx = S.wind.x, wy = S.wind.y, ws = 60 + S.wind.s * 420;
   for (const g of gusts) { g.x += wx * ws * 0.016; g.y += wy * ws * 0.016; g.l -= 0.016; if (g.l <= 0 || g.x < -40 || g.x > cw + 40 || g.y < -40 || g.y > ch + 40) { g.x = Math.random() * cw; g.y = Math.random() * ch; g.l = 0.6 + Math.random() * 1.4; } c.moveTo(g.x, g.y); c.lineTo(g.x - wx * 22, g.y - wy * 22); } c.stroke();
   const hot = isMatch && G.drag ? G.drag.over : null;
-  for (const n of S.nodes) drawRoost(S, n, t, isMatch && G.sel.includes(n.id), hot === n.id);
+  for (const n of S.nodes.slice().sort((a, b) => a.y - b.y)) drawRoost(S, n, t, isMatch && G.sel.includes(n.id), hot === n.id);
   if (S.cat) drawMarker(S, S.nodes[S.cat.node], t, 'cat', S.cat.at - S.t, 5);
   if (S.fries) drawMarker(S, S.nodes[S.fries.node], t, 'fries', S.fries.at - S.t, 9);
   drawBirds(S, t, ex || 0);
@@ -842,7 +1101,11 @@ function stepFx(dt) {
 let hudT = 0;
 function updateHud(S) {
   const tot = RR.totals(S), sum = tot.reduce((a, b) => a + b, 0) || 1, seg = $('#share').children;
-  for (let i = 0; i < seg.length; i++) { seg[i].style.flexGrow = Math.max(0.0001, tot[i] / sum); seg[i].style.opacity = S.players[i].alive ? 1 : 0.25; }
+  for (let i = 0; i < seg.length; i++) seg[i].style.flexGrow = Math.max(0.0001, tot[i] / sum);
+  for (const el of $('#chips').children) { const i = +el.dataset.i, p = S.players[i], h = hatchRate(S, i), boost = RR.active(S, i);
+    el.children[1].textContent = Math.floor(tot[i]);
+    el.children[2].textContent = !p.alive ? 'out' : h.own && !h.r ? 'all full' : '+' + h.r.toFixed(1) + '/s';
+    el.classList.toggle('boost', boost && p.alive); el.classList.toggle('full', p.alive && h.own > 0 && !h.r); el.classList.toggle('out', !p.alive); }
   const left = Math.max(0, RR.NIGHTFALL - S.t); $('#nightT').textContent = Math.floor(left / 60) + ':' + String(Math.floor(left % 60)).padStart(2, '0');
   $('#night').classList.toggle('late', left < 45);
   if (left < 45 && !G.warned) { G.warned = true; banner('NIGHTFALL SOON', 'Whoever holds the most birds at nightfall wins.', 2.6); }
@@ -850,13 +1113,14 @@ function updateHud(S) {
   const me = S.players[SEAT], cb = $('#callBtn'), wait = me.callReady - S.t, on = RR.active(S, SEAT);
   cb.classList.toggle('ready', wait <= 0); cb.classList.toggle('active', on); cb.style.setProperty('--fill', (wait <= 0 ? 100 : clamp(100 - wait / RR.CALL.cooldown * 100, 0, 100)).toFixed(0) + '%');
   $('#callWait').textContent = on ? 'active' : wait <= 0 ? 'ready' : Math.ceil(wait) + 's';
+  if (save.tut > 0 && !save.tipUp && !G.watch && S.t > 20) { const n = S.nodes.find(m => m.owner === SEAT && m.size < RR.MAX_LV && m.count >= RR.UPCOST[m.size] + 6); if (n) { save.tipUp = 1; persist(); banner('UPGRADE', 'Tap one of your buildings once, then tap Upgrade. Taller buildings hatch faster and hold more.', 3.4); } }
   if (save.tut === 0 && !G.watch) { const mine = S.nodes.filter(n => n.owner === SEAT).length; $('#coach').textContent = me.stats.sent === 0 ? 'Drag from your gold roost to a grey roost to capture it.' : mine < 3 ? 'More roosts hatch more birds. Keep spreading.' : 'Drag across several of your roosts to send from all of them. Take every roost to win.'; }
 }
 function frame(now) {
   requestAnimationFrame(frame); const dt = Math.min(0.1, (now - last) / 1000 || 0); last = now; const t = now / 1000;
   if (!cw) return;
   if (mode === 'match' && G) {
-    const S = G.S; setView(92, save.tut === 0 && !G.watch ? 132 : 72);
+    const S = G.S; setView(118, save.tut === 0 && !G.watch ? 132 : 72);
     if (!paused) {
       // the core only moves in whole ticks; the screen glides between them
       G.acc += dt * (G.watch ? 2 : 1); let guard = 0;
@@ -871,16 +1135,32 @@ function frame(now) {
       if (S.over && !G.endT) { G.endT = now; G.sel = []; G.drag = null; for (const n of S.nodes) if (n.owner === S.over.winner) { ring(X(n.x), Y(n.y), colOf(n.owner), 1.6); feathers(X(n.x), Y(n.y), colOf(n.owner), 16, 150); } sfx(S.over.winner === SEAT ? 'win' : 'lose'); buzz(S.over.winner === SEAT ? [20, 40, 20, 40, 60] : 80); }
       if (G.endT && now - G.endT > 1500) { if (G.watch) endReplay(); else finishMatch(); return; }
     }
-    render(S, t, true, S.over || paused ? 0 : G.acc);
+    render(S, t, true, S.over || paused ? 0 : G.acc); placeUp(S);
   } else {
-    if (!attract || attract.over) { const R = RR.rng((now | 0) + 3), pk = Object.keys(RR.PERS); attract = RR.newMatch([0, 1, 2, 3].map(() => ({ bird: RR.BIRD_IDS[Math.floor(R() * 5)], ai: { skill: 0.5 + R() * 0.4, pers: pk[Math.floor(R() * pk.length)] } })), { seed: (now | 0) + 11 }); attract.acc = 0; parts = []; rings = []; floats = []; SEAT = 0; }
+    if (!attract || attract.over) { const R = RR.rng((now | 0) + 3), pk = Object.keys(RR.PERS); attract = RR.newMatch([0, 1, 2, 3].map(() => ({ bird: RR.BIRD_IDS[Math.floor(R() * 5)], ai: { skill: 0.5 + R() * 0.4, pers: pk[Math.floor(R() * pk.length)] } })), { seed: (now | 0) + 11, theme: THEME_IDS[Math.floor(R() * THEME_IDS.length)] }); attract.acc = 0; parts = []; rings = []; floats = []; SEAT = 0; }
     setView(0, 0); attract.acc += dt; let guard = 0; while (attract.acc >= RR.DT && guard++ < 4) { attract.acc -= RR.DT; RR.step(attract); } if (guard >= 4) attract.acc = 0;
     handleEvents(attract, true); stepFx(dt); render(attract, t, false, attract.acc);
   }
 }
 
+// upgrade button for the one roost you have picked
+function placeUp(S) {
+  const b = $('#upBtn'), id = G.tap && G.sel.length === 1 && !G.watch && !paused && !S.over ? G.sel[0] : -1, n = id >= 0 ? S.nodes[id] : null;
+  if (!n || n.owner !== SEAT) { if (!b.hidden) b.hidden = true; return; }
+  const g = roostGeo(n), cost = RR.UPCOST[n.size], rate = RR.prodRate(S, n);
+  let label, sub, ok = false;
+  if (n.size >= RR.MAX_LV) { label = 'Top level'; sub = '+' + rate.toFixed(1) + ' birds/s'; }
+  else { const nx = Object.assign({}, n, { size: n.size + 1 }), gain = RR.prodRate(S, nx) - rate; ok = n.count >= cost;
+    label = ok ? 'Upgrade to level ' + (n.size + 1) : 'Upgrade needs ' + cost + ' birds'; sub = cost + ' birds · +' + rate.toFixed(1) + ' → +' + (rate + gain).toFixed(1) + '/s'; }
+  const key = label + sub + ok; if (b.dataset.k !== key) { b.dataset.k = key; $('#upT').textContent = label; $('#upS').textContent = sub; b.classList.toggle('no', !ok); b.dataset.id = id; }
+  if (b.hidden) b.hidden = false; const bw = b.offsetWidth || 180; b.style.left = clamp(g.x - bw / 2, 8, cw - bw - 8) + 'px'; b.style.top = Math.min(ch - 140, g.gy + g.r * 0.12 + 34) + 'px'; if (b.hidden) b.hidden = false;
+}
+$('#upBtn').addEventListener('pointerdown', e => { e.stopPropagation(); if (!G) return; const id = +$('#upBtn').dataset.id, n = G.S.nodes[id];
+  if (!n || n.owner !== SEAT || n.size >= RR.MAX_LV || n.count < RR.UPCOST[n.size]) { sfx('deny'); return; }
+  Session.send({ k: 'up', from: id }); G.sel = []; G.tap = false; G.drag = null; $('#upBtn').hidden = true; });
+
 // ---------- touch ----------
-function nodeAt(x, y) { if (!G) return null; let best = null, bd = 1e9; for (const n of G.S.nodes) { const d = Math.hypot(X(n.x) - x, Y(n.y) - y), r = Math.max(30, RR.SIZE[n.size].r * V.rs + 12); if (d < r && d < bd) { bd = d; best = n; } } return best; }
+function nodeAt(x, y, tight) { if (!G) return null; let best = null, bd = 1e9; for (const n of G.S.nodes) { const rr = RR.SIZE[n.size].r * V.rs, d = Math.hypot(X(n.x) - x, Y(n.y) - rr * 0.45 - y), r = tight ? Math.max(34, rr * 1.6) : Math.max(56, rr * 2.4); if (d < r && d < bd) { bd = d; best = n; } } return best; }
 function pos(e) { const r = cv.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; }
 function commit(target) {
   const S = G.S; let sent = 0; for (const id of G.sel) if (id !== target.id && S.nodes[id].owner === SEAT && S.nodes[id].count >= 1 && Session.send({ k: 'send', from: id, to: target.id, r: save.ratio })) sent++;
@@ -901,7 +1181,7 @@ cv.addEventListener('pointerdown', e => {
 cv.addEventListener('pointermove', e => {
   if (mode !== 'match' || !G || !G.drag || G.tap) return; const p = pos(e), d = G.drag; d.x = p.x; d.y = p.y; if (Math.hypot(p.x - d.sx, p.y - d.sy) > 10) d.moved = true;
   const n = nodeAt(p.x, p.y); d.over = n ? n.id : null;
-  if (n && n.owner === SEAT && !G.sel.includes(n.id)) { G.sel.push(n.id); buzz(5); }
+  const own = nodeAt(p.x, p.y, true); if (own && own.owner === SEAT && !G.sel.includes(own.id)) { G.sel.push(own.id); buzz(5); }
 });
 function up(e) {
   if (mode !== 'match' || !G || !G.drag || G.tap) return; const p = pos(e), n = nodeAt(p.x, p.y), d = G.drag;
@@ -914,11 +1194,13 @@ cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', () =>
 // ---------- result + progression ----------
 function award(id, list) { if (!save.badges[id]) { save.badges[id] = 1; list.push(BADGES.find(b => b.id === id)); } }
 function finishMatch() {
+  if (G.stage) return finishStage();
   const S = G.S, rank = RR.ranking(S), place = rank.indexOf(SEAT), n = S.players.length, win = S.over.winner === SEAT, tierBefore = tierOf(save.rating), got = [];
-  let delta = 0; const notes = [];
+  let delta = 0; const notes = []; const D = DIFF[G.diff || 'medium'];
   const nemIdx = G.meta.findIndex(m => m && m.nem), dm = DAILY_MODS.find(d => d.id === G.dmId);
   if (win) { delta = 26 + 6 * (n - 1); if (S.over.t < 90) { delta += 6; notes.push('Quick win +6'); } if (nemIdx > 0) { delta += 10; notes.push('Revenge on ' + G.meta[nemIdx].name + ' +10'); } if (G.daily && !(save.daily.date === today() && save.daily.won)) { delta += 20; notes.push('Daily Flight +20'); } }
-  else if (!G.daily && tierBefore > 0) delta = -Math.round(16 * place / (n - 1));
+  else if (!G.daily && tierBefore > 0) delta = -Math.round(16 * place / (n - 1) * D.loss);
+  if (win) delta = Math.round(delta * D.win);
   const floor = tierOf(save.peak) * TIER_STEP;                        // once you reach a rank you keep it
   const before = save.rating; save.rating = Math.max(floor, save.rating + delta); save.peak = Math.max(save.peak, save.rating); delta = save.rating - before;
   save.matches++; if (save.tut === 0) save.tut = 1;
@@ -930,9 +1212,9 @@ function finishMatch() {
   } else { save.losses++; save.streak = 0; save.lstreak++; if (S.over.winner > 0) save.nemesis = G.meta[S.over.winner].id; }
   if (save.fries >= 10) award('chips', got); if (save.clashes >= 300) award('dogfight', got); if (save.calls >= 25) award('caller', got); if (tierOf(save.rating) >= TIERS.length - 1) award('apex', got);
   persist(); dropSavedMatch();
-  LAST = { setup: S.setup, log: S.log, meta: G.meta, seat: SEAT };       // enough to replay the whole match
+  LAST = { setup: S.setup, log: S.log, meta: G.meta, seat: SEAT, diff: G.diff, stage: '' };       // enough to replay the whole match
   const tierNow = tierOf(save.rating), up = tierNow > tierBefore, R = $('#result'); R.classList.toggle('lost', !win);
-  $('#resKick').textContent = (G.daily && dm ? 'Daily Flight · ' : '') + (S.over.reason === 'nightfall' ? 'Nightfall' : S.over.reason === 'forfeit' ? 'Forfeit' : 'Match over') + ' · ' + Math.floor(S.over.t / 60) + ':' + String(Math.floor(S.over.t % 60)).padStart(2, '0');
+  $('#resKick').textContent = (G.daily && dm ? 'Daily Flight · ' : '') + D.name + ' · ' + (S.over.reason === 'nightfall' ? 'Nightfall' : S.over.reason === 'forfeit' ? 'Forfeit' : 'Match over') + ' · ' + Math.floor(S.over.t / 60) + ':' + String(Math.floor(S.over.t % 60)).padStart(2, '0');
   $('#resTitle').textContent = win ? (up ? 'Promoted!' : 'Rooftops are yours') : place === 1 && n > 2 ? 'So close' : 'Chased off';
   $('#resSub').textContent = win ? (up ? 'You are now a ' + TIERS[tierNow] + '.' + unlockLine(tierNow) : notes.join(' · ') || 'Clean sweep.') : S.over.winner > 0 ? S.players[S.over.winner].name + ' took the skyline. They will remember this.' : 'Nobody held the skyline.';
   if (win && up && notes.length) $('#resSub').textContent += ' ' + notes.join(' · ');
@@ -942,43 +1224,96 @@ function finishMatch() {
   const tot = RR.totals(S); $('#resList').innerHTML = rank.map((pi, k) => { const p = S.players[pi], m = G.meta[pi]; return `<li><i style="background:${colOf(pi)}"></i><span>${k + 1}. ${pi === SEAT ? 'You' : p.name} <em>${RR.BIRDS[p.bird].name}${m ? ' · ' + RR.PERS[m.pers].label : ''}</em></span><em>${p.alive ? Math.floor(tot[pi]) + ' birds' : 'out'}</em></li>`; }).join('');
   const q = $('#resQuote'); let qi = win ? rank[1] : S.over.winner; if (qi > 0 && G.meta[qi]) { const m = G.meta[qi], L = LINES[m.pers][win ? 'out' : 'win']; q.textContent = m.name + ': "' + L[0] + '"'; q.hidden = false; } else q.hidden = true;
   $('#resBadges').innerHTML = got.map(b => `<p>Badge earned: ${b.name}</p>`).join('');
-  $('#againBtn').textContent = win ? 'Next match' : 'Rematch';
+  $('#againBtn').textContent = win ? 'Next match' : 'Rematch'; $('#againBtn').dataset.go = ''; $('#homeBtn').textContent = 'Back to the roost'; $('#homeBtn').dataset.go = '';
   showResult();
+}
+function finishStage() {
+  const S = G.S, st = stageById(G.stage), rank = RR.ranking(S), win = S.over.winner === SEAT, got = [], tierBefore = tierOf(save.rating);
+  const before = goalsOf(st.id), g = win ? 1 | (S.over.t <= st.goal ? 2 : 0) | (!G.lostRoost ? 4 : 0) : 0, now = before | g, newStars = [1, 2, 4].filter(b => (now & b) && !(before & b)).length;
+  const firstClear = win && !before, distDone = firstClear && st.boss;
+  save.story[st.id] = now; save.matches++; if (save.tut === 0) save.tut = 1;
+  let delta = newStars * 12; save.rating += delta; save.peak = Math.max(save.peak, save.rating);
+  if (win) { save.wins++; save.birdWins[S.players[SEAT].bird] = 1; award('first', got); if (!G.lostRoost) award('flawless', got); if (G.catHit) award('ninelives', got); if (S.players.length === 4) award('crowd', got); if (RR.BIRD_IDS.every(b => save.birdWins[b])) award('feather', got); } else save.losses++;
+  if (save.fries >= 10) award('chips', got); if (save.clashes >= 300) award('dogfight', got); if (save.calls >= 25) award('caller', got); if (tierOf(save.rating) >= TIERS.length - 1) award('apex', got);
+  persist(); dropSavedMatch();
+  LAST = { setup: S.setup, log: S.log, meta: G.meta, seat: SEAT, diff: G.diff, stage: st.id };
+  const R = $('#result'); R.classList.toggle('lost', !win); const tierNow = tierOf(save.rating);
+  $('#resKick').textContent = THEME_ART[st.d.theme].name + ' · stage ' + (st.si + 1) + ' of 6 · ' + Math.floor(S.over.t / 60) + ':' + String(Math.floor(S.over.t % 60)).padStart(2, '0');
+  $('#resTitle').textContent = win ? (st.boss ? 'Boss beaten!' : 'Stage cleared') : 'Chased off';
+  const goals = [['Win the stage', 1], ['Win in under ' + Math.floor(st.goal / 60) + ':' + String(st.goal % 60).padStart(2, '0'), 2], ["Don't lose a building", 4]];
+  $('#resSub').innerHTML = '<span class="stars">' + goals.map(([t, b]) => `<i class="${now & b ? 'on' : ''}${g & b && !(before & b) ? ' new' : ''}">★</i>`).join('') + '</span>' + goals.map(([t, b]) => `<small class="${g & b ? 'ok' : now & b ? 'had' : ''}">${g & b ? '✓' : now & b ? '✓' : '·'} ${t}</small>`).join('');
+  $('#resTier').textContent = TIERS[tierNow]; $('#resDelta').textContent = '+' + delta + ' feathers';
+  const prog = tierNow >= TIERS.length - 1 ? 1 : (save.rating - tierNow * TIER_STEP) / TIER_STEP; $('#resFill').style.width = '0%'; setTimeout(() => { $('#resFill').style.width = (prog * 100).toFixed(1) + '%'; }, 60);
+  $('#resNext').textContent = newStars ? newStars + ' new star' + (newStars > 1 ? 's' : '') + ', 12 feathers each.' + (tierNow > tierBefore ? ' You are now a ' + TIERS[tierNow] + '!' : '') : win ? 'No new stars this time.' : 'Every attempt uses the same map: learn it and come back.';
+  const tot = RR.totals(S); $('#resList').innerHTML = rank.map((pi, k) => { const p = S.players[pi], m = G.meta[pi]; return `<li><i style="background:${colOf(pi)}"></i><span>${k + 1}. ${pi === SEAT ? 'You' : p.name} <em>${RR.BIRDS[p.bird].name}${m ? ' · ' + RR.PERS[m.pers].label : ''}</em></span><em>${p.alive ? Math.floor(tot[pi]) + ' birds' : 'out'}</em></li>`; }).join('');
+  const q = $('#resQuote'); let qi = win ? rank[1] : S.over.winner; if (qi > 0 && G.meta[qi]) { const m = G.meta[qi], L = LINES[m.pers][win ? 'out' : 'win']; q.textContent = m.name + ': "' + L[0] + '"'; q.hidden = false; } else q.hidden = true;
+  $('#resBadges').innerHTML = got.map(b => `<p>Badge earned: ${b.name}</p>`).join('');
+  const next = stageList[stageList.indexOf(st) + 1];
+  $('#againBtn').textContent = win && next ? 'Next stage' : win ? 'Story map' : 'Try again'; $('#againBtn').dataset.go = win && next ? next.id : win ? 'map' : st.id;
+  $('#homeBtn').textContent = 'Story map'; $('#homeBtn').dataset.go = 'map';
+  showResult();
+  if (distDone) setTimeout(() => { const b = st.d.unlock && RR.BIRDS[st.d.unlock]; sheet(THEME_ART[st.d.theme].name + ' cleared', `<p>${st.d.outro}</p>` + (b ? `<div class="brow on"><span class="picon">${birdIcon(st.d.unlock, INK)}</span><span class="ptxt"><b>The ${b.name} joins your flock</b><small><b>${b.trait}.</b> ${b.desc}</small></span></div>` : '<p><b>You finished the story.</b> Replay any stage for stars, or climb the Pecking Order in quick matches.</p>') + '<button class="sbtn pri" data-a="resume">Carry on</button>'); }, 900);
 }
 function showResult() { $('#hud').hidden = true; $('#bar').hidden = true; $('#banner').hidden = true; $('#bubble').hidden = true; $('#sheet').hidden = true; $('#result').hidden = false; mode = 'result'; G = null; SEAT = 0; }
 function endReplay() { showResult(); }
 function unlockLine(ti) { const b = RR.BIRD_IDS.find(id => RR.BIRDS[id].unlock === ti); return b && ti > 0 ? ' The ' + RR.BIRDS[b].name + ' joins your flock.' : ''; }
-$('#againBtn').onclick = () => startMatch(false);
+$('#againBtn').onclick = () => { const go = $('#againBtn').dataset.go; if (!go) return startMatch(false); if (go === 'map') return showStory(); startStage(go); };
 $('#replayBtn').onclick = () => watchReplay();
-$('#homeBtn').onclick = () => { sfx('click'); showHome(); };
+$('#homeBtn').onclick = () => { sfx('click'); if ($('#homeBtn').dataset.go === 'map') showStory(); else showHome(); };
 
 // ---------- home ----------
-const BIRD_SVG = {
-  pigeon: '<ellipse cx="17" cy="15" rx="10" ry="7"/><circle cx="27" cy="9" r="4.5"/><path d="M31 9l4 1.5-4 1.5zM8 13L1 9l2 8z"/>',
-  gull: '<path d="M1 16C7 6 13 6 17 13 21 6 27 6 33 16 27 11 22 12 17 18 12 12 7 11 1 16z"/>',
-  owl: '<path d="M8 6l4 4h10l4-4v12a9 7 0 0 1-18 0z"/><circle cx="13.5" cy="13" r="2.6" fill="#1B1433"/><circle cx="20.5" cy="13" r="2.6" fill="#1B1433"/>',
-  crow: '<path d="M4 20l7-12c3-4 10-4 12 0l10 3-9 2c0 5-5 8-11 7z"/><path d="M4 20l-3 4 8-2z"/>',
-  starling: '<ellipse cx="16" cy="15" rx="8" ry="5.5"/><circle cx="24" cy="11" r="3.4"/><path d="M27 11l5 .8-5 1.4zM9 14l-7-3 3 7z"/><circle cx="6" cy="5" r="1.4"/><circle cx="30" cy="20" r="1.4"/><circle cx="13" cy="4" r="1"/>'
-};
 function showHome() {
   mode = 'home'; G = null; SEAT = 0; $('#result').hidden = true; $('#hud').hidden = true; $('#bar').hidden = true; $('#banner').hidden = true; $('#bubble').hidden = true; $('#home').hidden = false;
   if (!birdOpen(save.bird)) save.bird = 'pigeon';
   const ti = tierOf(save.rating); $('#tierName').textContent = TIERS[ti]; $('#feathers').textContent = save.rating;
   const prog = ti >= TIERS.length - 1 ? 1 : (save.rating - ti * TIER_STEP) / TIER_STEP; $('#progFill').style.width = (prog * 100).toFixed(1) + '%';
   const nb = RR.BIRD_IDS.find(id => RR.BIRDS[id].unlock === ti + 1);
-  $('#nextLine').textContent = ti >= TIERS.length - 1 ? 'You sit at the top of the Pecking Order. Rivals keep getting sharper.' : (TIER_STEP - (save.rating - ti * TIER_STEP)) + ' feathers to ' + TIERS[ti + 1] + (nb ? ', which unlocks the ' + RR.BIRDS[nb].name + '.' : '.');
-  $('#birdRow').innerHTML = RR.BIRD_IDS.map(id => { const B = RR.BIRDS[id], open = birdOpen(id); return `<button role="radio" aria-checked="${save.bird === id}" data-b="${id}" class="${save.bird === id ? 'on' : ''}${open ? '' : ' lock'}"><svg viewBox="0 0 36 26" fill="${open ? INK : NEUTRAL}" aria-hidden="true">${BIRD_SVG[id]}</svg>${B.name}<small>${open ? B.trait : TIERS[B.unlock]}</small></button>`; }).join('');
-  const describe = id => { const B = RR.BIRDS[id]; return `<b>${B.name}: ${B.trait}.</b> ${B.desc}<br><b>Call, ${B.call.name}:</b> ${B.call.desc}`; };
-  document.querySelectorAll('#birdRow button').forEach(b => b.onclick = () => { const id = b.dataset.b; initAudio(); if (!birdOpen(id)) { sfx('deny'); $('#birdDesc').innerHTML = `Unlocks at ${TIERS[RR.BIRDS[id].unlock]}. ` + describe(id); return; } sfx('click'); save.bird = id; persist(); showHome(); });
-  $('#birdDesc').innerHTML = describe(save.bird);
-  const nl = $('#nemLine'), nm = RIVALS.find(r => r.id === save.nemesis); if (nm) { const rec = save.rivals[nm.id] || { w: 1, l: 0 }; nl.textContent = `${nm.name} the ${RR.BIRDS[nm.bird].name} beat you last time (${rec.w} wins to your ${rec.l}). They are in your next match, and sharper for it.`; nl.hidden = false; } else nl.hidden = true;
-  const dm = dailyMod(), done = save.daily.date === today() && save.daily.won; $('#dailyMod').textContent = dm.name + ': ' + dm.desc.toLowerCase() + '. Losing costs nothing.'; $('#dailyState').textContent = done ? 'Won today' : '+20 feathers'; $('#dailyBtn').classList.toggle('done', done);
-  const sm = savedMatch(); $('#playBtn').textContent = sm ? 'Resume match' : 'Take flight'; $('#dailyBtn').hidden = !!sm; $('#dropBtn').hidden = !sm;
+  const B = RR.BIRDS[save.bird]; $('#birdIcon').innerHTML = birdIcon(save.bird, INK); $('#birdName').textContent = B.name; $('#birdTrait').textContent = B.trait + ' · call: ' + B.call.name;
+  $('#diffBtn').innerHTML = 'Rivals: <b>' + DIFF[save.diff].name + ' ' + pips(sharpOf(quickSkill())) + '</b>';
+  const nx = stageList.find(x => !goalsOf(x.id)), tot = stageList.reduce((a, x) => a + starsOf(x.id), 0);
+  $('#storySub').textContent = nx ? THEME_ART[nx.d.theme].name + ' · stage ' + (nx.si + 1) + (tot ? ' · ★ ' + tot + '/90' : '') : 'Complete · ★ ' + tot + '/90';
+  const nl = $('#nemLine'), nm = RIVALS.find(r => r.id === save.nemesis); if (nm) { const rec = save.rivals[nm.id] || { w: 1, l: 0 }; nl.textContent = `Nemesis: ${nm.name} the ${RR.BIRDS[nm.bird].name} is waiting for a rematch.`; nl.hidden = false; } else nl.hidden = true;
+  const dm = dailyMod(), done = save.daily.date === today() && save.daily.won; $('#dailyMod').textContent = dm.name + ': ' + dm.desc.toLowerCase(); $('#dailyState').textContent = done ? 'Won today' : '+20 feathers'; $('#dailyBtn').classList.toggle('done', done);
+  $('#story').hidden = true; const sm = savedMatch(); $('#playBtn').textContent = sm ? 'Resume match' : 'Quick match'; $('#dailyBtn').hidden = !!sm; $('#dropBtn').hidden = !sm;
   $('#verLbl').textContent = 'Roost Rivals v' + VERSION + ' beta' + (PREVIEW ? ' · preview: all birds open' : '') + ' · Zetato Studios';
 }
 $('#playBtn').onclick = () => { if (savedMatch()) resumeMatch(false); else startMatch(false); };
 $('#dropBtn').onclick = () => resumeMatch(true);
+function birdSheet() {
+  sheet('Choose your bird', '<p>Every bird has one small edge and one call. None of them wins by itself; how you play does.</p>' + RR.BIRD_IDS.map(id => { const B = RR.BIRDS[id], open = birdOpen(id);
+    return `<button class="brow${save.bird === id ? ' on' : ''}${open ? '' : ' lock'}" data-a="bird" data-b="${id}"><span class="picon">${birdIcon(id, open ? INK : NEUTRAL)}</span><span class="ptxt"><b>${B.name}${open ? '' : ' · unlocks at ' + TIERS[B.unlock]}</b><small><b>${B.trait}.</b> ${B.desc}<br><b>Call, ${B.call.name}:</b> ${B.call.desc}</small></span></button>`; }).join(''));
+}
+function diffSheet() {
+  const me = sharpOf(quickSkill()), rows = [[1, 0.12], [2, 0.3], [3, 0.44], [4, 0.58], [5, 0.74]];
+  sheet('Difficulty', '<p>Rivals play like people at every level: they estimate, hesitate and sometimes gamble. Sharpness, from 1 to 5, is what changes between levels. Within your level it rises as you climb the Pecking Order. Story stages set their own sharpness, shifted by your level.</p>' +
+    Object.keys(DIFF).map(k => `<button class="brow${save.diff === k ? ' on' : ''}" data-a="diff" data-d="${k}"><span class="ptxt"><b>${DIFF[k].name} · sharpness ${sharpOf(DIFF[k].lo)} to ${sharpOf(DIFF[k].hi - 0.001)}</b><small>${DIFF[k].desc}</small></span></button>`).join('') +
+    `<p>Quick matches for you right now: <b>${DIFF[save.diff].name}, sharpness ${me} of 5</b>.</p><div class="tw"><table class="sharp"><tr><th>Sharpness</th><th>Looks every</th><th>Misjudges by</th><th>Spots attacks</th><th>Also</th></tr>` +
+    rows.map(([n, sk]) => `<tr class="${n === me ? 'me' : ''}"><td>${pips(n)}</td><td>${(3.2 - 2 * sk).toFixed(1)} s</td><td>±${Math.round((0.3 - 0.18 * sk) * 100)}%</td><td>${Math.round((0.25 + 0.75 * sk) * 100)}%</td><td>${n >= 5 ? '2 orders a look' : n >= 4 ? 'moves idle birds, dodges cats' : n >= 2 ? 'counts what is in the air' : 'often hesitates'}</td></tr>`).join('') + '</table></div>');
+}
+$('#birdBtn').onclick = () => { initAudio(); sfx('click'); birdSheet(); };
+$('#diffBtn').onclick = () => { initAudio(); sfx('click'); diffSheet(); };
+$('#rankCard').onclick = () => { initAudio(); sfx('click'); const ti = tierOf(save.rating), nb = RR.BIRD_IDS.find(id => RR.BIRDS[id].unlock === ti + 1);
+  sheet('Pecking Order', `<p>${ti >= TIERS.length - 1 ? 'You sit at the top. Rivals keep getting sharper.' : '<b>' + (TIER_STEP - (save.rating - ti * TIER_STEP)) + ' feathers</b> to ' + TIERS[ti + 1] + (nb ? ', which unlocks the ' + RR.BIRDS[nb].name + '.' : '.')}</p><p>Win matches to earn feathers. A rank, once reached, is never lost. Hatchlings and the Daily Flight never cost feathers.</p>` + TIERS.map((n, i) => `<div class="row${i > ti ? ' dim' : ''}"><span>${n}<small>${i * TIER_STEP} feathers${RR.BIRD_IDS.find(id => RR.BIRDS[id].unlock === i && i > 0) ? ' · unlocks the ' + RR.BIRDS[RR.BIRD_IDS.find(id => RR.BIRDS[id].unlock === i)].name : ''}</small></span><em>${i === ti ? 'You' : ''}</em></div>`).join('')); };
 $('#dailyBtn').onclick = () => startMatch(true);
+$('#storyBtn').onclick = () => { initAudio(); sfx('click'); showStory(); };
+$('#storyBack').onclick = () => { sfx('click'); showHome(); };
+function showStory() {
+  mode = 'story'; G = null; SEAT = 0; ['#result', '#hud', '#bar', '#banner', '#bubble', '#home', '#sheet'].forEach(q => $(q).hidden = true); $('#story').hidden = false;
+  const tot = stageList.reduce((a, x) => a + starsOf(x.id), 0), nx = stageList.find(x => !goalsOf(x.id)); $('#storyStars').textContent = '★ ' + tot + '/90';
+  $('#storyList').innerHTML = STORY.map((d, di) => { const A = THEME_ART[d.theme], open = stageOpen(stageById(d.id + 's1')), ds = d.stages.reduce((a, _, si) => a + starsOf(d.id + 's' + (si + 1)), 0);
+    return `<div class="dist${open ? '' : ' lock'}" style="--a:${A.accent}"><div class="dh"><b>${di + 1}. ${A.name}</b><span>★ ${ds}/18</span></div><p>${open ? d.intro : 'Beat the boss of ' + THEME_ART[STORY[di - 1].theme].name + ' to open this district.'}</p><div class="stages">` +
+      d.stages.map((stg, si) => { const id = d.id + 's' + (si + 1), st = stageById(id), ok = stageOpen(st), n = starsOf(id); return `<button class="stg${n ? ' done' : ''}${ok ? '' : ' lock'}${st.boss ? ' boss' : ''}${nx === st ? ' next' : ''}" data-s="${id}" aria-label="Stage ${si + 1}: ${stg[0]}"><b>${st.boss ? '♛' : si + 1}</b><i><em>${'★'.repeat(n)}</em>${'★'.repeat(3 - n)}</i></button>`; }).join('') + '</div></div>'; }).join('');
+  if (nx) setTimeout(() => { const el = $('#storyList').querySelector('.stg.next'); if (el && el.scrollIntoView) el.scrollIntoView({ block: 'center' }); }, 30);
+}
+$('#storyList').addEventListener('click', e => { const b = e.target.closest('.stg'); if (!b) return; const st = stageById(b.dataset.s); initAudio(); if (!stageOpen(st)) { sfx('deny'); return; } sfx('click'); briefing(st); });
+function briefing(st) {
+  const g = goalsOf(st.id), rv = st.rivals.map(r => RIVALS.find(x => x.id === r)), sk = stageSkill(st), A = THEME_ART[st.d.theme];
+  const goals = [['Win the stage', 1], ['Win in under ' + Math.floor(st.goal / 60) + ':' + String(st.goal % 60).padStart(2, '0'), 2], ["Don't lose a building", 4]];
+  sheet(st.name, `<p class="kick">${A.name} · stage ${st.si + 1} of 6${st.boss ? ' · boss' : ''}</p><p>${st.si === 0 ? st.d.intro : st.boss ? '<b>' + rv[0].name + ':</b> "' + st.d.bossLine + '"' : themeRule(st.d.theme) || 'Same map every attempt, so you can learn it.'}</p>` +
+    rv.map((r, k) => `<div class="brow"><span class="picon">${birdIcon(r.bird, COLORS[k + 1])}</span><span class="ptxt"><b>${r.name}${st.boss && k === 0 ? ' · boss' : ''}</b><small>${RR.BIRDS[r.bird].name} · ${RR.PERS[r.pers].label} · sharpness ${pips(sharpOf(sk))}${st.boss && k === 0 ? ' · starts with a level 4 building' : ''}</small></span></div>`).join('') +
+    goals.map(([t, b]) => `<div class="goal${g & b ? ' on' : ''}"><i>★</i>${t}</div>`).join('') +
+    `<p>Difficulty: <b>${DIFF[save.diff].name}</b> (change it in Settings).</p><button class="sbtn pri" data-a="stage" data-s="${st.id}">${g ? 'Play again' : 'Play'}</button>`);
+}
 
 // ---------- sheets ----------
 function sheet(title, html) { $('#sheetT').textContent = title; $('#sheetB').innerHTML = html; $('#sheet').hidden = false; }
@@ -987,26 +1322,32 @@ $('#sheetX').onclick = () => { sfx('click'); closeSheet(); };
 $('#sheet').addEventListener('pointerdown', e => { if (e.target.id === 'sheet') closeSheet(); });
 const HOWTO = `<p><b>Send birds.</b> Drag from your roost to any other roost. Drag across several of your roosts to send from all of them, or tap a roost and then tap a target. Double-tap a roost to pick every roost you own.</p>
 <p><b>Take roosts.</b> Land more birds than a roost holds and it becomes yours. The label on your aim line shows your birds against theirs.</p>
-<p><b>Roosts differ.</b> Round rooftops are standard. Roosts with seed dots are feeders and hatch 50% faster. Eight-sided bell towers defend 40% better.</p>
+<p><b>Buildings.</b> Every roost is a building with a level from 1 to 5, shown by its stars. Higher levels hatch faster, hold more birds and defend a little better. Bakeries (striped awning) hatch 50% faster. Bell towers (spire) defend 40% better.</p>
+<p><b>Upgrade.</b> Tap one of your buildings once and an Upgrade button appears with its cost in birds and how much faster it will hatch.</p>
+<p><b>The top bar</b> shows every flock: its bird, its power, how many birds it has and how many it hatches per second. "All full" means its buildings have stopped hatching: send some birds out.</p>
 <p><b>Your call.</b> Every bird has one call, on the button beside the send sizes. It takes ${RR.CALL.cooldown} seconds to come back, so pick your moment. Rivals have calls too: their roosts pulse while one is in effect.</p>
 <p><b>Mid-air.</b> Rival flocks that cross paths cancel out bird for bird. Wind speeds up flocks flying with it and slows flocks flying against it.</p>
 <p><b>The cat</b> stalks the fullest roost and scatters 40% of it after 5 seconds. <b>Fries</b> give +14 birds to whoever holds that roost when the timer ends.</p>
 <p><b>Winning.</b> Chase every rival off the rooftops, or hold the most birds at nightfall.</p>
-<p><b>Fair fights.</b> Rivals hatch, fly and call by the same rules as you. Higher in the Pecking Order they react faster and plan further, nothing else.</p>`;
+<p><b>Fair fights.</b> Rivals hatch, fly, call and upgrade by the same rules as you. Pick Easy, Medium or Hard in Settings; within each level they sharpen as you climb the Pecking Order.</p>`;
 $('#pauseBtn').onclick = () => { if (mode !== 'match' || !G) return; sfx('click'); paused = true; if (G.watch) sheet('Replay paused', `<button class="sbtn pri" data-a="resume">Keep watching</button><button class="sbtn" data-a="stopreplay">Stop replay</button>`); else { saveMatch(); sheet('Paused', `<button class="sbtn pri" data-a="resume">Resume</button><button class="sbtn" data-a="how">How to play</button><button class="sbtn warn" data-a="forfeit">Forfeit match (counts as a loss)</button>`); } };
 $('#rivalsBtn').onclick = () => { initAudio(); sfx('click'); sheet('Rivals', `<p>Every rival plays by your rules. What changes is how they think.</p>` + RIVALS.map(r => { const rec = save.rivals[r.id]; return `<div class="row${rec ? '' : ' dim'}"><span>${r.name}${save.nemesis === r.id ? ' · your nemesis' : ''}<small>${RR.BIRDS[r.bird].name} · ${RR.PERS[r.pers].label}</small></span><em>${rec ? 'You ' + rec.l + ' – ' + rec.w : 'Not met'}</em></div>`; }).join('')); };
 $('#badgesBtn').onclick = () => { initAudio(); sfx('click'); const n = BADGES.filter(b => save.badges[b.id]).length; sheet('Badges ' + n + '/' + BADGES.length, `<p>Played ${save.matches} · Won ${save.wins} · Best streak ${save.bestStreak}</p>` + BADGES.map(b => `<div class="row${save.badges[b.id] ? '' : ' dim'}"><span>${b.name}<small>${b.how}</small></span><em>${save.badges[b.id] ? 'Earned' : ''}</em></div>`).join('')); };
-function settingsSheet(armed) { sheet('Settings', `<div class="row"><span>Sound</span><button class="tog" data-a="sound" aria-pressed="${save.sound}" aria-label="Sound"></button></div><div class="row"><span>Vibration<small>On phones that support it</small></span><button class="tog" data-a="haptics" aria-pressed="${save.haptics}" aria-label="Vibration"></button></div><button class="sbtn" data-a="how">How to play</button><button class="sbtn warn" data-a="${armed ? 'reset2' : 'reset'}">${armed ? 'Tap again to erase all progress' : 'Reset progress'}</button><p>Your progress is saved on this device. No ads, no accounts, no tracking.</p>`); }
+function settingsSheet(armed) { sheet('Settings', `<button class="brow" data-a="diffs"><span class="ptxt"><b>Difficulty: ${DIFF[save.diff].name}</b><small>Tap to change</small></span></button><div class="row"><span>Sound</span><button class="tog" data-a="sound" aria-pressed="${save.sound}" aria-label="Sound"></button></div><div class="row"><span>Vibration<small>On phones that support it</small></span><button class="tog" data-a="haptics" aria-pressed="${save.haptics}" aria-label="Vibration"></button></div><button class="sbtn" data-a="how">How to play</button><button class="sbtn warn" data-a="${armed ? 'reset2' : 'reset'}">${armed ? 'Tap again to erase all progress' : 'Reset progress'}</button><p>Your progress is saved on this device. No ads, no accounts, no tracking.</p>`); }
 $('#setBtn').onclick = () => { initAudio(); sfx('click'); settingsSheet(false); };
 $('#sheetB').addEventListener('click', e => { const b = e.target.closest('[data-a]'); if (!b) return; const a = b.dataset.a; sfx('click');
   if (a === 'resume') closeSheet();
   else if (a === 'how') { const back = mode === 'match'; sheet('How to play', HOWTO + (back ? '<button class="sbtn pri" data-a="resume">Back to the match</button>' : '')); }
   else if (a === 'forfeit') { $('#sheet').hidden = true; paused = false; Session.send({ k: 'quit' }); }
+  else if (a === 'bird') { const id = b.dataset.b; if (!birdOpen(id)) { sfx('deny'); return; } save.bird = id; persist(); closeSheet(); showHome(); }
+  else if (a === 'diff') { save.diff = b.dataset.d; persist(); closeSheet(); if (mode === 'story') showStory(); else showHome(); }
+  else if (a === 'diffs') diffSheet();
+  else if (a === 'stage') { closeSheet(); startStage(b.dataset.s); }
   else if (a === 'stopreplay') { paused = false; endReplay(); }
   else if (a === 'sound') { save.sound = !save.sound; persist(); settingsSheet(false); }
   else if (a === 'haptics') { save.haptics = !save.haptics; persist(); buzz(20); settingsSheet(false); }
   else if (a === 'reset') settingsSheet(true);
-  else if (a === 'reset2') { const keep = { sound: save.sound, haptics: save.haptics, pid: save.pid }; save = Object.assign({}, DEF, keep, { rivals: {}, badges: {}, birdWins: {}, daily: { date: '', won: false } }); persist(); dropSavedMatch(); closeSheet(); showHome(); }
+  else if (a === 'reset2') { const keep = { sound: save.sound, haptics: save.haptics, pid: save.pid, diff: save.diff, story: {} }; save = Object.assign({}, DEF, keep, { rivals: {}, badges: {}, birdWins: {}, daily: { date: '', won: false } }); persist(); dropSavedMatch(); closeSheet(); showHome(); }
 });
 document.addEventListener('visibilitychange', () => { if (document.hidden && mode === 'match' && G && !G.S.over) { saveMatch(); if ($('#sheet').hidden) $('#pauseBtn').onclick(); } });
 window.addEventListener('pagehide', saveMatch);
@@ -1019,14 +1360,14 @@ if (document.fonts && document.fonts.load) { document.fonts.load('20px "Bowlby O
   showHome(); setTimeout(end, 1500); intro.addEventListener('pointerdown', end);
 })();
 requestAnimationFrame(frame);
-window.__rr = { get G() { return G; }, get save() { return save; }, get LAST() { return LAST; }, start: startMatch, home: showHome, Session, RR };
+window.__rr = { stage: startStage, story: showStory, get G() { return G; }, get save() { return save; }, get LAST() { return LAST; }, start: startMatch, home: showHome, Session, RR };
 })();
 
 </script>
 <script>
 /* Roost Rivals PWA: offline worker with silent updates, plus the install hint (same pattern as the other Zetato Studios games). */
 (function(){
- var VERSION='0.2.0';
+ var VERSION='0.4.0';
  // Silent updates: the worker fetches the newest game page whenever online, so the next open is always current.
  if('serviceWorker' in navigator && location.protocol!=='file:' && /(^|\.)zetatobi\.com$|^localhost$|^127\.0\.0\.1$/.test(location.hostname)){
   window.addEventListener('load',function(){
