@@ -3,7 +3,7 @@
 Bird turf-war strategy game in the style of State.io, by Zetato Studios. Ad-free, offline, installable.
 Live folder: `games/roost-rivals/`. This file is the reference for anyone (or any Claude session) changing the game.
 
-Current version: 0.4.0 beta (core version 4).
+Current version: 0.5.0 beta (core version 5).
 
 ## 1. What the game is
 
@@ -13,6 +13,9 @@ Current version: 0.4.0 beta (core version 4).
 - **Story** (main mode): 5 districts x 6 stages, a boss at the end of each district, 3 stars per stage
   (win; win under a time limit; win without losing a building). Fixed map per stage. Beating a boss opens the next district
   and unlocks a bird. Stars pay 12 feathers each, once.
+- **Endless Flight**: stages generated forever from (run seed, stage number); nothing is stored per stage. New map, rival mix and
+  1-3 twists each stage; boss every 5th, champion duel every 7th; a run perk (pick 1 of 3) after every second win; checkpoints every
+  10 stages; seeds per win buy permanent Nest upgrades that apply in Endless Flight only. See section 5a.
 - **Quick match**: random district, rivals from your difficulty band, feeds the Pecking Order ladder
   (Hatchling, Fledgling, Songbird, Kestrel, Falcon, Eagle, Apex; 200 feathers per rank; a rank once reached is kept).
 - **Daily Flight**: one seeded match per day with a twist; first win pays +20 feathers; losing costs nothing.
@@ -159,6 +162,32 @@ Bosses start with a level-4 home building and 22 birds (districts 1-2) or 26 (3-
 then x difficulty multiplier. Quick loss: up to -16 by placing (nothing as a Hatchling or in the Daily Flight).
 Story: 12 per new star.
 
+## 5a. Endless Flight
+
+Generator: `RR.endlessStage(runSeed, n, shift, roster)` in the core (so the balance tools test exactly what players get).
+- Rival skill: 0.12 + 0.66 x (n-1)/(n-1+14) + difficulty shift (ceiling ~0.78, max 0.88). Rivals: 1 (stages 1-2 and duels), 2 (to 9), 3.
+- Twists: 0 (n<4), 1 (n<12), 2 (n<30), 3; drawn from `MOD_POOL` (gale, cats, feast, rich, fortress, swift, short, cheapUp, scarce,
+  sprawl, tall) plus the district twist. District changes every 5 stages.
+- Rival homes from stage 13: +1.1 birds per stage (cap +40), +0.8 per stage after 50 (no cap); level 4 from stage 30, 5 from 50.
+- Rival perks, no cap: hatch +1.5% per stage after 18; defence +0.8% per stage after 30. This is what guarantees every run ends.
+- Boss: first rival +0.04 skill, home one level higher, +6 birds. Duel: +0.05 skill, +4 birds.
+
+Player strength is capped. Run perks (`RUN_PERKS`, each with a max stack): hatch 3%, flight 4%, attack 3%, defence 3%, +3 home birds,
+call -4 s, bakeries +20%, cat immunity, fries +8, upgrades -10%. Nest (UI `NEST`, seeds): home +2 birds (x3), hatch +2% (x2),
+flight +2% (x2), defence +1.5% (x2), call -3 s (x2), upgrades -8% (x2). Seeds: 5 + stage per win (x2 for bosses); 5 per story star, once.
+Upgrade costs sum to 1,740 seeds.
+
+Measured with a 0.85-skill bot in the player seat (a person plays free-for-alls far better than the bot; the bot wins only ~15-20%
+of story 5-6, so read these as relative):
+
+| Setup | Stage 10 | 20 | 30 | 40 | 50 |
+|---|---|---|---|---|---|
+| No perks | 28% | 13% | 3% | 0% | 0% |
+| Run perks (one per 2 stages) | 40% | 37% | 20% | 18% | 0% |
+| Run perks + full Nest | 57% | 52% | 32% | 23% | 3% |
+
+Rule: never raise Nest caps without rerunning this table; a full Nest should be worth about ten stages, not a win button.
+
 ## 6. Balance targets and current results
 
 Run: `node dev/roost-rivals/balance/run-balance.mjs 200` (about 4 minutes).
@@ -180,10 +209,10 @@ than rushers; they read as the gentler rivals. Boss head starts are tuned by sim
 
 - Bump the version in three places that must match: `VERSION` in `games/roost-rivals/sw.js`, `VERSION` in the UI script
   and `VERSION` in the install/update script at the end of `games/roost-rivals/index.html`.
-- Never rename storage keys: `roostrivals.v1` (progress, including `story` stars), `roostrivals.match` (match in progress),
+- Never rename storage keys: `roostrivals.v1` (progress, including `story` stars and `endless` seeds/Nest/run), `roostrivals.match` (match in progress),
   `roostrivals.installHint`. New save fields get a default in `DEF`; old saves pick it up automatically.
 - A saved match from an older core is dropped on load when `CORE_VERSION` changes. Bump `CORE_VERSION` whenever the
-  rules change in a way that would make an old snapshot or replay play out differently. (v0.4.0 is core 4.)
+  rules change in a way that would make an old snapshot or replay play out differently. (v0.5.0 is core 5.)
 - Never change the manifest id (`/games/roost-rivals/app`), `start_url` or `scope`.
 - Before any PR: load the game headless and confirm no page errors; run both dev tools.
 
@@ -197,7 +226,7 @@ than rushers; they read as the gentler rivals. Boss head starts are tuned by sim
 
 ## 9. Roadmap (proposed; confirm with the owner before starting)
 
-1. Tuning pass from real playtests (boss strength, time goals, difficulty per rank).
+1. Tuning pass from real playtests (Endless curve, perk and Nest strength, boss strength).
 2. Friend duels (phase 1 above).
 3. More story: a sixth district, boss-specific map shapes, simple illustrated story cards.
 4. Optional ambient sound with an off switch.
