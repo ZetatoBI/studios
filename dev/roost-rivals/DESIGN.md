@@ -3,7 +3,7 @@
 Bird turf-war strategy game in the style of State.io, by Zetato Studios. Ad-free, offline, installable.
 Live folder: `games/roost-rivals/`. This file is the reference for anyone (or any Claude session) changing the game.
 
-Current version: 0.5.0 beta (core version 5).
+Current version: 0.6.0 beta (core version 6).
 
 ## 1. What the game is
 
@@ -22,6 +22,15 @@ Current version: 0.5.0 beta (core version 5).
 - Five birds, each with one passive edge and one call (active ability, 32 s cooldown, first ready at 14 s).
 - Ten named rivals with five personalities. In quick matches the rival who last beat you returns as your nemesis.
 - Difficulty: Easy / Medium / Hard (Settings or the home link). Rival toughness is shown as sharpness 1 to 5 (dots).
+
+- **Second chances** (v0.6): on defeat, rewind about 20 s (snapshots every 5 s, last 40 s kept in memory), once per match;
+  in Endless Flight once per run plus the Second Wind perk (max +2). Pause menu: rewind, restart (free in story and the Daily
+  Flight; counts as a loss in a quick match; uses the rewind in Endless Flight), forfeit.
+- **Exact-moment resume**: the match is saved every 2 s and on blur, tab-away, pagehide and freeze; launching the game with a
+  saved match goes straight back into it, paused, with a Welcome back sheet.
+- **Stop**: a Stop chip over a building that is still sending cancels the birds that have not left yet (`{k:'stop'}`).
+- **Last stand**: a flock with one building left defends 25% harder (applies to everyone; the banner and red ring show only
+  after a flock that held 3+ buildings drops to one).
 
 ## 2. Rules that must not regress
 
@@ -134,13 +143,13 @@ and start buildings at levels 2-4 (home: level 3, 20 birds).
 **Events.** Cat: every 24 to 36 s, warns for 5 s on the fullest building (24+ birds), then scatters 40%.
 Fries: every 30 to 44 s on a non-start building; whoever holds it after 9 s gains 14 birds.
 
-**Birds (v0.4.0).**
+**Birds (v0.6.0).**
 
 | Bird | Unlock | Passive | Call |
 |---|---|---|---|
 | Pigeon | start | hatch +6% | Brood: hatch +30% for 6 s |
-| Gull | Fledgling, or beat story district 1 | flight +45% | Tailwind: flocks in the air x2.5 speed for 6 s |
-| Owl | Songbird, or district 2 | defence +12% | Hunker: defence +30% for 6 s |
+| Gull | Fledgling, or beat story district 1 | flight +50% | Tailwind: flocks in the air x2.5 speed for 6 s |
+| Owl | Songbird, or district 2 | defence +9% | Hunker: defence +30% for 6 s |
 | Crow | Kestrel, or district 3 | attack +10% | Mob: attack +50% for 6 s |
 | Starling | Falcon, or district 4 | +1 bird on each capture | Murmuration: +2 birds at every building held |
 
@@ -173,7 +182,7 @@ Generator: `RR.endlessStage(runSeed, n, shift, roster)` in the core (so the bala
 - Boss: first rival +0.04 skill, home one level higher, +6 birds. Duel: +0.05 skill, +4 birds.
 
 Player strength is capped. Run perks (`RUN_PERKS`, each with a max stack): hatch 3%, flight 4%, attack 3%, defence 3%, +3 home birds,
-call -4 s, bakeries +20%, cat immunity, fries +8, upgrades -10%. Nest (UI `NEST`, seeds): home +2 birds (x3), hatch +2% (x2),
+call -4 s, bakeries +20%, cat immunity, fries +8, upgrades -10%, Second Wind (+1 rewind, max 2). Nest (UI `NEST`, seeds): home +2 birds (x3), hatch +2% (x2),
 flight +2% (x2), defence +1.5% (x2), call -3 s (x2), upgrades -8% (x2). Seeds: 5 + stage per win (x2 for bosses); 5 per story star, once.
 Upgrade costs sum to 1,740 seeds.
 
@@ -194,11 +203,11 @@ Run: `node dev/roost-rivals/balance/run-balance.mjs 200` (about 4 minutes).
 
 | Check | Target | v0.4.0 result |
 |---|---|---|
-| Bird win rate, 1v1, equal skill | each 45 to 55% | 46.6 to 52.1% |
-| Bird win share, four-way | each 21 to 29% | 22.6 to 29.0% (owl highest, gull lowest) |
+| Bird win rate, 1v1, equal skill | each 45 to 55% | 44.6 to 53.5% (v0.6.0; owl at the edge) |
+| Bird win share, four-way | each 21 to 29% | 21.4 to 28.9% (v0.6.0; owl highest, gull lowest) |
 | Skill ladder | stronger rival wins more at every step up to 0.9 | holds (58 to 89%); flat at the very top by design |
 | Start corner fairness, four-way | about 25% each | 24.0 to 25.5% |
-| Match length, 1v1 rivals | median 60 to 90 s | 59 s |
+| Match length, 1v1 rivals | median 60 to 90 s | 63 s (last stand made matches slightly longer) |
 | Bird balance per district (skill 0.5, 600 matches each) | each 45 to 56% | 45 to 56% |
 | Replay check | 100% identical | 60 of 60 matches, all districts and head starts |
 
@@ -212,7 +221,7 @@ than rushers; they read as the gentler rivals. Boss head starts are tuned by sim
 - Never rename storage keys: `roostrivals.v1` (progress, including `story` stars and `endless` seeds/Nest/run), `roostrivals.match` (match in progress),
   `roostrivals.installHint`. New save fields get a default in `DEF`; old saves pick it up automatically.
 - A saved match from an older core is dropped on load when `CORE_VERSION` changes. Bump `CORE_VERSION` whenever the
-  rules change in a way that would make an old snapshot or replay play out differently. (v0.5.0 is core 5.)
+  rules change in a way that would make an old snapshot or replay play out differently. (v0.6.0 is core 6.)
 - Never change the manifest id (`/games/roost-rivals/app`), `start_url` or `scope`.
 - Before any PR: load the game headless and confirm no page errors; run both dev tools.
 
