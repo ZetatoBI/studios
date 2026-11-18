@@ -56,6 +56,9 @@ button:focus-visible{outline:3px solid var(--lamp);outline-offset:2px}
 #upBtn b{font-size:14px;font-weight:800}
 #upBtn span{font-size:11px;font-weight:800;font-variant-numeric:tabular-nums}
 #upBtn.no{background:var(--panel2);color:var(--muted);box-shadow:0 4px 0 #1B1433}
+#stopBtn{position:absolute;z-index:6;display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:12px;background:var(--ink);color:#1B1433;font-weight:800;font-size:13px;box-shadow:0 3px 0 rgba(0,0,0,.35);animation:banIn .15s ease-out both}
+#stopBtn span{font-variant-numeric:tabular-nums;color:#7A2B3D}
+.sbtn[disabled]{opacity:.45}
 .hrow{display:flex;align-items:center;gap:8px}
 .sp{flex:1}
 .chip{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 11px;border-radius:17px;background:rgba(27,20,51,.72);font-size:14px;font-weight:800;font-variant-numeric:tabular-nums}
@@ -301,6 +304,7 @@ table.sharp tr.me td{color:var(--lamp)}
  <div id="banner" hidden><b id="banT"></b><span id="banS"></span></div>
  <div id="bubble" hidden></div>
  <button id="upBtn" hidden><b id="upT">Upgrade</b><span id="upS"></span></button>
+ <button id="stopBtn" hidden aria-label="Stop sending"><b>Stop</b><span id="stopN"></span></button>
 
  <footer id="bar" hidden>
   <div id="coach" hidden></div>
@@ -378,7 +382,7 @@ table.sharp tr.me td{color:var(--lamp)}
    5. Replays. setup + command log replays any match exactly (replay). A server can referee a ranked duel that way. */
 const RR = (function () {
   'use strict';
-  const W = 1000, H = 1400, TICK_HZ = 30, DT = 1 / TICK_HZ, CORE_VERSION = 5;
+  const W = 1000, H = 1400, TICK_HZ = 30, DT = 1 / TICK_HZ, CORE_VERSION = 6;
   const RATIOS = [0.25, 0.5, 0.75, 1];
 
   // ---------- seeded random (state lives in the object passed in, so it is saved with the match) ----------
@@ -389,8 +393,8 @@ const RR = (function () {
   // ---------- birds: one modest edge and one call each. Tuned with the balance bot so none wins or loses by default ----------
   const BIRDS = {
     pigeon:   { name: 'Pigeon',   trait: 'Fast breeder', desc: 'Roosts hatch new birds 6% faster.',               hatch: 1.06, speed: 1,    atk: 1,    def: 1,    capBonus: 0, unlock: 0, call: { name: 'Brood',       desc: 'All your roosts hatch 30% faster for 6 seconds.', dur: 6 } },
-    gull:     { name: 'Gull',     trait: 'Fast flyer',   desc: 'Flocks fly 45% faster. First to every scrap.',     hatch: 1,    speed: 1.45, atk: 1,    def: 1,    capBonus: 0, unlock: 1, call: { name: 'Tailwind',    desc: 'Your flocks in the air fly two and a half times as fast for 6 seconds.', dur: 6 } },
-    owl:      { name: 'Owl',      trait: 'Stubborn',     desc: 'Birds defending a roost fight 12% harder.',        hatch: 1,    speed: 1,    atk: 1,    def: 1.12, capBonus: 0, unlock: 2, call: { name: 'Hunker',      desc: 'Your roosts defend 30% harder for 6 seconds.', dur: 6 } },
+    gull:     { name: 'Gull',     trait: 'Fast flyer',   desc: 'Flocks fly 50% faster. First to every scrap.',     hatch: 1,    speed: 1.5,  atk: 1,    def: 1,    capBonus: 0, unlock: 1, call: { name: 'Tailwind',    desc: 'Your flocks in the air fly two and a half times as fast for 6 seconds.', dur: 6 } },
+    owl:      { name: 'Owl',      trait: 'Stubborn',     desc: 'Birds defending a roost fight 9% harder.',         hatch: 1,    speed: 1,    atk: 1,    def: 1.09, capBonus: 0, unlock: 2, call: { name: 'Hunker',      desc: 'Your roosts defend 30% harder for 6 seconds.', dur: 6 } },
     crow:     { name: 'Crow',     trait: 'Hard hitter',  desc: 'Birds storming a roost hit 10% harder.',           hatch: 1,    speed: 1,    atk: 1.1,  def: 1,    capBonus: 0, unlock: 3, call: { name: 'Mob',         desc: 'Your birds storming a roost hit 50% harder for 6 seconds.', dur: 6 } },
     starling: { name: 'Starling', trait: 'Swarm',        desc: 'Every roost you capture gains a bird at once.',    hatch: 1,    speed: 1,    atk: 1,    def: 1,    capBonus: 1, unlock: 4, call: { name: 'Murmuration', desc: 'Every roost you hold gains 2 birds at once.', dur: 0 } }
   };
@@ -486,7 +490,9 @@ const RR = (function () {
   const BOF = (S, i) => BIRDS[S.players[i].bird];
   const prodRate = (S, n) => n.owner < 0 ? 0 : BASE_PROD * SIZE[n.size].prod * KIND[n.kind].prod * BOF(S, n.owner).hatch * (S.mods.scarce ? 0.8 : 1) * (1 + PK(S, n.owner).hatch) * (n.kind === 'feeder' ? 1 + PK(S, n.owner).bakery : 1) * (S.players[n.owner].bird === 'pigeon' && active(S, n.owner) ? CALL.brood : 1);
   const capOf = n => SIZE[n.size].cap;
-  const defOf = (S, n) => KIND[n.kind].def * (1 + 0.06 * (n.size - 3)) * (n.owner >= 0 ? (1 + PK(S, n.owner).def) * BOF(S, n.owner).def * (S.players[n.owner].bird === 'owl' && active(S, n.owner) ? CALL.hunker : 1) : 1);
+  const lastStand = (S, n) => { if (n.owner < 0) return false; let k = 0; for (const m of S.nodes) if (m.owner === n.owner && ++k > 1) return false; return true; };
+  const LAST_STAND = 1.25;
+  const defOf = (S, n) => (lastStand(S, n) ? LAST_STAND : 1) * KIND[n.kind].def * (1 + 0.06 * (n.size - 3)) * (n.owner >= 0 ? (1 + PK(S, n.owner).def) * BOF(S, n.owner).def * (S.players[n.owner].bird === 'owl' && active(S, n.owner) ? CALL.hunker : 1) : 1);
   const atkOf = (S, i) => (1 + PK(S, i).atk) * BOF(S, i).atk * (S.players[i].bird === 'crow' && active(S, i) ? CALL.mob : 1);
   const birdSpeed = (S, b) => b.v * (S.players[b.owner].bird === 'gull' && active(S, b.owner) ? CALL.tailwind : 1);
   function flySpeed(S, owner, ux, uy) { return BASE_SPEED * (S.mods.swift ? 1.3 : 1) * (1 + PK(S, owner).speed) * BOF(S, owner).speed * (1 + (ux * S.wind.x + uy * S.wind.y) * S.wind.s); }
@@ -495,6 +501,7 @@ const RR = (function () {
   // {k:'send', p, from, to, r}   r is one of 0.25 / 0.5 / 0.75 / 1 (rivals use the same four sizes)
   // {k:'call', p}                use your bird's call
   // {k:'up', p, from}            upgrade building `from` one level (costs UPCOST[level] birds)
+  // {k:'stop', p, from}          stop the birds still leaving building `from` (birds already in the air fly on)
   // {k:'quit', p}                leave the match (forfeit / disconnect)
   // cmd(): "do this `delay` ticks from now" (local play uses 0; online play uses a few ticks so both phones agree on the tick).
   // cmdAt(): a command that arrives already stamped with its tick (from the network or a replay). Returns false if it is too late.
@@ -515,13 +522,14 @@ const RR = (function () {
     const n = S.nodes[id]; if (!n || n.owner !== owner || n.size >= MAX_LV) return false; const cost = upCost(S, owner, n); if (n.count < cost) return false;
     n.count -= cost; n.size++; n.pulse = 1; S.players[owner].stats.ups++; S.events.push({ type: 'upgrade', node: id, by: owner, lv: n.size, t: S.t }); return true;
   }
+  function doStop(S, owner, id) { let n = 0; for (const st of S.streams) if (st.owner === owner && st.from === id && st.left > 0) { n += st.left; S.players[owner].stats.sent -= st.left; st.left = 0; } if (n) S.events.push({ type: 'stop', node: id, by: owner, kept: n, t: S.t }); return n; }
   function doQuit(S, i) { const p = S.players[i]; if (!p.alive) return; for (const n of S.nodes) if (n.owner === i) n.owner = -1; S.birds = S.birds.filter(b => b.owner !== i); S.streams = S.streams.filter(s => s.owner !== i); p.alive = false; p.outAt = S.t; p.quit = true; S.events.push({ type: 'out', who: i, t: S.t }); }
   function applyCmds(S) {
     if (!S.cmds.length) return; const due = [], later = [];
     for (const c of S.cmds) (c.tick <= S.tick ? due : later).push(c); if (!due.length) return;
     S.cmds = later; due.sort((a, b) => (a.tick - b.tick) || (a.p - b.p) || (a.seq - b.seq));
     for (const c of due) { if (!S.players[c.p].alive) continue; S.log.push([S.tick, c.p, c.k, c.from, c.to, c.r]);
-      if (c.k === 'send') doSend(S, c.p, c.from, c.to, c.r); else if (c.k === 'call') doCall(S, c.p); else if (c.k === 'up') doUpgrade(S, c.p, c.from); else if (c.k === 'quit') doQuit(S, c.p); }
+      if (c.k === 'send') doSend(S, c.p, c.from, c.to, c.r); else if (c.k === 'call') doCall(S, c.p); else if (c.k === 'up') doUpgrade(S, c.p, c.from); else if (c.k === 'stop') doStop(S, c.p, c.from); else if (c.k === 'quit') doQuit(S, c.p); }
   }
 
   function land(S, b) {
@@ -632,7 +640,7 @@ const RR = (function () {
     fat:   { key: 'hatch',   amt: 0.03, max: 3 }, tail:  { key: 'speed',   amt: 0.04, max: 3 }, beak:  { key: 'atk',    amt: 0.03, max: 3 },
     walls: { key: 'def',     amt: 0.03, max: 3 }, stash: { key: 'home',    amt: 3,    max: 3 }, hasty: { key: 'callCd', amt: 4,    max: 2 },
     baker: { key: 'bakery',  amt: 0.2,  max: 2 }, cat:   { key: 'catSafe', amt: 1,    max: 1 }, chips: { key: 'fries',  amt: 8,    max: 2 },
-    handy: { key: 'upDisc',  amt: 0.1,  max: 2 }
+    handy: { key: 'upDisc',  amt: 0.1,  max: 2 }, wind: { key: 'rewind', amt: 1, max: 2 }
   };
   const MOD_POOL = ['gale', 'cats', 'feast', 'rich', 'fortress', 'swift', 'short', 'cheapUp', 'scarce', 'sprawl', 'tall'];
   const THEME_ORDER = ['city', 'harbor', 'market', 'oldtown', 'skyline'];
@@ -655,7 +663,7 @@ const RR = (function () {
   // run perks + permanent upgrades -> the numbers newMatch takes. nest = {hatch, speed, callCd, upDisc, home, homeLv}
   function playerSetup(runPerks, nest) {
     const o = cleanPerks(null); let home = (nest && nest.home) || 0;
-    for (const k in runPerks || {}) { const d = RUN_PERKS[k]; if (!d) continue; const v = d.amt * Math.min(d.max, runPerks[k]); if (d.key === 'home') home += v; else o[d.key] += v; }
+    for (const k in runPerks || {}) { const d = RUN_PERKS[k]; if (!d) continue; const v = d.amt * Math.min(d.max, runPerks[k]); if (d.key === 'home') home += v; else if (d.key in o) o[d.key] += v; }
     if (nest) for (const k of ['hatch', 'speed', 'callCd', 'upDisc', 'atk', 'def']) o[k] += nest[k] || 0;
     return { perks: o, start: { lv: (nest && nest.homeLv) || 3, count: 20 + home } };
   }
@@ -741,7 +749,7 @@ const RR = (function () {
     }
   }
 
-  return { W, H, TICK_HZ, DT, CORE_VERSION, RATIOS, BIRDS, BIRD_IDS, CALL, KIND, SIZE, UPCOST, MAX_LV, THEMES, PERS, NIGHTFALL, PERK_KEYS, RUN_PERKS, MOD_POOL, upCost, endlessStage, playerSetup, rng, genMap, newMatch, step, cmd, cmdAt, totals, ranking, prodRate, capOf, defOf, atkOf, birdSpeed, active, hash, snapshot, restore, replay };
+  return { W, H, TICK_HZ, DT, CORE_VERSION, RATIOS, BIRDS, BIRD_IDS, CALL, KIND, SIZE, UPCOST, MAX_LV, THEMES, PERS, NIGHTFALL, PERK_KEYS, RUN_PERKS, MOD_POOL, upCost, endlessStage, playerSetup, rng, genMap, newMatch, step, cmd, cmdAt, totals, ranking, prodRate, capOf, defOf, lastStand, atkOf, birdSpeed, active, hash, snapshot, restore, replay };
 })();
 if (typeof module !== 'undefined') module.exports = RR;
 
@@ -750,7 +758,7 @@ if (typeof module !== 'undefined') module.exports = RR;
 /* ===== ROOST RIVALS UI: rendering, touch, sound, progression, menus. Reads the core's state; changes it only through Session.send(). ===== */
 (function () {
 'use strict';
-const VERSION = '0.5.0';
+const VERSION = '0.6.0';
 const $ = s => document.querySelector(s), clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const PREVIEW = !/(^|\.)zetatobi\.com$|^localhost$|^127\.0\.0\.1$/.test(location.hostname);   // preview links: every bird selectable for testing
 const COLORS = ['#FFC53D', '#43D9C8', '#FF6F91', '#8EA7FF'], NEUTRAL = '#9A92B6', DARK = '#1B1433', INK = '#FFF4E2';
@@ -872,6 +880,7 @@ const MOD_INFO = {
   scarce: ['Lean times', 'Everyone hatches 20% slower'], sprawl: ['Sprawl', 'More buildings on the map'], tall: ['High rises', 'Buildings start a level higher']
 };
 const PERK_INFO = {
+  wind: ['⏪', 'Second Wind', 'One more rewind for this run'],
   fat: ['🪱', 'Fat Worms', 'Your buildings hatch 3% faster'], tail: ['🪶', 'Tailfeathers', 'Your flocks fly 4% faster'], beak: ['⚔️', 'Sharp Beaks', 'Your attacks hit 3% harder'],
   walls: ['🛡️', 'Thick Walls', 'Your buildings defend 3% harder'], stash: ['🥚', 'Stash', 'Start each stage with 3 more birds'], hasty: ['📣', 'Quick Call', 'Your call comes back 4 s sooner'],
   baker: ['🥐', "Baker's Friend", 'Your bakeries hatch 20% faster'], cat: ['🐈', 'Cat Charmer', 'The cat leaves you alone'], chips: ['🍟', 'Chip Magnet', 'Fries give you 8 more birds'],
@@ -926,6 +935,7 @@ function sfx(k, a) {
   else if (k === 'win') [523, 659, 784, 1047, 1319].forEach((f, i) => tone(f, 0.3, 'triangle', 0.2, 0, i * 0.11));
   else if (k === 'lose') [392, 349, 294, 220].forEach((f, i) => tone(f, 0.32, 'sawtooth', 0.1, 0, i * 0.16));
   else if (k === 'upgrade') [0, 4, 7, 12].forEach((st, i) => tone(392 * Math.pow(2, (st + (a || 3) * 2) / 12), 0.16, 'triangle', 0.16, 0, i * 0.07));
+  else if (k === 'rewind') { tone(1200, 0.35, 'sine', 0.16, 300); tone(900, 0.35, 'triangle', 0.1, 220, 0.08); noise(0.3, 0.08, 1200); }
   else if (k === 'click') tone(700, 0.06, 'square', 0.07);
   else if (k === 'deny') tone(180, 0.12, 'square', 0.08);
 }
@@ -964,7 +974,8 @@ function makeBg(seed, theme) {
 
 // ---------- effects ----------
 let parts = [], rings = [], floats = [], gusts = [], shake = 0;
-function feathers(x, y, col, n, spd) { for (let i = 0; i < n; i++) { const a = Math.random() * 6.283, v = (spd || 70) * (0.3 + Math.random()); parts.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 20, r: Math.random() * 6.283, vr: (Math.random() - 0.5) * 9, life: 0.5 + Math.random() * 0.5, t: 0, col }); } if (parts.length > 500) parts.splice(0, parts.length - 500); }
+function feathers(x, y, col, n, spd) { for (let i = 0; i < n; i++) { const a = Math.random() * 6.283, v = (spd || 70) * (0.3 + Math.random()); parts.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 20, r: Math.random() * 6.283, vr: (Math.random() - 0.5) * 9, life: 0.5 + Math.random() * 0.5, t: 0, col }); } if (parts.length > 700) parts.splice(0, parts.length - 700); }
+function confetti() { const cols = [COLORS[0], '#FFF4E2', '#FFD25A', '#FF8FA8', '#43D9C8']; for (let i = 0; i < 140; i++) parts.push({ x: Math.random() * cw, y: -10 - Math.random() * ch * 0.4, vx: (Math.random() - 0.5) * 60, vy: 80 + Math.random() * 140, r: Math.random() * 6.283, vr: (Math.random() - 0.5) * 12, life: 2.2 + Math.random() * 1.2, t: 0, col: cols[i % cols.length], big: 1 }); }
 function ring(x, y, col, big) { rings.push({ x, y, col, t: 0, big: big || 1 }); }
 function floatText(x, y, txt, col) { floats.push({ x, y, txt, col, t: 0 }); }
 
@@ -1001,7 +1012,7 @@ function enterMatch(g) {
   const st = g.stage && stageById(g.stage), rsk = g.S.players.filter(p => p.ai).map(p => p.ai.skill);
   $('#diffChip').textContent = g.watch ? 'Replay' : g.endless ? 'Stage ' + g.endless + ' ' + (rsk.length ? pips(sharpOf(Math.max.apply(null, rsk))) : '') : (st ? 'Stage ' + (st.di + 1) + '-' + (st.si + 1) + ' ' : DIFF[g.diff || 'medium'].name + ' ') + (rsk.length ? pips(sharpOf(Math.max.apply(null, rsk))) : ''); $('#upBtn').hidden = true;
 }
-function newG(o) { return Object.assign({ seat: 0, diff: save.diff, daily: false, dmId: '', stage: '', endless: 0, sel: [], drag: null, tap: false, combo: 0, comboT: 0, lostRoost: false, catHit: false, endT: 0, warned: false, lastTap: 0, lastTapNode: -1, acc: 0, watch: false }, o); }
+function newG(o) { return Object.assign({ seat: 0, diff: save.diff, daily: false, dmId: '', stage: '', endless: 0, snaps: [], snapT: 0, rewinds: 1, rewound: 0, decided: false, lastStandSeen: false, peak: [0, 0, 0, 0], sel: [], drag: null, tap: false, combo: 0, comboT: 0, lostRoost: false, catHit: false, endT: 0, warned: false, lastTap: 0, lastTapNode: -1, acc: 0, watch: false }, o); }
 function you() { return { bird: birdOpen(save.bird) ? save.bird : 'pigeon', name: 'You', ai: null }; }
 function startMatch(daily) {
   initAudio(); sfx('click'); dropSavedMatch();
@@ -1030,14 +1041,45 @@ function startStage(id) {
   if (st.boss) setTimeout(() => { if (G && mode === 'match' && G.stage === id) { const b = bigRoost(G.S, 1), el = $('#bubble'); if (!b) return; el.innerHTML = `<small>${rv[0].name}</small>${st.d.bossLine}`; el.style.left = clamp(X(b.x), 8, cw - 220) + 'px'; el.style.top = clamp(Y(b.y) - 60, 110, ch - 140) + 'px'; el.style.borderBottom = `4px solid ${colOf(1)}`; el.hidden = false; bubT = 3.2; lastBubble = G.S.t; } }, 2700);
 }
 // resume: the whole match is plain data, so it is saved every few seconds and when the app goes to the background
-function saveMatch() { if (!G || G.watch || G.S.over) return; try { localStorage.setItem(MATCH_KEY, JSON.stringify({ ver: VERSION, snap: RR.snapshot(G.S), seat: G.seat, diff: G.diff, stage: G.stage, endless: G.endless || 0, daily: G.daily, dmId: G.dmId, meta: G.meta, lostRoost: G.lostRoost, catHit: G.catHit, warned: G.warned })); } catch (e) {} }
+function saveMatch() { if (!G || G.watch || G.S.over) return; try { localStorage.setItem(MATCH_KEY, JSON.stringify({ ver: VERSION, snap: RR.snapshot(G.S), rewinds: G.rewinds, rewound: G.rewound, seat: G.seat, diff: G.diff, stage: G.stage, endless: G.endless || 0, daily: G.daily, dmId: G.dmId, meta: G.meta, lostRoost: G.lostRoost, catHit: G.catHit, warned: G.warned })); } catch (e) {} }
 function dropSavedMatch() { try { localStorage.removeItem(MATCH_KEY); } catch (e) {} }
 function savedMatch() { try { const m = JSON.parse(localStorage.getItem(MATCH_KEY) || 'null'); if (!m) return null; const S = RR.restore(m.snap); if (!S || S.over) { dropSavedMatch(); return null; } m.S = S; return m; } catch (e) { return null; } }
 function resumeMatch(forfeit) {
   const m = savedMatch(); if (!m) { showHome(); return; } initAudio(); sfx('click');
-  enterMatch(newG({ S: m.S, seat: m.seat || 0, diff: m.diff || save.diff, stage: m.stage || '', endless: m.endless || 0, daily: !!m.daily, dmId: m.dmId || '', meta: m.meta, lostRoost: !!m.lostRoost, catHit: !!m.catHit, warned: !!m.warned }));
-  if (forfeit) Session.send({ k: 'quit' }); else { paused = true; sheet('Match paused', `<p>You left in the middle of this match. It is exactly as you left it.</p><button class="sbtn pri" data-a="resume">Carry on</button><button class="sbtn" data-a="how">How to play</button><button class="sbtn warn" data-a="forfeit">Forfeit match (counts as a loss)</button>`); }
+  enterMatch(newG({ S: m.S, rewinds: m.rewinds == null ? 1 : m.rewinds, rewound: m.rewound || 0, seat: m.seat || 0, diff: m.diff || save.diff, stage: m.stage || '', endless: m.endless || 0, daily: !!m.daily, dmId: m.dmId || '', meta: m.meta, lostRoost: !!m.lostRoost, catHit: !!m.catHit, warned: !!m.warned }));
+  if (forfeit) Session.send({ k: 'quit' }); else { paused = true; sheet('Welcome back', `<p>Your match is exactly where you left it, paused. Take a breath, then carry on.</p><button class="sbtn pri" data-a="resume">Carry on</button><button class="sbtn" data-a="how">How to play</button><button class="sbtn warn" data-a="forfeit">Forfeit match (counts as a loss)</button>`); }
 }
+function rewindsLeft() { if (!G) return 0; if (G.endless) { const E = save.endless; return E.run ? Math.max(0, 1 + (E.run.perks.wind || 0) - (E.run.usedRw || 0)) : 0; } return G.rewinds; }
+function rewindTarget(S) { if (rewindsLeft() <= 0) return null; let best = null; for (const s of G.snaps) if (s.t <= S.t - 18 && s.t > 0.5) best = s; return best || (G.snaps[0] && S.t - G.snaps[0].t >= 8 ? G.snaps[0] : null); }
+function useRewind() { if (G.endless) { const E = save.endless; if (E.run) { E.run.usedRw = (E.run.usedRw || 0) + 1; persist(); } } else G.rewinds--; G.rewound++; }
+function secondChance() {
+  paused = true; buzz(80); sfx('lose'); const tg = rewindTarget(G.S), back = Math.round(G.S.t - tg.t), left = rewindsLeft();
+  sheet('Second chance', `<p>Not like this. Rewind <b>${back} seconds</b> to before it went wrong and try another way. You have <b>${left}</b> rewind${left > 1 ? 's' : ''} left${G.endless ? ' this run' : ' this match'}.</p><button class="sbtn pri" data-a="rewind">Rewind ${back} seconds</button><button class="sbtn" data-a="acceptloss">Accept defeat</button>`);
+}
+function doRewind() {
+  const tg = rewindTarget(G.S); if (!tg) return; const S2 = RR.restore(tg.snap); if (!S2) return;
+  useRewind(); G.S = S2; G.snaps = G.snaps.filter(s => s.t < tg.t); G.snapT = S2.t; G.endT = 0; G.decided = false; G.sel = []; G.drag = null; G.acc = 0; G.lastStandSeen = false;
+  parts = []; rings = []; floats = []; $('#sheet').hidden = true; paused = false; makeChips(); updateHud(S2); saveMatch();
+  banner('REWIND', 'Back ' + Math.round(tg.t) + ' seconds in. ' + (rewindsLeft() ? rewindsLeft() + ' rewind left.' : 'No rewinds left.'), 2.2); sfx('rewind'); buzz([10, 30, 10]);
+}
+function lastStandCheck(S) {
+  const own = [0, 0, 0, 0]; for (const n of S.nodes) if (n.owner >= 0) own[n.owner]++; for (let i = 0; i < 4; i++) G.peak[i] = Math.max(G.peak[i] || 0, own[i]);
+  if (G.lastStandSeen || own[SEAT] !== 1 || G.peak[SEAT] < 3) return;
+  G.lastStandSeen = true; banner('LAST STAND', 'Your last building defends 25% harder. Hold on and rebuild.', 2.6); sfx('cat'); buzz([30, 40, 30]);
+}
+// restart: same map and rivals. Free in story and the Daily Flight; a quick match counts as a loss; Endless uses a rewind.
+function restartMatch() {
+  const g = G, S = g.S, setup = JSON.parse(JSON.stringify(S.setup));
+  if (g.endless) { if (rewindsLeft() <= 0) { sfx('deny'); return; } useRewind(); }
+  if (!g.stage && !g.endless && !g.daily) { g.restartAfter = setup; g.decided = true; $('#sheet').hidden = true; paused = false; Session.send({ k: 'quit' }); return; }
+  launchSetup(g, setup);
+}
+function launchSetup(g, setup) {
+  dropSavedMatch(); const S = RR.newMatch(setup.players, setup.opts);
+  enterMatch(newG({ S, diff: g.diff, stage: g.stage, endless: g.endless, daily: g.daily, dmId: g.dmId, meta: g.meta, rewinds: g.endless ? 1 : 1 }));
+  banner('RESTART', 'Same map, same rivals. Go again.', 1.8); sfx('click');
+}
+
 function watchReplay() {
   if (!LAST) return; initAudio(); sfx('click'); const S = RR.newMatch(LAST.setup.players, LAST.setup.opts);
   enterMatch(newG({ S, seat: LAST.seat, diff: LAST.diff, meta: LAST.meta, warned: true, watch: true, log: LAST.log, li: 0 }));
@@ -1060,7 +1102,7 @@ function handleEvents(S, quiet) {
     if (e.type === 'clash') { const x = X(e.x), y = Y(e.y); feathers(x, y, colOf(e.a), 1, 50); feathers(x, y, colOf(e.b), 1, 50); if (!quiet && (e.a === SEAT || e.b === SEAT)) { sfx('tick'); if (solo) save.clashes++; } }
     else if (e.type === 'capture') {
       ring(px, py, colOf(e.by), 1.3); feathers(px, py, colOf(e.by), 12, 110); if (quiet) continue;
-      if (e.by === SEAT) { G.combo = S.t - G.comboT < 4 ? G.combo + 1 : 0; G.comboT = S.t; sfx('capture', G.combo); buzz(14); if (G.combo >= 2) floatText(px, py - 30, 'x' + (G.combo + 1), COLORS[0]); if (e.from >= 0 && e.from !== SEAT && Math.random() < 0.55) bubble(e.from, 'lose'); }
+      if (e.by === SEAT) { G.combo = S.t - G.comboT < 4 ? G.combo + 1 : 0; G.comboT = S.t; sfx('capture', G.combo); buzz(14); if (G.combo >= 1) { floatText(px, py - 34, G.combo === 1 ? 'DOUBLE!' : G.combo === 2 ? 'TRIPLE!' : 'FRENZY x' + (G.combo + 1), COLORS[0]); if (G.combo >= 2) { shake = Math.max(shake, 5); feathers(px, py, '#FFD25A', 14, 170); } } else shake = Math.max(shake, 2.5); if (e.from >= 0 && e.from !== SEAT && Math.random() < 0.55) bubble(e.from, 'lose'); }
       else if (e.from === SEAT) { G.lostRoost = true; sfx('lost'); shake = 9; buzz([24, 30, 24]); if (Math.random() < 0.7) bubble(e.by, 'take'); }
     }
     else if (e.type === 'call') {
@@ -1068,6 +1110,7 @@ function handleEvents(S, quiet) {
       if (quiet) continue; const b = bigRoost(S, e.who); if (b) floatText(X(b.x), Y(b.y) - RR.SIZE[b.size].r * V.rs - 14, call.name.toUpperCase() + '!', colOf(e.who));
       if (mine) { sfx('call'); buzz([12, 30, 40]); if (solo) save.calls++; } else sfx('foecall');
     }
+    else if (e.type === 'stop') { if (!quiet && e.by === SEAT) { floatText(px, py - 30, 'kept ' + e.kept, INK); sfx('click'); } }
     else if (e.type === 'upgrade') { ring(px, py, colOf(e.by), 1.2); feathers(px, py - 20, '#FFD25A', 10, 90); if (!quiet) { floatText(px, py - RR.SIZE[n.size].r * V.rs * 2.2, 'LEVEL ' + e.lv, colOf(e.by)); if (e.by === SEAT) { sfx('upgrade', e.lv); buzz([10, 20, 30]); } } }
     else if (e.type === 'catWarn') { if (!quiet) { banner('CAT!', n.owner === SEAT ? 'It scatters 40% of YOUR roost in 5 seconds. Send them out!' : 'It scatters 40% of that roost in 5 seconds.', 2.4); sfx('cat'); } }
     else if (e.type === 'catPounce') { feathers(px, py, colOf(n.owner), 22, 160); ring(px, py, INK, 1.6); if (!quiet) { shake = 12; sfx('pounce'); floatText(px, py - 20, '-' + e.lost, '#FF7A6B'); if (e.owner === SEAT) { G.catHit = true; buzz(60); } } }
@@ -1091,6 +1134,7 @@ function drawRoost(S, n, t, sel, hot) {
   c.beginPath(); c.ellipse(x + d * 0.35, gy, w * 0.78 + d * 0.4, r * 0.4, 0, 0, 6.283); c.fillStyle = col; c.globalAlpha = own ? 0.3 : 0.12; c.fill(); c.globalAlpha = 1;
   c.lineWidth = own ? 2.5 : 1.5; c.strokeStyle = col; c.stroke();
   if (own && RR.active(S, n.owner)) { c.globalAlpha = 0.35 + 0.3 * Math.sin(t * 10); c.lineWidth = 5; c.beginPath(); c.ellipse(x + d * 0.35, gy, w * 1.05 + d * 0.4 + 3 * Math.sin(t * 10), r * 0.55, 0, 0, 6.283); c.stroke(); c.globalAlpha = 1; }
+  if (own && G && G.peak && (G.peak[n.owner] || 0) >= 3 && RR.lastStand(S, n)) { c.strokeStyle = '#FF7A6B'; c.globalAlpha = 0.5 + 0.35 * Math.sin(t * 6); c.lineWidth = 3; c.setLineDash([4, 5]); c.beginPath(); c.ellipse(x + d * 0.35, gy - h * 0.35, w * 0.85 + d + 8, h * 0.5 + r * 0.45 + 6, 0, 0, 6.283); c.stroke(); c.setLineDash([]); c.globalAlpha = 1; }
   if (sel || hot) { c.strokeStyle = hot ? INK : col; c.globalAlpha = 0.55 + 0.3 * Math.sin(t * 8); c.lineWidth = 3.5; c.setLineDash([7, 6]); c.lineDashOffset = -t * 30; c.beginPath(); c.ellipse(x + d * 0.35, gy - h * 0.35, w * 0.9 + d + 10, h * 0.55 + r * 0.5 + 8, 0, 0, 6.283); c.stroke(); c.setLineDash([]); c.globalAlpha = 1; }
   const A = THEME_ART[S.theme] || THEME_ART.city, wall = own ? A.wall : A.nwall, side = own ? A.side : A.nside, roofC = own ? col : '#77709A', top = gy - h, style = A.roof;
   // shadow, side face, front face
@@ -1193,7 +1237,7 @@ function render(S, t, isMatch, ex) {
     if (pv && pv.n) { const r1 = RR.SIZE[pv.t.size].r * V.rs, ok = pv.n >= pv.need, txt = pv.need ? `${pv.n} vs ${pv.need - 1}` : `+${pv.n}`; c.font = '800 15px Nunito,system-ui,sans-serif'; const w = c.measureText(txt).width + 18, bx = clamp(tx - w / 2, 4, cw - w - 4), byy = ty - r1 - 38;
       c.fillStyle = ok ? '#7BE0A0' : '#FF7A6B'; c.beginPath(); c.roundRect(bx, byy, w, 26, 13); c.fill(); c.fillStyle = DARK; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(txt, bx + w / 2, byy + 13.5); }
   }
-  for (const p of parts) { const a = 1 - p.t / p.life; c.globalAlpha = a; c.fillStyle = p.col; c.beginPath(); c.ellipse(p.x, p.y, 5, 2, p.r, 0, 6.283); c.fill(); } c.globalAlpha = 1;
+  for (const p of parts) { const a = p.big ? Math.min(1, (p.life - p.t) * 2) : 1 - p.t / p.life; c.globalAlpha = a; c.fillStyle = p.col; c.beginPath(); c.ellipse(p.x, p.y, p.big ? 6 : 5, p.big ? 3 : 2, p.r, 0, 6.283); c.fill(); } c.globalAlpha = 1;
   for (const r of rings) { c.globalAlpha = 1 - r.t / 0.5; c.strokeStyle = r.col; c.lineWidth = 5 * (1 - r.t / 0.5) + 1; c.beginPath(); c.arc(r.x, r.y, 20 + r.t * 150 * r.big, 0, 6.283); c.stroke(); } c.globalAlpha = 1;
   c.font = '22px "Bowlby One","Arial Black",sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle';
   for (const f of floats) { c.globalAlpha = clamp(1.4 - f.t, 0, 1); c.lineWidth = 5; c.strokeStyle = DARK; c.strokeText(f.txt, f.x, f.y - f.t * 36); c.fillStyle = f.col; c.fillText(f.txt, f.x, f.y - f.t * 36); } c.globalAlpha = 1;
@@ -1240,11 +1284,15 @@ function frame(now) {
       handleEvents(S, false); stepFx(dt * (S.over ? 0.5 : 1));
       G.sel = G.sel.filter(id => S.nodes[id].owner === SEAT);                          // drop picked roosts that changed hands
       hudT -= dt; if (hudT <= 0) { hudT = 0.2; updateHud(S); }
-      saveT += dt; if (saveT > 3) { saveT = 0; saveMatch(); }
-      if (S.over && !G.endT) { G.endT = now; G.sel = []; G.drag = null; for (const n of S.nodes) if (n.owner === S.over.winner) { ring(X(n.x), Y(n.y), colOf(n.owner), 1.6); feathers(X(n.x), Y(n.y), colOf(n.owner), 16, 150); } sfx(S.over.winner === SEAT ? 'win' : 'lose'); buzz(S.over.winner === SEAT ? [20, 40, 20, 40, 60] : 80); }
-      if (G.endT && now - G.endT > 1500) { if (G.watch) endReplay(); else finishMatch(); return; }
+      saveT += dt; if (saveT > 2) { saveT = 0; saveMatch(); }
+      if (!G.watch && !S.over && S.t - G.snapT >= 5) { G.snapT = S.t; G.snaps.push({ t: S.t, snap: RR.snapshot(S) }); if (G.snaps.length > 8) G.snaps.shift(); }
+      if (!G.watch && !S.over) lastStandCheck(S);
+      if (S.over && G.restartAfter) { finishMatch(); return; }
+      if (S.over && !G.endT && !G.watch && !G.decided && S.over.winner !== SEAT && rewindTarget(S)) { G.decided = true; secondChance(); return; }
+      if (S.over && !G.endT) { G.endT = now; G.sel = []; G.drag = null; for (const n of S.nodes) if (n.owner === S.over.winner) { ring(X(n.x), Y(n.y), colOf(n.owner), 1.6); feathers(X(n.x), Y(n.y), colOf(n.owner), 16, 150); } sfx(S.over.winner === SEAT ? 'win' : 'lose'); buzz(S.over.winner === SEAT ? [20, 40, 20, 40, 60] : 80); if (S.over.winner === SEAT && !G.watch) { banner('VICTORY!', 'The rooftops are yours.', 2.2); confetti(); } }
+      if (G.endT && now - G.endT > (S.over.winner === SEAT && !G.watch ? 2400 : 1500)) { if (G.watch) endReplay(); else finishMatch(); return; }
     }
-    render(S, t, true, S.over || paused ? 0 : G.acc); placeUp(S);
+    render(S, t, true, S.over || paused ? 0 : G.acc); placeUp(S); placeStop(S);
   } else {
     if (!attract || attract.over) { const R = RR.rng((now | 0) + 3), pk = Object.keys(RR.PERS); attract = RR.newMatch([0, 1, 2, 3].map(() => ({ bird: RR.BIRD_IDS[Math.floor(R() * 5)], ai: { skill: 0.5 + R() * 0.4, pers: pk[Math.floor(R() * pk.length)] } })), { seed: (now | 0) + 11, theme: THEME_IDS[Math.floor(R() * THEME_IDS.length)] }); attract.acc = 0; parts = []; rings = []; floats = []; SEAT = 0; }
     setView(0, 0); attract.acc += dt; let guard = 0; while (attract.acc >= RR.DT && guard++ < 4) { attract.acc -= RR.DT; RR.step(attract); } if (guard >= 4) attract.acc = 0;
@@ -1252,6 +1300,14 @@ function frame(now) {
   }
 }
 
+// stop chip: cancel the rest of a flock that is still leaving one of your buildings
+function placeStop(S) {
+  const b = $('#stopBtn'); let st = null; if (!G.watch && !paused && !S.over) for (const x of S.streams) if (x.owner === SEAT && x.left >= 4 && (!st || x.left > st.left)) st = x;
+  if (!st) { if (!b.hidden) b.hidden = true; return; }
+  const n = S.nodes[st.from], g = roostGeo(n); b.dataset.id = n.id; $('#stopN').textContent = st.left;
+  if (b.hidden) b.hidden = false; const bw = b.offsetWidth || 70; b.style.left = clamp(g.x - bw / 2, 8, cw - bw - 8) + 'px'; b.style.top = Math.max(100, g.gy - g.h - g.r * 0.6 - 38) + 'px';
+}
+$('#stopBtn').addEventListener('pointerdown', e => { e.stopPropagation(); if (!G) return; Session.send({ k: 'stop', from: +$('#stopBtn').dataset.id }); $('#stopBtn').hidden = true; buzz(10); });
 // upgrade button for the one roost you have picked
 function placeUp(S) {
   const b = $('#upBtn'), id = G.tap && G.sel.length === 1 && !G.watch && !paused && !S.over ? G.sel[0] : -1, n = id >= 0 ? S.nodes[id] : null;
@@ -1335,6 +1391,7 @@ function finishMatch() {
   const q = $('#resQuote'); let qi = win ? rank[1] : S.over.winner; if (qi > 0 && G.meta[qi]) { const m = G.meta[qi], L = LINES[m.pers][win ? 'out' : 'win']; q.textContent = m.name + ': "' + L[0] + '"'; q.hidden = false; } else q.hidden = true;
   $('#resBadges').innerHTML = got.map(b => `<p>Badge earned: ${b.name}</p>`).join('');
   $('#againBtn').textContent = win ? 'Next match' : 'Rematch'; $('#againBtn').dataset.go = ''; $('#homeBtn').textContent = 'Back to the roost'; $('#homeBtn').dataset.go = '';
+  if (G.restartAfter) { const g = G, su = g.restartAfter; return launchSetup(g, su); }
   showResult();
 }
 function finishStage() {
@@ -1443,7 +1500,7 @@ function showEndless() {
     <p>Every stage is new: a fresh map, a new mix of rivals and one to three twists. Rivals get tougher with every stage, without limit, so every run ends somewhere. Win stages to earn <b>seeds</b> and spend them on your Nest.</p></div>`;
   if (E.run) { const st = endlessStageOf(E.run);
     h += `<div class="ecard"><h3>Stage ${E.run.n}${st.boss ? ' · boss' : st.duel ? ' · duel' : ''}</h3><p>${THEME_ART[st.theme].name} · ${st.rivals.map(r => r.name + (r.champ ? ' (champion)' : '')).join(', ')} · sharpness ${pips(sharpOf(Math.max.apply(null, st.rivals.map(r => r.skill))))}</p>${stageTags(st)}
-      <p><b>Your perks this run</b></p>${perkTags(E.run.perks)}<div class="cps">${E.run.pick ? '<button class="pri" data-e="pick">Pick your perk</button>' : `<button class="pri" data-e="play">Play stage ${E.run.n}</button>`}<button data-e="abandon">End this run</button></div></div>`;
+      <p><b>Your perks this run</b> · rewinds left: ${Math.max(0, 1 + (E.run.perks.wind || 0) - (E.run.usedRw || 0))}</p>${perkTags(E.run.perks)}<div class="cps">${E.run.pick ? '<button class="pri" data-e="pick">Pick your perk</button>' : `<button class="pri" data-e="play">Play stage ${E.run.n}</button>`}<button data-e="abandon">End this run</button></div></div>`;
   } else {
     const cps = [1].concat((E.cps || []).filter(c => c > 1).sort((a, b) => a - b));
     h += `<div class="ecard"><h3>Start a run</h3><p>${cps.length > 1 ? 'Start from stage 1, or from a checkpoint you have reached. Starting later hands you the perks you would have picked on the way.' : 'Every 10 stages you reach becomes a checkpoint you can start from next time.'}</p><div class="cps">${cps.map(c => `<button class="${c === 1 ? 'pri' : ''}" data-e="start" data-c="${c}">Stage ${c}</button>`).join('')}</div></div>`;
@@ -1511,9 +1568,11 @@ const HOWTO = `<p><b>Send birds.</b> Drag from your roost to any other roost. Dr
 <p><b>Mid-air.</b> Rival flocks that cross paths cancel out bird for bird. Wind speeds up flocks flying with it and slows flocks flying against it.</p>
 <p><b>The cat</b> stalks the fullest roost and scatters 40% of it after 5 seconds. <b>Fries</b> give +14 birds to whoever holds that roost when the timer ends.</p>
 <p><b>Winning.</b> Chase every rival off the rooftops, or hold the most birds at nightfall.</p>
+<p><b>Second chances.</b> Lose a match and you can rewind about 20 seconds and try another way, once per match (in Endless Flight, once per run, more with the Second Wind perk). Pause to restart. Changed your mind mid-send? Tap Stop above the building to keep the birds that have not left yet. A flock down to its last building defends 25% harder.</p>
 <p><b>Endless Flight.</b> Stage after stage on new maps with new twists. Every second stage you win, pick a perk for the run. Rivals get tougher every stage without limit, so a run always ends somewhere; checkpoints every 10 stages let you start further in. Seeds from wins buy permanent Nest upgrades, which only apply in Endless Flight.</p>
 <p><b>Fair fights.</b> Rivals hatch, fly, call and upgrade by the same rules as you. Pick Easy, Medium or Hard in Settings; within each level they sharpen as you climb the Pecking Order.</p>`;
-$('#pauseBtn').onclick = () => { if (mode !== 'match' || !G) return; sfx('click'); paused = true; if (G.watch) sheet('Replay paused', `<button class="sbtn pri" data-a="resume">Keep watching</button><button class="sbtn" data-a="stopreplay">Stop replay</button>`); else { saveMatch(); sheet('Paused', `<button class="sbtn pri" data-a="resume">Resume</button><button class="sbtn" data-a="how">How to play</button><button class="sbtn warn" data-a="forfeit">Forfeit match (counts as a loss)</button>`); } };
+$('#pauseBtn').onclick = () => { if (mode !== 'match' || !G) return; sfx('click'); paused = true; if (G.watch) sheet('Replay paused', `<button class="sbtn pri" data-a="resume">Keep watching</button><button class="sbtn" data-a="stopreplay">Stop replay</button>`); else { saveMatch(); const rl = rewindsLeft(), tg = rewindTarget(G.S), rs = G.endless ? (rl ? 'Restart stage (uses your rewind)' : 'Restart stage (no rewinds left)') : G.stage || G.daily ? 'Restart from the beginning' : 'Restart (counts as a loss)';
+  sheet('Paused', `<button class="sbtn pri" data-a="resume">Resume</button>` + (tg ? `<button class="sbtn" data-a="rewindp">Rewind ${Math.round(G.S.t - tg.t)} seconds (${rl} left)</button>` : '') + `<button class="sbtn" data-a="restart"${G.endless && !rl ? ' disabled' : ''}>${rs}</button><button class="sbtn" data-a="how">How to play</button><button class="sbtn warn" data-a="forfeit">Forfeit match (counts as a loss)</button>`); } };
 $('#rivalsBtn').onclick = () => { initAudio(); sfx('click'); sheet('Rivals', `<p>Every rival plays by your rules. What changes is how they think.</p>` + RIVALS.map(r => { const rec = save.rivals[r.id]; return `<div class="row${rec ? '' : ' dim'}"><span>${r.name}${save.nemesis === r.id ? ' · your nemesis' : ''}<small>${RR.BIRDS[r.bird].name} · ${RR.PERS[r.pers].label}</small></span><em>${rec ? 'You ' + rec.l + ' – ' + rec.w : 'Not met'}</em></div>`; }).join('')); };
 $('#badgesBtn').onclick = () => { initAudio(); sfx('click'); const n = BADGES.filter(b => save.badges[b.id]).length; sheet('Badges ' + n + '/' + BADGES.length, `<p>Played ${save.matches} · Won ${save.wins} · Best streak ${save.bestStreak}</p>` + BADGES.map(b => `<div class="row${save.badges[b.id] ? '' : ' dim'}"><span>${b.name}<small>${b.how}</small></span><em>${save.badges[b.id] ? 'Earned' : ''}</em></div>`).join('')); };
 function settingsSheet(armed) { sheet('Settings', `<button class="brow" data-a="diffs"><span class="ptxt"><b>Difficulty: ${DIFF[save.diff].name}</b><small>Tap to change</small></span></button><div class="row"><span>Sound</span><button class="tog" data-a="sound" aria-pressed="${save.sound}" aria-label="Sound"></button></div><div class="row"><span>Vibration<small>On phones that support it</small></span><button class="tog" data-a="haptics" aria-pressed="${save.haptics}" aria-label="Vibration"></button></div><button class="sbtn" data-a="how">How to play</button><button class="sbtn warn" data-a="${armed ? 'reset2' : 'reset'}">${armed ? 'Tap again to erase all progress' : 'Reset progress'}</button><p>Your progress is saved on this device. No ads, no accounts, no tracking.</p>`); }
@@ -1521,7 +1580,10 @@ $('#setBtn').onclick = () => { initAudio(); sfx('click'); settingsSheet(false); 
 $('#sheetB').addEventListener('click', e => { const b = e.target.closest('[data-a]'); if (!b) return; const a = b.dataset.a; sfx('click');
   if (a === 'resume') closeSheet();
   else if (a === 'how') { const back = mode === 'match'; sheet('How to play', HOWTO + (back ? '<button class="sbtn pri" data-a="resume">Back to the match</button>' : '')); }
-  else if (a === 'forfeit') { $('#sheet').hidden = true; paused = false; Session.send({ k: 'quit' }); }
+  else if (a === 'forfeit') { $('#sheet').hidden = true; paused = false; G.decided = true; Session.send({ k: 'quit' }); }
+  else if (a === 'rewind' || a === 'rewindp') doRewind();
+  else if (a === 'acceptloss') { $('#sheet').hidden = true; paused = false; }
+  else if (a === 'restart') { if (b.hasAttribute('disabled')) return; restartMatch(); }
   else if (a === 'bird') { const id = b.dataset.b; if (!birdOpen(id)) { sfx('deny'); return; } save.bird = id; persist(); closeSheet(); showHome(); }
   else if (a === 'diff') { save.diff = b.dataset.d; persist(); closeSheet(); if (mode === 'story') showStory(); else showHome(); }
   else if (a === 'diffs') diffSheet();
@@ -1536,13 +1598,15 @@ $('#sheetB').addEventListener('click', e => { const b = e.target.closest('[data-
 });
 document.addEventListener('visibilitychange', () => { if (document.hidden && mode === 'match' && G && !G.S.over) { saveMatch(); if ($('#sheet').hidden) $('#pauseBtn').onclick(); } });
 window.addEventListener('pagehide', saveMatch);
+window.addEventListener('blur', () => { if (mode === 'match' && G && !G.S.over) { saveMatch(); if ($('#sheet').hidden && !G.watch) $('#pauseBtn').onclick(); } });
+document.addEventListener('freeze', saveMatch);
 
 // ---------- boot: Zetato Studios intro plays once (~1.5s), no tap needed; a tap just skips it ----------
 window.addEventListener('resize', resize); resize();
 if (document.fonts && document.fonts.load) { document.fonts.load('20px "Bowlby One"').catch(() => {}); }
 (function () { const intro = $('#intro'); let done = false;
   const end = () => { if (done) return; done = true; intro.classList.add('out'); setTimeout(() => { intro.hidden = true; }, 380); };
-  showHome(); setTimeout(end, 1500); intro.addEventListener('pointerdown', end);
+  showHome(); if (savedMatch()) resumeMatch(false); setTimeout(end, 1500); intro.addEventListener('pointerdown', end);
 })();
 requestAnimationFrame(frame);
 window.__rr = { stage: startStage, story: showStory, endless: showEndless, playEndless: startEndless, get G() { return G; }, get save() { return save; }, get LAST() { return LAST; }, start: startMatch, home: showHome, Session, RR };
@@ -1552,7 +1616,7 @@ window.__rr = { stage: startStage, story: showStory, endless: showEndless, playE
 <script>
 /* Roost Rivals PWA: offline worker with silent updates, plus the install hint (same pattern as the other Zetato Studios games). */
 (function(){
- var VERSION='0.5.0';
+ var VERSION='0.6.0';
  // Silent updates: the worker fetches the newest game page whenever online, so the next open is always current.
  if('serviceWorker' in navigator && location.protocol!=='file:' && /(^|\.)zetatobi\.com$|^localhost$|^127\.0\.0\.1$/.test(location.hostname)){
   window.addEventListener('load',function(){
