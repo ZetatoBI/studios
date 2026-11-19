@@ -1,6 +1,6 @@
 /* DeenDojo service worker. Bump CACHE whenever you upload a new index.html, so phones pick up the update. */
-const CACHE = "deendojo-v0.9.4";
-const CORE = ["./", "./index.html", "./config.js", "./manifest.webmanifest",
+const CACHE = "deendojo-v1.0";
+const CORE = ["./", "./index.html", "./questions.json", "./config.js", "./manifest.webmanifest",
   "./icons/icon-192.png", "./icons/icon-512.png", "./icons/icon-maskable-512.png", "./icons/apple-touch-icon.png"];
 
 self.addEventListener("install", e => {
@@ -24,6 +24,12 @@ self.addEventListener("fetch", e => {
   if (url.origin === location.origin && (url.pathname.endsWith("/config.js") || url.pathname.endsWith("/manifest.webmanifest"))) {
     e.respondWith(fetch(req, { cache: "no-store" }).then(r => { const copy = r.clone(); caches.open(CACHE).then(c => c.put(req, copy)); return r; })
       .catch(() => caches.match(req)));
+    return;
+  }
+  // Question data: network first so new content arrives, cached copy when offline
+  if (url.origin === location.origin && url.pathname.endsWith("/questions.json")) {
+    e.respondWith(fetch(req).then(r => { if (r.ok) { const copy = r.clone(); caches.open(CACHE).then(c => c.put("./questions.json", copy)); } return r; })
+      .catch(() => caches.match("./questions.json")));
     return;
   }
   // Google Fonts (Quran and Arabic fonts): serve from cache, refresh in the background
